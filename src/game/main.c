@@ -1,7 +1,6 @@
 #include <ncurses.h>
-#include "main.h"
+#include "engine_types.h"
 #include "ui/main_menu.c"
-
 
 int main(){
 

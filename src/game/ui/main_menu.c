@@ -1,6 +1,6 @@
 #include <ncurses.h>
 #include "../../engine/ui/components.c"
-#include "../main.h"
+#include "engine_types.h"
 
 // Menu principal (temporário)
 int main_menu(Terminal *terminal){

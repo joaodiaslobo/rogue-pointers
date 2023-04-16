@@ -1,4 +1,4 @@
-CFLAGS=-Wall -Wextra -pedantic -O2
+CFLAGS=-Wall -Wextra -pedantic -O2 -Iinclude
 LIBS=-lm -lcurses
 
 jogo.o: src/game/main.c

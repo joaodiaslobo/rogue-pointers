@@ -6,4 +6,11 @@ typedef struct {
     int xMax;
 } Terminal;
 
+// Math
+
+typedef struct {
+    int x;
+    int y;
+} Vector2D;
+
 #endif
