@@ -17,16 +17,21 @@ int main_menu(Terminal *terminal){
         mvprintw(terminal->yMax / 2 + 1, terminal->xMax / 2 - 7, "(menu temporario)");
         attroff(A_DIM);
 
+        attron(A_BOLD);
+        mvprintw(terminal->yMax - 1, 5, "LINHAS: %d, COLUNAS: %d", terminal->yMax , terminal->xMax);
+        attroff(A_BOLD);
+
         // Input de seleção
 
-        char *options[3] = { "JOGAR", "OPCOES", "SAIR"};
-        int selection = menu_select(3, options, terminal->xMax - 12, terminal->yMax - 8, 5);
+        char *options[4] = { "JOGAR", "OPCOES", "SAIR", "DEBUG"};
+        selection = menu_select(4, options, terminal->xMax - 12, terminal->yMax - 9, 5);
         
         if(selection == 2){
             // Confirmação no caso de saída
             if(modal_confim("Tem a certeza que quer sair?", 35, terminal->yMax, terminal->xMax)){
                 return selection;
             }
+            selection = -1;
         }
     }
 

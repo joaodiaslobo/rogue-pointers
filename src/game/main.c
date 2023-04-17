@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include "engine_types.h"
 #include "ui/main_menu.c"
+#include "debug/pixel_test.c"
 
 int main(){
 
@@ -17,13 +18,24 @@ int main(){
     // Faz com que o cursor fique invisível durante o jogo
     curs_set(0);
 
+    cbreak();
+	noecho();
+
     start_color();
 
     // Obtem tamanho do terminal
     Terminal terminal;
     getmaxyx(stdscr, terminal.yMax, terminal.xMax);
 
-    main_menu(&terminal);
+    int selection = main_menu(&terminal);
+    switch (selection)
+    {
+    case 3:
+        pixel_test();
+        break;
+    default:
+        break;
+    }
 
     // Finaliza o ncurses
     endwin();
