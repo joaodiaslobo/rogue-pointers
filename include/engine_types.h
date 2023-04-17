@@ -21,9 +21,9 @@ typedef struct {
 // Desenhar no terminal
 
 typedef struct {
-    int r;
-    int g;
-    int b;
+    int red;
+    int green;
+    int blue;
 } Color;
 
 typedef struct {

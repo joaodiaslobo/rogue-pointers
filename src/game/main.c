@@ -2,6 +2,7 @@
 #include "engine_types.h"
 #include "ui/main_menu.c"
 #include "debug/pixel_test.c"
+#include "../engine/render/color.c"
 
 int main(){
 
@@ -22,6 +23,11 @@ int main(){
 	noecho();
 
     start_color();
+
+    // Carrega a palette para o ncurses
+    if(!load_palette_from_file("assets/main.palette")){
+        printw("Falha no carregamento da palette.");
+    }
 
     // Obtem tamanho do terminal
     Terminal terminal;
