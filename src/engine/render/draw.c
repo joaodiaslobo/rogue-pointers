@@ -13,13 +13,3 @@ int draw_to_screen(Image image, Vector2D position){
     }
     return 0;
 }   
-
-// Cria uma imagem através do tamanho e pixels recebidos
-Image create_image(int size, Pixel pixels[]) {
-    Image image;
-    image.size = size;
-    for (int i = 0; i < size; i++) {
-        image.pixels[i] = pixels[i];
-    }
-    return image;
-}
