@@ -8,10 +8,11 @@
 // Items
 
 typedef enum {
-    MELEE_WEAPON = 0,
-    RANGED_WEAPON = 1,
-    BOMB = 2,
-    MISCELLANEOUS = 3
+    NONE = 0,
+    MELEE_WEAPON = 1,
+    RANGED_WEAPON = 2,
+    BOMB = 3,
+    MISCELLANEOUS = 4
 } ItemType;
 
 typedef struct {
@@ -20,13 +21,17 @@ typedef struct {
     char description[100];
 } Item;
 
+typedef struct {
+    Item items[INVENTORY_SLOTS];
+} Inventory;
+
 // Jogador
 
 typedef struct {
     char name[15];
     Vector2D position;
     int gold;
-    Item inventory[INVENTORY_SLOTS];
+    Inventory inventory;
     int selectedSlot;
 } Player;
 
