@@ -126,8 +126,8 @@ int mapa_teste(WINDOW *wnd) {
 	init_pair(COLOR_RED, COLOR_MAGENTA, COLOR_BLACK);
     
     // Gera e imprime o mapa
-    gen_map(mp,nrows,ncols);
-	print_map(mp,nrows,ncols);
+    gen_map(mp,nrows,ncols/2);
+	print_map(mp,nrows,ncols/2);
 	getch();
 	//
 	
