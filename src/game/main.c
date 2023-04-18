@@ -6,11 +6,10 @@
 #include "map/map.c"
 
 
-/*
-int main(){
 
+int main(){
     // Setup do ncurses
-    initscr();
+    WINDOW *window = initscr();
 
     // Certifica-se que o terminal onde o jogo está a rodar suporta a utilização de cores
     if(!can_change_color()){
@@ -42,6 +41,9 @@ int main(){
     case 3:
         pixel_test();
         break;
+	case 0:
+		mapa_teste(window);
+		break;
     default:
         break;
     }
@@ -50,8 +52,6 @@ int main(){
     endwin();
     return 0;
 }
-
-*/
 
 typedef struct state {
 	int playerX;
@@ -96,9 +96,8 @@ void update(STATE *st) {
 }
 
 
-int main() {
+int mapa_teste(WINDOW *wnd) {
 	STATE st = {20,20};
-	WINDOW *wnd = initscr();
 	int ncols, nrows;
 	getmaxyx(wnd,nrows,ncols);
 	
@@ -115,13 +114,9 @@ int main() {
          mp[i][j].object = 0;
       }
     }
-	//
 
 	srandom(time(NULL));
-	start_color();
-	cbreak();
-	noecho();
-	nonl();
+
 	intrflush(stdscr, false);
 	keypad(stdscr, true);
 
