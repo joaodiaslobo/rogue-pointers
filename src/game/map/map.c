@@ -88,14 +88,21 @@ void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 
 // Imprime o mapa
 void print_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
-
+   Image wall = load_image_from_file("assets/sprites/wall.sprite");
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
 		move(i,j);
 		attron(COLOR_PAIR(COLOR_WHITE));
 		// attron(COLOR_PAIR(a[i][j].color));
-		if (a[i][j].object == 0) printw(".");
-		else if (a[i][j].object == 1) printw("#");
+		//if (a[i][j].object == 0) printw(".");
+		if (a[i][j].object == 0){
+			
+		}
+		//else if (a[i][j].object == 1) printw("#");
+		else if(a[i][j].object == 1){
+			Vector2D pos = {j,i};
+			draw_to_screen(wall, pos);
+		}
 		//attroff(COLOR_PAIR(a[i][j].color));
       }
     }
