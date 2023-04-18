@@ -1,27 +1,41 @@
 #include <string.h>
 #include <ncurses.h>
-// Necessaio para as funções que geram o mapa
+// Necessário para as funções que geram o mapa
 int NUM_COLUMNS;
 
 // Mapa
 typedef struct map {
-	int object;  // 0 corresponde a local onde pode andar | 1 corresponde a uma parede 
+	int object;  // 0 corresponde a local onde pode andar | 1 corresponde a uma parede | 2 corresponde a passagem de nível
 } MAP;
+
+void new_level_map (MAP (*a)[NUM_COLUMNS], int r, int c) {
+	int random_num, count = 0, rand_cols, rand_rows;
+
+	random_num = (random() % 3);
+	while(count <= random_num) {
+		rand_cols = (random() % c);
+		rand_rows = (random() % r);
+		if (a[rand_rows][rand_cols].object == 0) {
+			a[rand_rows][rand_cols].object = 2;
+			count++;
+		}
+	}
+}
 
 // Gera as borders do mapa
 void gen_border_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
-   for(int j = 0; j < c; j++){ // controi a border horizontal
+   for(int j = 0; j < c; j++){ // Constroi a border horizontal
 		a[0][j].object = 1; 
 		a[r-1][j].object = 1;
 	} 
 	
-    for(int i = 0; i < r; i++) { // controi a border vertical
+    for(int i = 0; i < r; i++) { // Constroi a border vertical
         a[i][0].object = 1; 
 	    a[i][c-1].object = 1;
 	} 
 }
 
-//Gera a primeira versão do mapa de uma forma aleatória
+// Gera a primeira versão do mapa de uma forma aleatória
 void gen_first_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
    int i = 0;
 
@@ -84,6 +98,7 @@ void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
    gen_border_map(a,r,c);
    gen_first_map(a,r,c);
    smooth_map(a,r,c,5,2);  
+   new_level_map(a,r,c);
 }
 
 // Imprime o mapa
@@ -93,7 +108,6 @@ void print_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
       for (int j = 0; j < c; j++){
 		move(i,j);
 		attron(COLOR_PAIR(COLOR_WHITE));
-		// attron(COLOR_PAIR(a[i][j].color));
 		//if (a[i][j].object == 0) printw(".");
 		if (a[i][j].object == 0){
 			
@@ -102,6 +116,10 @@ void print_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 		else if(a[i][j].object == 1){
 			Vector2D pos = {j,i};
 			draw_to_screen(wall, pos);
+		}
+		else if(a[i][j].object == 2){
+			move(j,i);
+			printw("X");
 		}
 		//attroff(COLOR_PAIR(a[i][j].color));
       }
