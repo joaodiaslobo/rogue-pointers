@@ -8,6 +8,7 @@
 typedef struct {
     int yMax;
     int xMax;
+    WINDOW *mainWindow;
 } Terminal;
 
 

@@ -35,5 +35,11 @@ typedef struct {
     int selectedSlot;
 } Player;
 
+// Estado do jogo
+
+typedef struct {
+    Player player;
+} GameState;
+
 
 #endif
