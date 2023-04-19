@@ -3,6 +3,7 @@
 #include "map/map.c"
 #include "time.h"
 #include "game_types.h"
+#include "engine_types.h"
 
 // TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
 
@@ -94,6 +95,8 @@ int game_loop(Terminal *terminal) {
 	 *
 	 */
 
+	Image characterSprite = load_image_from_file("assets/sprites/characters/player1.sprite");
+
 	
 	while(1) {
 		move(nrows - 1, 0);
@@ -103,7 +106,7 @@ int game_loop(Terminal *terminal) {
 		attron(COLOR_PAIR(COLOR_BLACK));
 		attroff(COLOR_PAIR(COLOR_RED));
 		Vector2D pos = {st.playerY, st.playerX};
-		draw_to_screen(load_image_from_file("assets/sprites/characters/player1.sprite"), pos);
+		draw_to_screen(characterSprite, pos);
 		attron(COLOR_PAIR(COLOR_BLUE));
 		mvaddch(st.playerX - 1, st.playerY - 1, '.' | A_BOLD);
 		mvaddch(st.playerX - 1, st.playerY + 0, '.' | A_BOLD);

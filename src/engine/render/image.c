@@ -45,5 +45,7 @@ Image load_image_from_file(char path[]){
 
     result = create_image(imageSize, pixels);
 
+    fclose(file);
+
     return result;
 }
