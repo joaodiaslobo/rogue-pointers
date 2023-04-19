@@ -6,7 +6,7 @@
 
 // Função de teste que desenha uma imagem no ecrã
 int draw_mario(){
-    Image mario = load_image_from_file("assets/sprites/characters/mario_test.sprite");
+    Image mario = load_image_from_file("assets/sprites/characters/player1.sprite");
 
     Vector2D pos = {0,0};
 
