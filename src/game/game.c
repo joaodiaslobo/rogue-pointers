@@ -93,6 +93,7 @@ int game_loop(Terminal *terminal) {
 	 * deveria existir uma função chamada draw_light!
 	 *
 	 */
+
 	
 	while(1) {
 		move(nrows - 1, 0);
@@ -100,8 +101,9 @@ int game_loop(Terminal *terminal) {
 		printw("(%d, %d) %d %d", st.playerX, st.playerY, ncols, nrows);
 		attroff(COLOR_PAIR(COLOR_BLUE));
 		attron(COLOR_PAIR(COLOR_BLACK));
-		mvaddch(st.playerX, st.playerY, 'S' | A_BOLD);
 		attroff(COLOR_PAIR(COLOR_RED));
+		Vector2D pos = {st.playerY, st.playerX};
+		draw_to_screen(load_image_from_file("assets/sprites/characters/player1.sprite"), pos);
 		attron(COLOR_PAIR(COLOR_BLUE));
 		mvaddch(st.playerX - 1, st.playerY - 1, '.' | A_BOLD);
 		mvaddch(st.playerX - 1, st.playerY + 0, '.' | A_BOLD);
