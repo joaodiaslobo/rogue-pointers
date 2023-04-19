@@ -99,12 +99,14 @@ int game_loop(Terminal *terminal) {
 
 	
 	while(1) {
+		clear();
 		move(nrows - 1, 0);
 		attron(COLOR_PAIR(COLOR_BLUE));
 		printw("(%d, %d) %d %d", st.playerX, st.playerY, ncols, nrows);
 		attroff(COLOR_PAIR(COLOR_BLUE));
 		attron(COLOR_PAIR(COLOR_BLACK));
 		attroff(COLOR_PAIR(COLOR_RED));
+		print_map(mp,nrows,ncols/2);
 		Vector2D pos = {st.playerY, st.playerX};
 		draw_to_screen(characterSprite, pos);
 		attron(COLOR_PAIR(COLOR_BLUE));
