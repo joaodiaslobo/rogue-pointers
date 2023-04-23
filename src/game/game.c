@@ -26,11 +26,11 @@ void do_movement_action(STATE *st, int dx, int dy, MAP (*m)[NUM_COLUMNS], int r,
 	//getch();
 	//attroff(COLOR_PAIR(COLOR_BLUE));
 	 	
-	if (m[y][x].object == 1 || x < 0 || y < 0 || y >= r || x >= c){ 
+	if (m[y][x].object == 1 || m[y][x].object == 3 || x < 0 || y < 0 || y >= r || x >= c){ 
 		// valida a posição do jogador no mapa, se este move para uma parede não pode avançar
         // valida que o jogador não sai do mapa
 	} else if (m[y][x].object == 2) { //encontrou um porta, muda de nível e gera novo mapa
-        gen_map(m,r,c);
+        gen_map(m,r,c,2);
 	    print_map(m,r,c);   
 	} 
       else {
@@ -84,7 +84,7 @@ int game_loop(Terminal *terminal) {
     }
     for (int i = 0; i < nrows; i++){
       for (int j = 0; j < ncols; j++){
-         mp[i][j].object = 0;
+         mp[i][j].object = 3;
       }
     }
 
@@ -99,8 +99,9 @@ int game_loop(Terminal *terminal) {
 	init_pair(COLOR_RED, COLOR_MAGENTA, COLOR_BLACK);
     
     // Gera e imprime o mapa
-    gen_map(mp,nrows,ncols);
+    gen_map(mp,nrows,ncols,2);
 	print_map(mp,nrows,ncols);
+	getch();
 	
 	endwin(); 
 

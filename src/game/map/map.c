@@ -5,8 +5,92 @@ int NUM_COLUMNS;
 
 // Mapa
 typedef struct map {
-	int object;  // 0 corresponde a local onde pode andar | 1 corresponde a uma parede | 2 corresponde a passagem de nível
+	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio
 } MAP;
+
+void new_room_map (MAP (*a)[NUM_COLUMNS], int r, int c){
+    int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
+    int k; 
+    while (k < random_rooms) {
+        int width_room = (random() % 13) + 14; // Largura da sala (14 a 26)
+        int height_room = (random() % 13) + 10; // Altura da sala (10 a 22)
+        int roomX = (random() % c) + 1; // Posição da sala no mapa
+        int roomY = (random() % r) + 1;
+        
+		//verifica se a sala fica situada dentro do mapa, senão gera nova sala
+		if((roomX + width_room) < c-1 && (roomY + height_room < r-1)){  
+            // coloca paredes na sala
+            for(int j = roomX; j < roomX + width_room+1; j++){ // Constroi a border horizontal da sala
+		      a[roomY][j].object = 1; 
+		      a[roomY+height_room][j].object = 1;
+	        } 
+            for(int i = roomY; i < roomY + height_room; i++) { // Constroi a border vertical da sala
+              a[i][roomX].object = 1; 
+	          a[i][roomX+width_room].object = 1;
+	        }
+            // coloca interior da salas como espaço em que é possível andar
+			for (int i = roomY + 1; i < roomY + height_room; i++) {
+               for (int j = roomX + 1; j < roomX + width_room; j++) {
+                   a[i][j].object = 0;
+               }
+            }
+		    // abre porta entre salas adjacentes
+			int init = roomY + height_room, end = 0;
+            for(int j = roomY; j < roomY + height_room && j != 1; j++){ // esquerda
+		      if(a[j][roomX].object == 1 && a[j][roomX-1].object != 3 && a[j][roomX-1].object != 1){
+			 	  if (init > j) init = j;
+				  if (end < j) end = j;
+			   }
+			}
+			if (init < roomY + height_room){
+			    int door = (random() % (end-init+1))+1;
+				a[init+door][roomX].object = 0;
+				if (init+door+1 < end) a[init+door+1][roomX].object = 0;
+				else a[init+door-1][roomX].object = 0;
+			}
+		    init = roomY + height_room, end = 0;
+            for (int j = roomY; j < roomY + height_room && j != r-1; j++){ // direita
+		       if (a[j][roomX+width_room].object == 1 && a[j][roomX+width_room+1].object != 3 && a[j][roomX+width_room+1].object != 1){
+			 	  if (init > j) init = j;
+				  if (end < j) end = j;
+			   }
+			}
+			if(init < roomY + height_room){
+			    int door = (random() % (end-init+1)) + 1;
+				a[init+door][roomX+width_room].object = 0;
+				if(init+door+1 < end) a[init+door+1][roomX+width_room].object = 0;
+				else a[init+door-1][roomX+width_room].object = 0;
+			}
+		    init = roomX + width_room, end;
+            for(int j = roomX; j < roomX + width_room && j > 0; j++){ // cima
+		       if (a[roomY][j].object == 1 && a[roomY-1][j].object != 3 && a[roomY+1][j].object != 1){
+			 	  if (init > j) init = j;
+				  if (end < j) end = j;
+			   }
+			}
+			if(init < roomX + width_room){
+			    int door = (random() % (end-init+1)) + 1;
+				a[roomY][init+door].object = 0;
+				if(init+door+1 < end) a[roomY][init+door+1].object = 0;
+				else a[roomY][init+door-1].object = 0;
+			}
+		    init = roomX + width_room, end;
+            for(int j = roomX; j < roomX + width_room && j != c; j++){ // baixo
+		       if (a[roomY+height_room][j].object == 1 && a[roomY+height_room+1][j].object != 3 && a[roomY+height_room+1][j].object != 1){
+			 	  if (init > j) init = j;
+				  if (end < j) end = j;
+			   }
+			}
+			if(init < roomX + width_room){
+			    int door = (random() % (end-init+1)) + 1;
+				a[roomY+height_room][init+door].object = 0;
+				if(init+door+1 < end) a[roomY+height_room][init+door+1].object = 0;
+				else a[roomY+height_room][init+door-1].object = 0;
+			}
+        	k++;
+		}
+    }
+}
 
 void new_level_map (MAP (*a)[NUM_COLUMNS], int r, int c) {
 	int random_num, count = 0, rc, rr;
@@ -93,28 +177,41 @@ void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
 }
 
 // Gera o mapa em 3 etaps
-void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
+void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c, int i) {
    
-   //gen_border_map(a,r,c);
-   gen_first_map(a,r,c);
-   smooth_map(a,r,c,5,2);  
-   new_level_map(a,r,c);
+   if(i == 1) {
+      gen_border_map(a,r,c);
+      gen_first_map(a,r,c);
+      smooth_map(a,r,c,5,2);
+	  new_level_map(a,r,c);
+   }
+   else{
+      new_room_map(a,r,c);
+      new_level_map(a,r,c);
+   }
 }
 
 // Imprime o mapa
 void print_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
    Image wall = load_image_from_file("assets/sprites/wall.sprite");
    Image gate = load_image_from_file("assets/sprites/gate.sprite");
+   Image walk = load_image_from_file("assets/sprites/walk.sprite");
 
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
 		if (a[i][j].object == 0){
-			
+		    //Vector2D pos = {j,i};
+			//draw_to_screen(walk, pos);
+			int k = 100;
+			init_pair(k, COLOR_BLACK, walk.pixels[0].color);         
+			attron(COLOR_PAIR(k));
+			mvprintw(i, j*2, "  ");
+            attroff(COLOR_PAIR(k));
 		}
 		else if(a[i][j].object == 1){ // imprimir a parede 
 			//Vector2D pos = {j,i};
 			//draw_to_screen(wall, pos);
-			    int k = 8;
+			    int k = 101;
 			    init_pair(k, COLOR_BLACK, wall.pixels[0].color);         
 				attron(COLOR_PAIR(k));
 				mvprintw(i, j*2, "  ");
@@ -123,8 +220,13 @@ void print_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 			//printw("#");
 		}
 		else if(a[i][j].object == 2){ // imprimir porta para outro nível
-			Vector2D pos = {j,i};
-			draw_to_screen(gate, pos);
+			//Vector2D pos = {j,i};
+			//draw_to_screen(gate, pos);
+			int k = 102;
+			init_pair(k, COLOR_BLACK, gate.pixels[0].color);         
+			attron(COLOR_PAIR(k));
+			mvprintw(i, j*2, "  ");
+            attroff(COLOR_PAIR(k));
 		}
       }
     }
