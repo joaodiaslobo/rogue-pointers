@@ -9,14 +9,14 @@ typedef struct map {
 } MAP;
 
 void new_level_map (MAP (*a)[NUM_COLUMNS], int r, int c) {
-	int random_num, count = 0, rand_cols, rand_rows;
+	int random_num, count = 0, rc, rr;
 
 	random_num = (random() % 3);
 	while(count <= random_num) {
-		rand_cols = (random() % c);
-		rand_rows = (random() % r);
-		if (a[rand_rows][rand_cols].object == 0) {
-			a[rand_rows][rand_cols].object = 2;
+		rc = (random() % c);
+		rr = (random() % r);
+		if (a[rr][rc].object == 0 && (a[rr-1][rc].object==0 || a[rr+1][rc].object==0 || a[rr][rc-1].object==0 || a[rr][rc+1].object==0)){
+			a[rr][rc].object = 2;
 			count++;
 		}
 	}
@@ -95,7 +95,7 @@ void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
 // Gera o mapa em 3 etaps
 void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
    
-   gen_border_map(a,r,c);
+   //gen_border_map(a,r,c);
    gen_first_map(a,r,c);
    smooth_map(a,r,c,5,2);  
    new_level_map(a,r,c);
@@ -104,24 +104,28 @@ void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 // Imprime o mapa
 void print_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
    Image wall = load_image_from_file("assets/sprites/wall.sprite");
+   Image gate = load_image_from_file("assets/sprites/gate.sprite");
+
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
-		move(i,j);
-		attron(COLOR_PAIR(COLOR_WHITE));
-		//if (a[i][j].object == 0) printw(".");
 		if (a[i][j].object == 0){
 			
 		}
-		//else if (a[i][j].object == 1) printw("#");
-		else if(a[i][j].object == 1){
+		else if(a[i][j].object == 1){ // imprimir a parede 
+			//Vector2D pos = {j,i};
+			//draw_to_screen(wall, pos);
+			    int k = 8;
+			    init_pair(k, COLOR_BLACK, wall.pixels[0].color);         
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  ");
+                attroff(COLOR_PAIR(k));
+			//move(i,j*2);
+			//printw("#");
+		}
+		else if(a[i][j].object == 2){ // imprimir porta para outro nível
 			Vector2D pos = {j,i};
-			draw_to_screen(wall, pos);
+			draw_to_screen(gate, pos);
 		}
-		else if(a[i][j].object == 2){
-			move(j,i);
-			printw("X");
-		}
-		//attroff(COLOR_PAIR(a[i][j].color));
       }
     }
 }
