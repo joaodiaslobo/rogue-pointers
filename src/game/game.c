@@ -139,16 +139,6 @@ int game_loop(Terminal *terminal) {
 		e na vertical caminhos de 4, ou seja, não sei se faz propriamente sentido e, por isso, apenas tratei desta funciona-
 		lidade para um ponto.
 		*/
-		//attron(COLOR_PAIR(COLOR_BLUE));
-		mvaddch(st.playerX - 1, st.playerY - 1, '.' | A_BOLD);
-		mvaddch(st.playerX - 1, st.playerY + 0, '.' | A_BOLD);
-		mvaddch(st.playerX - 1, st.playerY + 1, '.' | A_BOLD);
-		mvaddch(st.playerX + 0, st.playerY - 1, '.' | A_BOLD);
-		mvaddch(st.playerX + 0, st.playerY + 1, '.' | A_BOLD);
-		mvaddch(st.playerX + 1, st.playerY - 1, '.' | A_BOLD);
-		mvaddch(st.playerX + 1, st.playerY + 0, '.' | A_BOLD);
-		mvaddch(st.playerX + 1, st.playerY + 1, '.' | A_BOLD);
-        //attroff(COLOR_PAIR(COLOR_YELLOW));
 		//move(st.playerX, st.playerY);
 		update(&st,mp,nrows,ncols);
 	} 

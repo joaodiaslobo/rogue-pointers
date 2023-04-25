@@ -10,7 +10,7 @@ typedef struct map {
 
 void new_room_map (MAP (*a)[NUM_COLUMNS], int r, int c){
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
-    int k; 
+    int k = 0; 
     while (k < random_rooms) {
         int width_room = (random() % 13) + 14; // Largura da sala (14 a 26)
         int height_room = (random() % 13) + 10; // Altura da sala (10 a 22)
@@ -135,7 +135,6 @@ void gen_first_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 // Aliza o mapa
 void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
    int count = 0, i;
-   
    for(i = 2; i < r-2; i = i+3) {    
 	    for(int j = 2; j < c-2; j = j+3) {
 		   if (a[i][j].object == 1){ // conta
@@ -193,41 +192,27 @@ void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c, int i) {
 
 // Imprime o mapa
 void print_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
-   Image wall = load_image_from_file("assets/sprites/wall.sprite");
-   Image gate = load_image_from_file("assets/sprites/gate.sprite");
-   Image walk = load_image_from_file("assets/sprites/walk.sprite");
+	Image wall = load_image_from_file("assets/sprites/wall.sprite");
+	Image gate = load_image_from_file("assets/sprites/gate.sprite");
+	Image walk = load_image_from_file("assets/sprites/walk.sprite");
 
-   for (int i = 0; i < r; i++){
-      for (int j = 0; j < c; j++){
-		if (a[i][j].object == 0){
-		    //Vector2D pos = {j,i};
-			//draw_to_screen(walk, pos);
-			int k = 100;
-			init_pair(k, COLOR_BLACK, walk.pixels[0].color);         
-			attron(COLOR_PAIR(k));
-			mvprintw(i, j*2, "  ");
-            attroff(COLOR_PAIR(k));
+	for (int i = 0; i < r; i++){	
+		for (int j = 0; j < c; j++){
+			Vector2D pos = {j,i};
+			switch (a[i][j].object)
+			{
+				case 0:
+					draw_to_screen(walk, pos);
+					break;
+				case 1:
+					draw_to_screen(wall, pos); // imprimir a parede 
+					break;
+				case 2:
+					draw_to_screen(gate, pos); // imprimir porta para outro nível
+					break;
+				default:
+					break;
+			}
 		}
-		else if(a[i][j].object == 1){ // imprimir a parede 
-			//Vector2D pos = {j,i};
-			//draw_to_screen(wall, pos);
-			    int k = 101;
-			    init_pair(k, COLOR_BLACK, wall.pixels[0].color);         
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  ");
-                attroff(COLOR_PAIR(k));
-			//move(i,j*2);
-			//printw("#");
-		}
-		else if(a[i][j].object == 2){ // imprimir porta para outro nível
-			//Vector2D pos = {j,i};
-			//draw_to_screen(gate, pos);
-			int k = 102;
-			init_pair(k, COLOR_BLACK, gate.pixels[0].color);         
-			attron(COLOR_PAIR(k));
-			mvprintw(i, j*2, "  ");
-            attroff(COLOR_PAIR(k));
-		}
-      }
-    }
+	}
 }
