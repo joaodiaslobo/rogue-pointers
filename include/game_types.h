@@ -1,5 +1,5 @@
-#ifndef HEADER_FILE
-#define HEADER_FILE
+#ifndef GAME_TYPES
+#define GAME_TYPES
 
 #include "engine_types.h"
 

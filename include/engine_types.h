@@ -1,5 +1,5 @@
-#ifndef HEADER_FILE
-#define HEADER_FILE
+#ifndef ENGINE_TYPES
+#define ENGINE_TYPES
 
 #define MAX_IMAGE_PIXELS 300
 
