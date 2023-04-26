@@ -4,71 +4,81 @@
 #include "time.h"
 #include "game_types.h"
 #include "engine_types.h"
+#include "player/player.c"
 
 // TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
 
-typedef struct state {
-	int playerX;
-	int playerY;
-} STATE;
-
-/**
- *
- * Um pequeno exemplo que mostra o que se pode fazer
- */
-void do_movement_action(STATE *st, int dx, int dy, MAP (*m)[NUM_COLUMNS], int r, int c) {
-    int x = st->playerX + dx;
-	int y = st->playerY + dy;
-    
-	//attron(COLOR_PAIR(COLOR_BLUE));
-	move(r-1,20);
-	printw("col:%d lin:%d tc:%d tl:%d Obs:%d col:%d, lin:%d", st->playerX, st->playerY, c, r, m[y][x].object, x,y);
-	//getch();
-	//attroff(COLOR_PAIR(COLOR_BLUE));
-	 	
-	if (m[y][x].object == 1 || m[y][x].object == 3 || x < 0 || y < 0 || y >= r || x >= c){ 
-		// valida a posição do jogador no mapa, se este move para uma parede não pode avançar
-        // valida que o jogador não sai do mapa
-	} else if (m[y][x].object == 2) { //encontrou um porta, muda de nível e gera novo mapa
-        gen_map(m,r,c,2);
-	    print_map(m,r,c);   
-	} 
-      else {
-          st->playerX += dx;
-	      st->playerY += dy;
-   	  }
+GameState *init_game_state(){
+	GameState *state = malloc(sizeof(GameState));
+	if (state == NULL) {
+        fprintf(stderr, "ERRO: Nao foi possivel alocar memoria\n");
+        exit(EXIT_FAILURE);
+    }
+	Vector2D pos = {20,20};
+	char name[15] = "NOME";
+	state->player = *init_player(name, pos);
+	return state;
 }
 
-void update(STATE *st, MAP (*m)[NUM_COLUMNS], int r, int c) {
+
+void execute_input(GameState *state, Map (*m)[NUM_COLUMNS], int r, int c){
 	int key = getch();
     
-	//mvaddch(st->playerX, st->playerY, ' ');
-	switch(key) {
-		case KEY_A1:
-		case '7': do_movement_action(st, -1, -1, m, r, c); break;
+	switch (key)
+	{
 		case KEY_UP:
-		case '8': do_movement_action(st, +0, -1, m, r, c); break;
-		case KEY_A3:
-		case '9': do_movement_action(st, +1, -1, m, r, c); break;
-		case KEY_LEFT:
-		case '4': do_movement_action(st, -1, +0, m, r, c); break;
-		case KEY_B2:
-		case '5': break;
-		case KEY_RIGHT:
-		case '6': do_movement_action(st, +1, +0, m, r, c); break;
-		case KEY_C1:
-		case '1': do_movement_action(st, -1, +1, m, r, c); break;
+			apply_movement(state, NORTH, m, r, c);
+			break;
 		case KEY_DOWN:
-		case '2': do_movement_action(st, +0, +1, m, r, c); break;
+			apply_movement(state, SOUTH, m, r, c);
+			break;
+		case KEY_RIGHT:
+			apply_movement(state, EAST, m, r, c);
+			break;
+		case KEY_LEFT:
+			apply_movement(state, WEST, m, r, c);
+			break;
+		case KEY_A1:
+			apply_movement(state, NORTH, m, r, c);
+			apply_movement(state, WEST, m, r, c);
+			break;
+		case KEY_A3:
+			apply_movement(state, NORTH, m, r, c);
+			apply_movement(state, EAST, m, r, c);
+			break;
+		case KEY_C1:
+			apply_movement(state, SOUTH, m, r, c);
+			apply_movement(state, WEST, m, r, c);
+			break;
 		case KEY_C3:
-		case '3': do_movement_action(st, +1, +1, m, r, c); break;
-		case 'q': endwin(); exit(0); break;
+			apply_movement(state, SOUTH, m, r, c);
+			apply_movement(state, EAST, m, r, c);
+			break;
+		case 'q':
+			endwin();
+			exit(0);
+			break;
+		default:
+			break;
 	}
 }
 
+void check_for_portal(GameState *state, Map (*m)[NUM_COLUMNS], int r, int c){
+	if (m[state->player.position.y][state->player.position.x].object == 2) { //encontrou um porta, muda de nível e gera novo mapa
+        gen_map(m,r,c,2);
+	    print_map(m,r,c);   
+	} 
+}
 
-int game_loop(Terminal *terminal) {
-	STATE st = {20,20};
+void update(GameState *state, Map (*m)[NUM_COLUMNS], int r, int c) {
+	execute_input(state, m, r, c);
+	check_for_portal(state, m, r, c);
+}
+
+
+int game(Terminal *terminal) {
+	GameState *gameState = init_game_state();
+
 	int ncols, nrows;
     ncols = terminal->xMax;
 	ncols = ncols/2;
@@ -77,9 +87,9 @@ int game_loop(Terminal *terminal) {
 	// Criação e inicialização do mapa 
 	NUM_COLUMNS = ncols;
 	
-	MAP (*mp)[ncols] = malloc(sizeof(MAP[nrows][ncols]));
+	Map (*mp)[ncols] = malloc(sizeof(Map[nrows][ncols]));
     if (mp == NULL) {
-        fprintf(stderr, "Erro: nao foi possivel alocar memoria\n");
+        fprintf(stderr, "ERRO: Nao foi possivel alocar memoria\n");
         exit(EXIT_FAILURE);
     }
     for (int i = 0; i < nrows; i++){
@@ -91,7 +101,6 @@ int game_loop(Terminal *terminal) {
 	srandom(time(NULL));
 
 	intrflush(stdscr, false);
-	keypad(stdscr, true);
 
 	init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_BLACK);
     init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
@@ -121,7 +130,7 @@ int game_loop(Terminal *terminal) {
 	while(1) {
 		move(nrows - 1, 0);
 		attron(COLOR_PAIR(COLOR_BLUE));
-		printw("(%d, %d) %d %d", st.playerX, st.playerY, ncols, nrows);
+		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 		attroff(COLOR_PAIR(COLOR_BLUE));
 		//attron(COLOR_PAIR(COLOR_BLACK));
 		//attroff(COLOR_PAIR(COLOR_RED));
@@ -129,8 +138,7 @@ int game_loop(Terminal *terminal) {
 		/*Image gate = load_image_from_file("assets/sprites/gate.sprite"); Não apagar estas 3 linhas, usadas p/ testes
 	    Vector2D pos = {st.playerX,st.playerY};
 	    draw_to_screen(gate, pos); */
-		Vector2D pos = {st.playerX, st.playerY}; 
-		draw_to_screen(characterSprite, pos);
+		draw_to_screen(characterSprite, gameState->player.position);
 		/*
 		Se utilizarmos apenas 1 quadrado como player, as funcionalidades de não atravessar paredes e descer de níveis, 
 		já funcionam. Não consegui colocar o Dan a funcionar no contexto, pois ele não possui um centro de massa, ou seja,
@@ -139,7 +147,9 @@ int game_loop(Terminal *terminal) {
 		lidade para um ponto.
 		*/
 		//move(st.playerX, st.playerY);
-		update(&st,mp,nrows,ncols);
-	} 
+
+		update(gameState,mp,nrows,ncols);
+	}
+
 	return 0;
 }

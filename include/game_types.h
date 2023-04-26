@@ -5,6 +5,11 @@
 
 #define INVENTORY_SLOTS 40
 
+// Mapa
+typedef struct {
+	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio
+} Map;
+
 // Items
 
 typedef enum {
@@ -33,6 +38,7 @@ typedef struct {
     int gold;
     Inventory inventory;
     int selectedSlot;
+    int speedMultiplier;
 } Player;
 
 // Estado do jogo

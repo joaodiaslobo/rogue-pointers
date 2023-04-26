@@ -11,13 +11,19 @@ typedef struct {
     WINDOW *mainWindow;
 } Terminal;
 
-
 // Math
 
 typedef struct {
     int x;
     int y;
 } Vector2D;
+
+typedef enum {
+    NORTH = 0,
+    SOUTH = 1,
+    EAST = 2,
+    WEST = 3
+} Direction;
 
 // Desenhar no terminal
 

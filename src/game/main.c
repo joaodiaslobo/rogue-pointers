@@ -46,7 +46,7 @@ int main(){
         pixel_test();
         break;
 	case 0:
-		game_loop(&terminal);
+		game(&terminal);
 		break;
     default:
         break;

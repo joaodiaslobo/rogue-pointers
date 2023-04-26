@@ -1,14 +1,10 @@
 #include <string.h>
 #include <ncurses.h>
+#include "game_types.h"
 // Necessário para as funções que geram o mapa
 int NUM_COLUMNS;
 
-// Mapa
-typedef struct map {
-	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio
-} MAP;
-
-void new_room_map (MAP (*a)[NUM_COLUMNS], int r, int c){
+void new_room_map (Map (*a)[NUM_COLUMNS], int r, int c){
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
     int k = 0; 
     while (k < random_rooms) {
@@ -92,7 +88,7 @@ void new_room_map (MAP (*a)[NUM_COLUMNS], int r, int c){
     }
 }
 
-void new_level_map (MAP (*a)[NUM_COLUMNS], int r, int c) {
+void new_level_map (Map (*a)[NUM_COLUMNS], int r, int c) {
 	int random_num, count = 0, rc, rr;
 
 	random_num = (random() % 3);
@@ -107,7 +103,7 @@ void new_level_map (MAP (*a)[NUM_COLUMNS], int r, int c) {
 }
 
 // Gera as borders do mapa
-void gen_border_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
+void gen_border_map(Map (*a)[NUM_COLUMNS], int r, int c) {  
    for(int j = 0; j < c; j++){ // Constroi a border horizontal
 		a[0][j].object = 1; 
 		a[r-1][j].object = 1;
@@ -120,7 +116,7 @@ void gen_border_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 }
 
 // Gera a primeira versão do mapa de uma forma aleatória
-void gen_first_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
+void gen_first_map(Map (*a)[NUM_COLUMNS], int r, int c) {  
    int i = 0;
 
    for(i = 1; i < r-1; i++) {    
@@ -133,7 +129,7 @@ void gen_first_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 }
 
 // Aliza o mapa
-void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
+void smooth_map(Map (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
    int count = 0, i;
    for(i = 2; i < r-2; i = i+3) {    
 	    for(int j = 2; j < c-2; j = j+3) {
@@ -176,7 +172,7 @@ void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
 }
 
 // Gera o mapa em 3 etaps
-void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c, int i) {
+void gen_map(Map (*a)[NUM_COLUMNS], int r, int c, int i) {
    
    if(i == 1) {
       gen_border_map(a,r,c);
@@ -191,7 +187,7 @@ void gen_map(MAP (*a)[NUM_COLUMNS], int r, int c, int i) {
 }
 
 // Imprime o mapa
-void print_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
+void print_map(Map (*a)[NUM_COLUMNS], int r, int c) {
 	Image wall = load_image_from_file("assets/sprites/wall.sprite");
 	Image gate = load_image_from_file("assets/sprites/gate.sprite");
 	Image walk = load_image_from_file("assets/sprites/walk.sprite");
