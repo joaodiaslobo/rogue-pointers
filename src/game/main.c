@@ -6,6 +6,7 @@
 #include "game.c"
 
 int main(){
+
     // Setup do ncurses
     WINDOW *window = initscr();
 
@@ -21,6 +22,10 @@ int main(){
 
     cbreak();
 	noecho();
+
+    nodelay(stdscr, TRUE);
+	meta(stdscr, TRUE);
+	keypad(stdscr, TRUE);
 
     start_color();
 

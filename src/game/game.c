@@ -119,7 +119,6 @@ int game_loop(Terminal *terminal) {
 
 	
 	while(1) {
-		clear();
 		move(nrows - 1, 0);
 		attron(COLOR_PAIR(COLOR_BLUE));
 		printw("(%d, %d) %d %d", st.playerX, st.playerY, ncols, nrows);
