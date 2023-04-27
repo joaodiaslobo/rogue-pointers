@@ -1,3 +1,4 @@
+#include "image.h"
 #include "engine_types.h"
 #include <stdio.h>
 #include <stdlib.h>

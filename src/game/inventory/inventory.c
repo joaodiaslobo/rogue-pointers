@@ -1,3 +1,4 @@
+#include "inventory.h"
 #include "game_types.h"
 
 void swap_items(Inventory *inventory, int pos1, int pos2){
@@ -31,6 +32,7 @@ int get_item_quantity(Inventory *inventory){
             quantity++;
         }
     }
+    return quantity;
 }
 
 int get_item_quantity_by_type(Inventory *inventory, ItemType type){
@@ -40,6 +42,7 @@ int get_item_quantity_by_type(Inventory *inventory, ItemType type){
             quantity++;
         }
     }
+    return quantity;
 }
 
 Item init_empty_item(){

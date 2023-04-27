@@ -1,8 +1,13 @@
+#include "map.h"
 #include <string.h>
 #include <ncurses.h>
 #include "game_types.h"
+#include "image.h"
+#include "draw.h"
+#include "game.h"
+
 // Necessário para as funções que geram o mapa
-int NUM_COLUMNS;
+extern int NUM_COLUMNS;
 
 void new_room_map (Map (*a)[NUM_COLUMNS], int r, int c){
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas

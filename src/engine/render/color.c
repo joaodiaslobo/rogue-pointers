@@ -1,12 +1,8 @@
+#include "color.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ncurses.h>
 #include "engine_types.h"
-
-int two_hexadecimal_to_int(char hex[]);
-Color hex_to_color(char hex[]);
-int add_color_to_palette(Color color, short index);
-int load_palette_from_file(char *path);
 
 // Carrega um ficheiro palette e adicona as cores à memória do ncurses, a partir do index de cores 8
 int load_palette_from_file(char *path){

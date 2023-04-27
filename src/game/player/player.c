@@ -1,5 +1,11 @@
+#include "player.h"
+#include "game.h"
 #include "game_types.h"
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+extern int NUM_COLUMNS;
 
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));

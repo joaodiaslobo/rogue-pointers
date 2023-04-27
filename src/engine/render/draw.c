@@ -1,3 +1,4 @@
+#include "draw.h"
 #include <ncurses.h>
 #include "engine_types.h"
 

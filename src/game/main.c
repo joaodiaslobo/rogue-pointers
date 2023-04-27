@@ -1,9 +1,8 @@
 #include <ncurses.h>
 #include "engine_types.h"
-#include "ui/main_menu.c"
-#include "debug/pixel_test.c"
-#include "../engine/render/color.c"
-#include "game.c"
+#include "color.h"
+#include "main_menu.h"
+#include "game.h"
 
 int main(){
 
@@ -43,7 +42,6 @@ int main(){
     switch (selection)
     {
     case 3:
-        pixel_test();
         break;
 	case 0:
 		game(&terminal);

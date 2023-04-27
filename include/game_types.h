@@ -5,6 +5,8 @@
 
 #define INVENTORY_SLOTS 40
 
+#define MAX_MAP_COLUMNS 94
+
 // Mapa
 typedef struct {
 	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio

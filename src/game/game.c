@@ -1,12 +1,17 @@
+#include "game.h"
 #include <ncurses.h>
 #include <stdlib.h>
-#include "map/map.c"
+#include "map.h"
 #include "time.h"
 #include "game_types.h"
 #include "engine_types.h"
-#include "player/player.c"
+#include "player.h"
+#include "image.h"
+#include "draw.h"
 
 // TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
+
+int NUM_COLUMNS;
 
 GameState *init_game_state(){
 	GameState *state = malloc(sizeof(GameState));
@@ -21,7 +26,7 @@ GameState *init_game_state(){
 }
 
 
-void execute_input(GameState *state, Map (*m)[NUM_COLUMNS], int r, int c){
+void execute_input(GameState *state, Map (*m)[MAX_MAP_COLUMNS], int r, int c){
 	int key = getch();
     
 	switch (key)
@@ -63,14 +68,14 @@ void execute_input(GameState *state, Map (*m)[NUM_COLUMNS], int r, int c){
 	}
 }
 
-void check_for_portal(GameState *state, Map (*m)[NUM_COLUMNS], int r, int c){
+void check_for_portal(GameState *state, Map (*m)[MAX_MAP_COLUMNS], int r, int c){
 	if (m[state->player.position.y][state->player.position.x].object == 2) { //encontrou um porta, muda de nível e gera novo mapa
         gen_map(m,r,c,2);
 	    print_map(m,r,c);   
 	} 
 }
 
-void update(GameState *state, Map (*m)[NUM_COLUMNS], int r, int c) {
+void update(GameState *state, Map (*m)[MAX_MAP_COLUMNS], int r, int c) {
 	execute_input(state, m, r, c);
 	check_for_portal(state, m, r, c);
 }
@@ -83,9 +88,10 @@ int game(Terminal *terminal) {
     ncols = terminal->xMax;
 	ncols = ncols/2;
     nrows = terminal->yMax;
+
+	NUM_COLUMNS = ncols;
 	
 	// Criação e inicialização do mapa 
-	NUM_COLUMNS = ncols;
 	
 	Map (*mp)[ncols] = malloc(sizeof(Map[nrows][ncols]));
     if (mp == NULL) {

@@ -1,7 +1,10 @@
 #ifndef ENGINE_TYPES
 #define ENGINE_TYPES
 
+#include <ncurses.h>
+
 #define MAX_IMAGE_PIXELS 300
+
 
 // Controlo do terminal
 

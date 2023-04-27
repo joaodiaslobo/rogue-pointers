@@ -1,3 +1,4 @@
+#include "utils.h"
 #include <stdlib.h>
 
 // Conta o número de caracteres newline numa string

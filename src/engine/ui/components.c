@@ -1,6 +1,7 @@
+#include "components.h"
 #include <ncurses.h>
 #include <string.h>
-#include "../utils/utils.c"
+#include "utils.h"
 
 /*
     Elementos de UI genéricos, podem ser utilizados por si mesmos ou combinados com outros.

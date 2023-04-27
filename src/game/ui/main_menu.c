@@ -1,5 +1,5 @@
 #include <ncurses.h>
-#include "../../engine/ui/components.c"
+#include "components.h"
 #include "engine_types.h"
 
 // Menu principal (temporário)
