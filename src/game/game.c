@@ -92,9 +92,8 @@ int game(Terminal *terminal) {
 	// Criação e inicialização do mapa 
 	NUM_COLUMNS = ncols;
 
-<<<<<<< HEAD
 	short buttonGradient[4] = {16,17,18,19};
-=======
+
 	int num_levels = 10;
     World* worlds = (World*)malloc(num_levels * sizeof(World));
 	if (worlds == NULL) {
@@ -115,29 +114,9 @@ int game(Terminal *terminal) {
 			   worlds[i].map[j][k].object = 3; // Inicializando o valor do campo object como 3 (vazio)
 		   }
 	   }
-<<<<<<< HEAD
->>>>>>> 9002671 (Adaptação do jogo a vários níveis)
-	
-<<<<<<< HEAD
-	// Criação e inicialização do mapa 
-	
-	Map (*mp)[ncols] = malloc(sizeof(Map[nrows][ncols]));
-    if (mp == NULL) {
-        fprintf(stderr, "ERRO: Nao foi possivel alocar memoria\n");
-        exit(EXIT_FAILURE);
-    }
-    for (int i = 0; i < nrows; i++){
-      for (int j = 0; j < ncols; j++){
-         mp[i][j].object = 3;
-      }
-    }
-=======
-	}
->>>>>>> c7ff2cb (Adaptação do jogo a vários níveis)
 
-=======
-	}	
->>>>>>> df14eca (Preparar para subir e descer entre níveis)
+	}
+
 	srandom(time(NULL));
 
 	intrflush(stdscr, false);
@@ -183,7 +162,6 @@ int game(Terminal *terminal) {
 		*/
 		//move(st.playerX, st.playerY);
 
-<<<<<<< HEAD
 		// Botões (temporário)
 		int buttonToolbarX = (terminal->xMax / 2) - (73 / 2) ;
 		Vector2D buttonExplorePos = {buttonToolbarX,terminal->yMax-1};
@@ -197,10 +175,7 @@ int game(Terminal *terminal) {
 		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
 		button(buttonGradient, "Inventory", buttonInvPos);
 
-		update(gameState,mp,nrows,ncols);
-=======
 		update(gameState,worlds[0].map,nrows,ncols);
->>>>>>> df14eca (Preparar para subir e descer entre níveis)
 	}
 
 	return 0;
