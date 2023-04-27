@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include "engine_types.h"
 #include "color.h"
+#include "inventory_test.h"
 #include "main_menu.h"
 #include "game.h"
 
@@ -42,6 +43,7 @@ int main(){
     switch (selection)
     {
     case 3:
+        inventory_test();
         break;
 	case 0:
 		game(&terminal);
