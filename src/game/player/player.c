@@ -23,7 +23,7 @@ Player *init_player(char name[15], Vector2D pos){
     return player;
 }
 
-void apply_movement(GameState *gameState, Direction facing, Map (*map)[NUM_COLUMNS], int r, int c){
+void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, int c){
     Vector2D newPos = {gameState->player.position.x, gameState->player.position.y};
     switch (facing)
     {

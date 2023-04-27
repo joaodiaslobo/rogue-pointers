@@ -7,27 +7,12 @@
 #include "game.h"
 
 // Necessário para as funções que geram o mapa
-extern int NUM_COLUMNS;
-
-<<<<<<< HEAD
-void new_room_map (Map (*a)[NUM_COLUMNS], int r, int c){
-=======
-// Mapa
-typedef struct map {
-	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio
-} MAP;
-
-// Mundo de Mapas
-typedef struct world {
-	MAP** map; 
-	int level;
-} World;
+//int NUM_COLUMNS;
 
 
 void new_room_map (MAP** a, int r, int c){
->>>>>>> c7ff2cb (Adaptação do jogo a vários níveis)
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
-    int k = 0; 
+    int k; 
     while (k < random_rooms) {
         int width_room = (random() % 13) + 14; // Largura da sala (14 a 26)
         int height_room = (random() % 13) + 10; // Altura da sala (10 a 22)
@@ -157,7 +142,7 @@ void new_room_map (MAP** a, int r, int c){
     }
 }
 
-void new_level_map (Map (*a)[NUM_COLUMNS], int r, int c) {
+void new_level_map (MAP (*a)[NUM_COLUMNS], int r, int c) {
 	int random_num, count = 0, rc, rr;
 
 	random_num = (random() % 3);
@@ -172,7 +157,7 @@ void new_level_map (Map (*a)[NUM_COLUMNS], int r, int c) {
 }
 
 // Gera as borders do mapa
-void gen_border_map(Map (*a)[NUM_COLUMNS], int r, int c) {  
+void gen_border_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
    for(int j = 0; j < c; j++){ // Constroi a border horizontal
 		a[0][j].object = 1; 
 		a[r-1][j].object = 1;
@@ -185,7 +170,7 @@ void gen_border_map(Map (*a)[NUM_COLUMNS], int r, int c) {
 }
 
 // Gera a primeira versão do mapa de uma forma aleatória
-void gen_first_map(Map (*a)[NUM_COLUMNS], int r, int c) {  
+void gen_first_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
    int i = 0;
 
    for(i = 1; i < r-1; i++) {    
@@ -198,8 +183,9 @@ void gen_first_map(Map (*a)[NUM_COLUMNS], int r, int c) {
 }
 
 // Aliza o mapa
-void smooth_map(Map (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
+void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
    int count = 0, i;
+   
    for(i = 2; i < r-2; i = i+3) {    
 	    for(int j = 2; j < c-2; j = j+3) {
 		   if (a[i][j].object == 1){ // conta
@@ -240,13 +226,8 @@ void smooth_map(Map (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
     }
 }
 
-<<<<<<< HEAD
-// Gera o mapa em 3 etaps
-void gen_map(Map (*a)[NUM_COLUMNS], int r, int c, int i) {
-=======
 // Gera o mapa
 void gen_map(MAP** a, int r, int c) {
->>>>>>> c7ff2cb (Adaptação do jogo a vários níveis)
    
    /*
       gen_border_map(a,r,c);
@@ -261,35 +242,42 @@ void gen_map(MAP** a, int r, int c) {
 }
 
 // Imprime o mapa
-<<<<<<< HEAD
-void print_map(Map (*a)[NUM_COLUMNS], int r, int c) {
-	Image wall = load_image_from_file("assets/sprites/wall.sprite");
-	Image gate = load_image_from_file("assets/sprites/gate.sprite");
-	Image walk = load_image_from_file("assets/sprites/walk.sprite");
-=======
 void print_map(MAP** a, int r, int c) {
    Image wall = load_image_from_file("assets/sprites/wall.sprite");
    Image gate = load_image_from_file("assets/sprites/gate.sprite");
    Image walk = load_image_from_file("assets/sprites/walk.sprite");
->>>>>>> c7ff2cb (Adaptação do jogo a vários níveis)
 
-	for (int i = 0; i < r; i++){	
-		for (int j = 0; j < c; j++){
-			Vector2D pos = {j,i};
-			switch (a[i][j].object)
-			{
-				case 0:
-					draw_to_screen(walk, pos);
-					break;
-				case 1:
-					draw_to_screen(wall, pos); // imprimir a parede 
-					break;
-				case 2:
-					draw_to_screen(gate, pos); // imprimir porta para outro nível
-					break;
-				default:
-					break;
-			}
+   for (int i = 0; i < r; i++){
+      for (int j = 0; j < c; j++){
+		if (a[i][j].object == 0){
+		    //Vector2D pos = {j,i};
+			//draw_to_screen(walk, pos);
+			int k = 100;
+			init_pair(k, COLOR_BLACK, walk.pixels[0].color);         
+			attron(COLOR_PAIR(k));
+			mvprintw(i, j*2, "  ");
+            attroff(COLOR_PAIR(k));
 		}
-	}
+		else if(a[i][j].object == 1){ // imprimir a parede 
+			//Vector2D pos = {j,i};
+			//draw_to_screen(wall, pos);
+			    int k = 101;
+			    init_pair(k, COLOR_BLACK, wall.pixels[0].color);         
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  ");
+                attroff(COLOR_PAIR(k));
+			//move(i,j*2);
+			//printw("#");
+		}
+		else if(a[i][j].object == 2){ // imprimir porta para outro nível
+			//Vector2D pos = {j,i};
+			//draw_to_screen(gate, pos);
+			int k = 102;
+			init_pair(k, COLOR_BLACK, gate.pixels[0].color);         
+			attron(COLOR_PAIR(k));
+			mvprintw(i, j*2, "  ");
+            attroff(COLOR_PAIR(k));
+		}
+      }
+    }
 }

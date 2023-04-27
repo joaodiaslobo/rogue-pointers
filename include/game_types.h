@@ -8,9 +8,15 @@
 #define MAX_MAP_COLUMNS 94
 
 // Mapa
-typedef struct {
+typedef struct map {
 	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio
-} Map;
+} MAP;
+
+// Mundo de Mapas
+typedef struct world {
+	MAP** map; 
+	int level;
+} World;
 
 // Items
 
