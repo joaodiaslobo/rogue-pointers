@@ -41,7 +41,7 @@ int add_color_to_palette(Color color, short index){
     short green = (color.green * 1000.0) / 255.0; 
     short blue = (color.blue * 1000.0) / 255.0;
     init_color(index, red, green, blue);
-    init_pair(index, COLOR_BLACK, index);
+    init_pair(index,  COLOR_WHITE, index);
     return 0;
 }
 

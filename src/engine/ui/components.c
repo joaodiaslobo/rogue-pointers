@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include <string.h>
 #include "utils.h"
+#include "engine_types.h"
 
 /*
     Elementos de UI genéricos, podem ser utilizados por si mesmos ou combinados com outros.
@@ -117,4 +118,30 @@ int modal_confim(char text[], int width, int screenYMax, int screenXMax){
     wrefresh(modalWindow);
     delwin(modalWindow);
     return !option;
+}
+
+void button(short color_gradient[4], char *text, Vector2D pos){
+    refresh();
+    int textSize = strlen(text);
+
+    attron(COLOR_PAIR(color_gradient[0]+8 ));
+    attron(A_BOLD);
+    mvprintw(pos.y, pos.x + 3, text);
+    attroff(A_BOLD);
+    attroff(COLOR_PAIR(color_gradient[0]+8));
+
+    attron(COLOR_PAIR(color_gradient[1]+8));
+    mvaddch(pos.y, pos.x+2, ' ');
+    mvaddch(pos.y, pos.x + 3 + textSize, ' ');
+    attroff(COLOR_PAIR(color_gradient[1]+8));
+
+    attron(COLOR_PAIR(color_gradient[2]+8));
+    mvaddch(pos.y, pos.x+1, ' ');
+    mvaddch(pos.y, pos.x + 4 + textSize, ' ');
+    attroff(COLOR_PAIR(color_gradient[2]+8));
+
+    attron(COLOR_PAIR(color_gradient[3]+8));
+    mvaddch(pos.y, pos.x, ' ');
+    mvaddch(pos.y, pos.x + 5 + textSize, ' ');
+    attroff(COLOR_PAIR(color_gradient[3]+8));
 }

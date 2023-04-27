@@ -90,6 +90,8 @@ int game(Terminal *terminal) {
     nrows = terminal->yMax;
 
 	NUM_COLUMNS = ncols;
+
+	short buttonGradient[4] = {16,17,18,19};
 	
 	// Criação e inicialização do mapa 
 	
@@ -107,11 +109,6 @@ int game(Terminal *terminal) {
 	srandom(time(NULL));
 
 	intrflush(stdscr, false);
-
-	init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_BLACK);
-    init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(COLOR_BLUE, COLOR_BLUE, COLOR_BLACK);
-	init_pair(COLOR_RED, COLOR_MAGENTA, COLOR_BLACK);
     
     // Gera e imprime o mapa
     gen_map(mp,nrows,ncols,2);
@@ -153,6 +150,19 @@ int game(Terminal *terminal) {
 		lidade para um ponto.
 		*/
 		//move(st.playerX, st.playerY);
+
+		// Botões (temporário)
+		int buttonToolbarX = (terminal->xMax / 2) - (73 / 2) ;
+		Vector2D buttonExplorePos = {buttonToolbarX,terminal->yMax-1};
+		button(buttonGradient, "Explore", buttonExplorePos);
+		Vector2D buttonRestPos = {buttonToolbarX+13+4,terminal->yMax-1};
+		button(buttonGradient, "Rest", buttonRestPos);
+		Vector2D buttonSearchPos = {buttonToolbarX+13+4+14,terminal->yMax-1};
+		button(buttonGradient, "Search", buttonSearchPos);
+		Vector2D buttonMenuPos = {buttonToolbarX+12+4+13+4+14,terminal->yMax-1};
+		button(buttonGradient, "Menu", buttonMenuPos);
+		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
+		button(buttonGradient, "Inventory", buttonInvPos);
 
 		update(gameState,mp,nrows,ncols);
 	}
