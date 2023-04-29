@@ -10,11 +10,9 @@
 
 void gen_lava(MAP** a, int r, int c) {
 	// decidir se aparece lava em um nível
-	int x = 0, y = 0, lava = 0;
+	int x = 0, y = 0, lava = 0, ind;
 	int prob_lava = 10 * LEVEL;
     int random_num = rand() % 100;
-	move(0, 180);
-	printw("prob_lava: %d,random_num: %d", prob_lava, random_num);
     if (random_num <= prob_lava && LEVEL != 0) {
 		lava = 1;
 	}
@@ -29,9 +27,46 @@ void gen_lava(MAP** a, int r, int c) {
 		a[y][x-1].object = 4;
 		a[y+1][x].object = 4;
 		a[y-1][x].object = 4;
-	}
 
+		for(int i = 1; i < r-1; i++) {    
+	    	for(int j = 1; j < c-1; j++) {
+				if (a[i][j].object == 4) {
+					int conditions[] = {a[i][j+1].object, a[i][j-1].object, a[i+1][j].object, a[i-1][j].object};
+					// dependendo da profundidade do nível é gerada mais lava
+					if (LEVEL >= 1 && LEVEL < 3){
+					    ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;	
+					} else if (LEVEL >= 3 && LEVEL < 5){
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+					} else if (LEVEL >= 5 && LEVEL < 7){
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+					} else if (LEVEL >= 7 && LEVEL <= 9) {
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+						ind = (random() % 3);
+					    if (conditions[ind] == 0) conditions[ind] = 4;
+					}
+					if (conditions[0] == 4) a[i][j+1].object = 4;
+					if (conditions[1] == 4) a[i][j-1].object = 4;
+					if (conditions[2] == 4) a[i+1][j].object = 4;
+					if (conditions[3] == 4) a[i-1][j].object = 4;
+				}
+			}
+		}
 	}
+}
 
 void new_room_map (MAP** a, int r, int c){
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
