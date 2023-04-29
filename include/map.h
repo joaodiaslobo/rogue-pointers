@@ -2,6 +2,8 @@
 
 //extern int NUM_COLUMNS;
 
+void gen_lava(MAP** a, int r, int c);
+
 void new_room_map(MAP** a, int r, int c);
 
 //void new_level_map (Map (*a)[NUM_COLUMNS], int r, int c);

@@ -9,10 +9,8 @@
 #include "image.h"
 #include "draw.h"
 
-// TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
-
-int NUM_COLUMNS; 
 int LEVEL = 0;
+// TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
 
 GameState *init_game_state(){
 	GameState *state = malloc(sizeof(GameState));
@@ -85,10 +83,11 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 		}
 		if (w[LEVEL].created == 0) {
 			gen_map(w[LEVEL].map,r,c);
+			gen_lava(w[LEVEL].map,r,c);
 			w[LEVEL].created = 1;
 		}
 	clear();
-	while (w[LEVEL].map[state->player.position.y][state->player.position.x].object != 0 && (!(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2 && LEVEL == 9))) {
+	while (w[LEVEL].map[state->player.position.y][state->player.position.x].object != 0 && (!(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2 && (LEVEL == 0 || LEVEL == 9)))) {
 		state->player.position.x = (random() % c);
 		state->player.position.y = (random() % r);
 
@@ -111,7 +110,7 @@ int game(Terminal *terminal) {
     nrows = terminal->yMax;
     
 	// Criação e inicialização do mapa 
-	NUM_COLUMNS = ncols;
+	//NUM_COLUMNS = ncols;
 
 	short buttonGradient[4] = {16,17,18,19};
 
@@ -143,12 +142,11 @@ int game(Terminal *terminal) {
 	intrflush(stdscr, false);
     
     // Gera e imprime o primeiro mapa/nível do mundo
-	gen_map(worlds[0].map,nrows,ncols);
+	gen_map(worlds[LEVEL].map,nrows,ncols);
 	worlds[LEVEL].created = 1;
-	print_map(worlds[0].map,nrows,ncols);
-	
-	endwin(); 
+	print_map(worlds[LEVEL].map,nrows,ncols);
 
+	endwin(); 
 	
 	/*
 	 * Este código está muito mal escrito!
@@ -168,9 +166,9 @@ int game(Terminal *terminal) {
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 		attroff(COLOR_PAIR(COLOR_WHITE));
 		print_map(worlds[LEVEL].map, nrows, ncols);
-		//Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
-	    //draw_to_screen(gate, gameState->player.position); 
-		draw_to_screen(characterSprite, gameState->player.position);
+		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
+	    draw_to_screen(gate, gameState->player.position); 
+		//draw_to_screen(characterSprite, gameState->player.position);
 		/*
 		Se utilizarmos apenas 1 quadrado como player, as funcionalidades de não atravessar paredes e descer de níveis, 
 		já funcionam. Não consegui colocar o Dan a funcionar no contexto, pois ele não possui um centro de massa, ou seja,

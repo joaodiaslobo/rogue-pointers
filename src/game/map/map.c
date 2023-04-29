@@ -7,26 +7,49 @@
 #include "game.h"
 
 // Necessário para as funções que geram o mapa
-//int NUM_COLUMNS;
 
+void gen_lava(MAP** a, int r, int c) {
+	// decidir se aparece lava em um nível
+	int x = 0, y = 0, lava = 0;
+	int prob_lava = 10 * LEVEL;
+    int random_num = rand() % 100;
+	move(0, 180);
+	printw("prob_lava: %d,random_num: %d", prob_lava, random_num);
+    if (random_num <= prob_lava && LEVEL != 0) {
+		lava = 1;
+	}
+	// gerar a lava
+	if (lava == 1) {
+		while(a[y][x].object != 0) {
+			x = (random() % c);
+        	y = (random() % r);
+		}
+		a[y][x].object = 4;
+		a[y][x+1].object = 4;
+		a[y][x-1].object = 4;
+		a[y+1][x].object = 4;
+		a[y-1][x].object = 4;
+	}
+
+	}
 
 void new_room_map (MAP** a, int r, int c){
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
     int k; 
     while (k < random_rooms) {
-        int width_room = (random() % 13) + 14; // Largura da sala (14 a 26)
-        int height_room = (random() % 13) + 10; // Altura da sala (10 a 22)
-        int roomX = (random() % c) + 1; // Posição da sala no mapa
+        int width_room = (random() % 13) + 14; // largura da sala (14 a 26)
+        int height_room = (random() % 13) + 10; // altura da sala (10 a 22)
+        int roomX = (random() % c) + 1; // posição da sala no mapa
         int roomY = (random() % r) + 1;
         
-		//verifica se a sala fica situada dentro do mapa, senão gera nova sala
+		// verifica se a sala fica situada dentro do mapa, senão gera nova sala
 		if((roomX + width_room) < c-1 && (roomY + height_room < r-1)){  
             // coloca paredes na sala
-            for(int j = roomX; j < roomX + width_room+1; j++){ // Constroi a border horizontal da sala
+            for(int j = roomX; j < roomX + width_room+1; j++){ // constroi a border horizontal da sala
 		      a[roomY][j].object = 1; 
 		      a[roomY+height_room][j].object = 1;
 	        } 
-            for(int i = roomY; i < roomY + height_room; i++) { // Constroi a border vertical da sala
+            for(int i = roomY; i < roomY + height_room; i++) { // constroi a border vertical da sala
               a[i][roomX].object = 1; 
 	          a[i][roomX+width_room].object = 1;
 	        }
@@ -157,6 +180,7 @@ void new_level_map (MAP** a, int r, int c) {
 }
 
 // Gera as borders do mapa
+/*
 void gen_border_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
    for(int j = 0; j < c; j++){ // Constroi a border horizontal
 		a[0][j].object = 1; 
@@ -168,8 +192,10 @@ void gen_border_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 	    a[i][c-1].object = 1;
 	} 
 }
+*/
 
 // Gera a primeira versão do mapa de uma forma aleatória
+/*
 void gen_first_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
    int i = 0;
 
@@ -181,9 +207,10 @@ void gen_first_map(MAP (*a)[NUM_COLUMNS], int r, int c) {
 		}
    } 
 }
+*/
 
 // Aliza o mapa
-void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
+/*void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
    int count = 0, i;
    
    for(i = 2; i < r-2; i = i+3) {    
@@ -225,6 +252,7 @@ void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
 		}
     }
 }
+*/
 
 // Gera o mapa
 void gen_map(MAP** a, int r, int c) {
@@ -245,6 +273,7 @@ void print_map(MAP** a, int r, int c) {
    Image wall = load_image_from_file("assets/sprites/wall.sprite");
    Image gate = load_image_from_file("assets/sprites/gate.sprite");
    Image walk = load_image_from_file("assets/sprites/walk.sprite");
+   Image lava = load_image_from_file("assets/sprites/lava.sprite");
 
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
@@ -273,6 +302,14 @@ void print_map(MAP** a, int r, int c) {
 			//draw_to_screen(gate, pos);
 			int k = 102;
 			init_pair(k, COLOR_BLACK, gate.pixels[0].color);         
+			attron(COLOR_PAIR(k));
+			mvprintw(i, j*2, "  ");
+            attroff(COLOR_PAIR(k));
+		}
+		else if(a[i][j].object == 4){ 
+			int r = random() % 5;
+			int k = 103;
+			init_pair(k, COLOR_BLACK, lava.pixels[r].color);         
 			attron(COLOR_PAIR(k));
 			mvprintw(i, j*2, "  ");
             attroff(COLOR_PAIR(k));

@@ -4,7 +4,8 @@
 #include "game_types.h"
 #include "map.h"
 
-extern int NUM_COLUMNS;
+//extern int NUM_COLUMNS;
+extern int LEVEL;
 
 GameState *init_game_state();
 
