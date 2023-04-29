@@ -15,7 +15,7 @@ typedef struct map {
 // Mundo de Mapas
 typedef struct world {
 	MAP** map; 
-	int level;
+    int created; // valida se um nível já foi gerado ou não
 } World;
 
 // Items

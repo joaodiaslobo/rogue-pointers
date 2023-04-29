@@ -142,11 +142,11 @@ void new_room_map (MAP** a, int r, int c){
     }
 }
 
-void new_level_map (MAP (*a)[NUM_COLUMNS], int r, int c) {
+void new_level_map (MAP** a, int r, int c) {
 	int random_num, count = 0, rc, rr;
 
-	random_num = (random() % 3);
-	while(count <= random_num) {
+	random_num = (random() % 3) + 1;
+	while(count < random_num) {
 		rc = (random() % c);
 		rr = (random() % r);
 		if (a[rr][rc].object == 0 && (a[rr-1][rc].object==0 || a[rr+1][rc].object==0 || a[rr][rc-1].object==0 || a[rr][rc+1].object==0)){
@@ -237,8 +237,7 @@ void gen_map(MAP** a, int r, int c) {
    */
    
     new_room_map(a,r,c);
-      //new_level_map(a,r,c);
-   
+    new_level_map(a,r,c);
 }
 
 // Imprime o mapa

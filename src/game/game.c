@@ -11,7 +11,8 @@
 
 // TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
 
-int NUM_COLUMNS;
+int NUM_COLUMNS; 
+int LEVEL = 0;
 
 GameState *init_game_state(){
 	GameState *state = malloc(sizeof(GameState));
@@ -26,58 +27,78 @@ GameState *init_game_state(){
 }
 
 
-void execute_input(GameState *state, MAP** m, int r, int c){
+void execute_input(GameState *state, World *w, int r, int c){
 	int key = getch();
     
 	switch (key)
 	{
 		case KEY_UP:
-			apply_movement(state, NORTH, m, r, c);
+			apply_movement(state, NORTH, w[LEVEL].map, r, c);
 			break;
 		case KEY_DOWN:
-			apply_movement(state, SOUTH, m, r, c);
+			apply_movement(state, SOUTH, w[LEVEL].map, r, c);
 			break;
 		case KEY_RIGHT:
-			apply_movement(state, EAST, m, r, c);
+			apply_movement(state, EAST, w[LEVEL].map, r, c);
 			break;
 		case KEY_LEFT:
-			apply_movement(state, WEST, m, r, c);
+			apply_movement(state, WEST, w[LEVEL].map, r, c);
 			break;
 		case KEY_A1:
-			apply_movement(state, NORTH, m, r, c);
-			apply_movement(state, WEST, m, r, c);
+			apply_movement(state, NORTH, w[LEVEL].map, r, c);
+			apply_movement(state, WEST, w[LEVEL].map, r, c);
 			break;
 		case KEY_A3:
-			apply_movement(state, NORTH, m, r, c);
-			apply_movement(state, EAST, m, r, c);
+			apply_movement(state, NORTH, w[LEVEL].map, r, c);
+			apply_movement(state, EAST, w[LEVEL].map, r, c);
 			break;
 		case KEY_C1:
-			apply_movement(state, SOUTH, m, r, c);
-			apply_movement(state, WEST, m, r, c);
+			apply_movement(state, SOUTH, w[LEVEL].map, r, c);
+			apply_movement(state, WEST, w[LEVEL].map, r, c);
 			break;
 		case KEY_C3:
-			apply_movement(state, SOUTH, m, r, c);
-			apply_movement(state, EAST, m, r, c);
+			apply_movement(state, SOUTH, w[LEVEL].map, r, c);
+			apply_movement(state, EAST, w[LEVEL].map, r, c);
 			break;
 		case 'q':
 			endwin();
 			exit(0);
+			break;
+		case 'u':
+			check_for_portal(state, w, r, c, -1);
+			break;
+		case 'd':
+			check_for_portal(state, w, r, c, 1);
 			break;
 		default:
 			break;
 	}
 }
 
-void check_for_portal(GameState *state, MAP** m, int r, int c){
-	if (m[state->player.position.y][state->player.position.x].object == 2) { //encontrou um porta, muda de nível e gera novo mapa
-        gen_map(m,r,c);
-	    print_map(m,r,c);   
+void check_for_portal(GameState *state, World *w, int r, int c, int dir){
+	if (w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2) { //encontrou um porta, muda de nível e gera novo mapa
+		if (dir == -1 && LEVEL > 0) {
+			LEVEL--;
+		}
+		if (dir == 1 && LEVEL < 9) {
+			LEVEL++;
+		}
+		if (w[LEVEL].created == 0) {
+			gen_map(w[LEVEL].map,r,c);
+			w[LEVEL].created = 1;
+		}
+	clear();
+	while (w[LEVEL].map[state->player.position.y][state->player.position.x].object != 0 && (!(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2 && LEVEL == 9))) {
+		state->player.position.x = (random() % c);
+		state->player.position.y = (random() % r);
+
+	}
 	} 
 }
 
-void update(GameState *state, MAP** m, int r, int c) {
-	execute_input(state, m, r, c);
-	check_for_portal(state, m, r, c);
+void update(GameState *state, World *w, int r, int c) {
+	execute_input(state, w, r, c);
+	//check_for_portal(state, m, r, c);
 }
 
 
@@ -100,7 +121,7 @@ int game(Terminal *terminal) {
 		exit(EXIT_FAILURE);
 	}
     for (int i = 0; i < num_levels; i++) {
-		worlds[i].level = i+1;
+		worlds[i].created = 0;
 		worlds[i].map = (MAP**)malloc(nrows * sizeof(MAP*));
 	    if (worlds[i].map == NULL) {
 		   exit(EXIT_FAILURE);
@@ -122,14 +143,14 @@ int game(Terminal *terminal) {
 	intrflush(stdscr, false);
     
     // Gera e imprime o primeiro mapa/nível do mundo
-    gen_map(worlds[0].map,nrows,ncols);
+	gen_map(worlds[0].map,nrows,ncols);
+	worlds[LEVEL].created = 1;
 	print_map(worlds[0].map,nrows,ncols);
-	getch();
 	
 	endwin(); 
 
 	
-	/**
+	/*
 	 * Este código está muito mal escrito!
 	 * Deveria existir uma função chamada draw_player!
 	 *
@@ -143,15 +164,12 @@ int game(Terminal *terminal) {
 	
 	while(1) {
 		move(nrows - 1, 0);
-		attron(COLOR_PAIR(COLOR_BLUE));
+		attron(COLOR_PAIR(COLOR_WHITE));
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
-		attroff(COLOR_PAIR(COLOR_BLUE));
-		//attron(COLOR_PAIR(COLOR_BLACK));
-		//attroff(COLOR_PAIR(COLOR_RED));
-		print_map(worlds[0].map,nrows,ncols);
-		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
-	    //Vector2D pos = {st.playerX,st.playerY};
-	    //draw_to_screen(gate, pos); 
+		attroff(COLOR_PAIR(COLOR_WHITE));
+		print_map(worlds[LEVEL].map, nrows, ncols);
+		//Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
+	    //draw_to_screen(gate, gameState->player.position); 
 		draw_to_screen(characterSprite, gameState->player.position);
 		/*
 		Se utilizarmos apenas 1 quadrado como player, as funcionalidades de não atravessar paredes e descer de níveis, 
@@ -163,7 +181,7 @@ int game(Terminal *terminal) {
 		//move(st.playerX, st.playerY);
 
 		// Botões (temporário)
-		int buttonToolbarX = (terminal->xMax / 2) - (73 / 2) ;
+		int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
 		Vector2D buttonExplorePos = {buttonToolbarX,terminal->yMax-1};
 		button(buttonGradient, "Explore", buttonExplorePos);
 		Vector2D buttonRestPos = {buttonToolbarX+13+4,terminal->yMax-1};
@@ -174,8 +192,11 @@ int game(Terminal *terminal) {
 		button(buttonGradient, "Menu", buttonMenuPos);
 		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
 		button(buttonGradient, "Inventory", buttonInvPos);
-
-		update(gameState,worlds[0].map,nrows,ncols);
+    
+		move(0, 180);
+		printw("Level: %d", LEVEL);
+		
+		update(gameState, worlds, nrows, ncols);
 	}
 
 	return 0;
