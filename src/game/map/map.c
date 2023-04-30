@@ -264,7 +264,28 @@ void new_room_map (MAP** a, int r, int c){
     }
 }
 
-void new_level_map (MAP** a, int r, int c) {
+int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
+	// Isto pode servir para fazer um modo dificíl mais tarde, subindo o valor
+	int mobSpawnRate = 2;
+	// Só spawna mobs a partir do segundo nível
+	if(level > 0){
+		int numMobs = (random() % (level * mobSpawnRate)) + 1;
+		
+		for(int i = 0; i < numMobs; i++){
+			Mob mob;
+			mob.position = get_random_floor_position(map, r, c);
+			mob.health = 10;
+			mob.mobBehavior = STUPID;
+			mobs[i] = mob;
+		}
+
+		return numMobs;
+	}
+
+	return 0;
+}
+
+void new_level_map (MAP** a, int r, int c){
 	int random_num, count = 0, rc, rr;
 
 	random_num = (random() % 3) + 1;
@@ -276,6 +297,21 @@ void new_level_map (MAP** a, int r, int c) {
 			count++;
 		}
 	}
+}
+
+Vector2D get_random_floor_position(MAP** map, int r, int c){
+	int available = 0;
+	Vector2D pos;
+	while(!available){
+		int randX = (random() % c);
+		int randY = (random() % r);
+		if(map[randY][randX].object == 0){
+			pos.x = randX;
+			pos.y = randY;
+			available = 1;
+		}
+	}
+	return pos;
 }
 
 // Gera as borders do mapa
@@ -365,6 +401,14 @@ void gen_map(MAP** a, int r, int c) {
    
     new_room_map(a,r,c);
     new_level_map(a,r,c);
+}
+
+void draw_mobs(Mob *mobs, int r, int c, int mobQuantity){
+	Image enemy = load_image_from_file("assets/sprites/characters/enemy.sprite");
+
+	for(int i = 0; i < mobQuantity; i++){
+		draw_to_screen(enemy, mobs[i].position);
+	}
 }
 
 // Imprime o mapa

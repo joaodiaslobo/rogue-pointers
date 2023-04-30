@@ -93,14 +93,15 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 			gen_map(w[LEVEL].map,r,c);
 			gen_lava(w[LEVEL].map,r,c);
 			gen_grass(w[LEVEL].map,r,c);
+			w[LEVEL].mobQuantity = gen_mobs(w[LEVEL].mobs, w[LEVEL].map, r,c, LEVEL);
 			w[LEVEL].created = 1;
 		}
-	clear();
-	while (w[LEVEL].map[state->player.position.y][state->player.position.x].object != 0 && (!(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2 && (LEVEL == 0 || LEVEL == 9)))) {
-		state->player.position.x = (random() % c);
-		state->player.position.y = (random() % r);
+		clear();
+		while (w[LEVEL].map[state->player.position.y][state->player.position.x].object != 0 && (!(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2 && (LEVEL == 0 || LEVEL == 9)))) {
+			state->player.position.x = (random() % c);
+			state->player.position.y = (random() % r);
 
-	}
+		}
 	} 
 }
 
@@ -131,6 +132,7 @@ int game(Terminal *terminal) {
     for (int i = 0; i < num_levels; i++) {
 		worlds[i].created = 0;
 		worlds[i].map = (MAP**)malloc(nrows * sizeof(MAP*));
+		worlds[i].mobs = (Mob*)malloc(i * sizeof(Mob) * 2);
 	    if (worlds[i].map == NULL) {
 		   exit(EXIT_FAILURE);
 	   }
@@ -154,6 +156,7 @@ int game(Terminal *terminal) {
 	gen_map(worlds[LEVEL].map,nrows,ncols);
 	worlds[LEVEL].created = 1;
 	gen_grass(worlds[LEVEL].map,nrows,ncols); // no nível 0 é possível existir relva
+	worlds[LEVEL].mobQuantity = 0;
 	print_map(worlds[LEVEL].map,nrows,ncols);
 
 	endwin(); 
@@ -176,6 +179,7 @@ int game(Terminal *terminal) {
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 		attroff(COLOR_PAIR(COLOR_WHITE));
 		print_map(worlds[LEVEL].map, nrows, ncols);
+		draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
 		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
 	    draw_to_screen(gate, gameState->player.position); 
 		//draw_to_screen(characterSprite, gameState->player.position);

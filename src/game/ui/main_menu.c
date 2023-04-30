@@ -22,8 +22,8 @@ int main_menu(Terminal *terminal){
         attroff(A_BOLD);
 
         // Input de seleção
-        char *options[5] = { "JOGAR", "OPCOES", "SAIR", "DEBUG", "INVENTORY"};
-        selection = menu_select(5, options, terminal->xMax - 12, terminal->yMax - 9, 5);
+        char *options[] = { "JOGAR", "OPCOES", "SAIR", "DEBUG"};
+        selection = menu_select(4, options, terminal->xMax - 12, terminal->yMax - 9, 5);
         
         if(selection == 2){
             // Confirmação no caso de saída

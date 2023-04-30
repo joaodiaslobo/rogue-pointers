@@ -5,7 +5,19 @@
 
 #define INVENTORY_SLOTS 40
 
-#define MAX_MAP_COLUMNS 94
+// Mobs
+
+typedef enum {
+    STUPID = 0,
+    COWARD = 1,
+    INTELLIGENT = 2
+} MobBehavior;
+
+typedef struct {
+    Vector2D position;
+    int health;
+    MobBehavior mobBehavior;
+} Mob;
 
 // Mapa
 typedef struct map {
@@ -14,7 +26,9 @@ typedef struct map {
 
 // Mundo de Mapas
 typedef struct world {
-	MAP** map; 
+	MAP** map;
+    Mob *mobs;
+    int mobQuantity;
     int created; // valida se um nível já foi gerado ou não
 } World;
 
@@ -42,6 +56,7 @@ typedef struct {
 
 typedef struct {
     char name[15];
+    int health;
     Vector2D position;
     int gold;
     Inventory inventory;
@@ -49,11 +64,11 @@ typedef struct {
     int speedMultiplier;
 } Player;
 
+
 // Estado do jogo
 
 typedef struct {
     Player player;
 } GameState;
-
 
 #endif
