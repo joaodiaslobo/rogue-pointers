@@ -84,6 +84,7 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 		if (w[LEVEL].created == 0) {
 			gen_map(w[LEVEL].map,r,c);
 			gen_lava(w[LEVEL].map,r,c);
+			gen_grass(w[LEVEL].map,r,c);
 			w[LEVEL].created = 1;
 		}
 	clear();
@@ -144,6 +145,7 @@ int game(Terminal *terminal) {
     // Gera e imprime o primeiro mapa/nível do mundo
 	gen_map(worlds[LEVEL].map,nrows,ncols);
 	worlds[LEVEL].created = 1;
+	gen_grass(worlds[LEVEL].map,nrows,ncols); // no nível 0 é possível existir relva
 	print_map(worlds[LEVEL].map,nrows,ncols);
 
 	endwin(); 

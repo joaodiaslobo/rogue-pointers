@@ -9,7 +9,7 @@
 
 // Mapa
 typedef struct map {
-	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio | 4: lava
+	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio | 4: lava | 5: relva
 } MAP;
 
 // Mundo de Mapas

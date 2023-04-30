@@ -8,6 +8,70 @@
 
 // Necessário para as funções que geram o mapa
 
+void gen_grass(MAP** a, int r, int c) {
+	// decidir se aparece relva em um nível
+	int x = 0, y = 0, grass = 0, ind, n = 3;
+	int prob_grass = 90 - 10*LEVEL;
+    while (n > 0) {
+		grass = 0;
+		int random_num = rand() % 100;
+   		if (random_num <= prob_grass) {
+			grass = 1;
+		}
+		// gerar a relva
+		if (grass == 1) {
+			while(a[y][x].object != 0) {
+				x = (random() % c);
+        		y = (random() % r);
+			}
+			a[y][x].object = 5;
+			a[y][x+1].object = 5;
+			a[y][x-1].object = 5;
+			a[y+1][x].object = 5;
+			a[y-1][x].object = 5;
+			for(int i = 1; i < r-1; i++) {    
+	    		for(int j = 1; j < c-1; j++) {
+						if (a[i][j].object == 5) {
+						int conditions[] = {a[i][j+1].object, a[i][j-1].object, a[i+1][j].object, a[i-1][j].object};
+						// dependendo da profundidade do nível é gerada mais relva
+						if (LEVEL >= 8 && LEVEL < 9){
+					 		ind = (random() % 3);
+					  	    if (conditions[ind] == 0) conditions[ind] = 5;	
+						} else if (LEVEL >= 6 && LEVEL < 8){
+							ind = (random() % 3);
+					  	    if (conditions[ind] == 0) conditions[ind] = 5;
+							ind = (random() % 3);
+					 		if (conditions[ind] == 0) conditions[ind] = 5;
+						} else if (LEVEL >= 3 && LEVEL < 5){
+							ind = (random() % 3);
+					   		if (conditions[ind] == 0) conditions[ind] = 5;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 5;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 5;
+						} else if (LEVEL >= 0 && LEVEL <= 2) {
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 5;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 5;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 5;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 5;
+						}
+						if (conditions[0] == 5) a[i][j+1].object = 5;
+						if (conditions[1] == 5) a[i][j-1].object = 5;
+						if (conditions[2] == 5) a[i+1][j].object = 5;
+						if (conditions[3] == 5) a[i-1][j].object = 5;
+					}
+				}
+			}
+		}
+		n--;
+	}
+}
+
+
 void gen_lava(MAP** a, int r, int c) {
 	// decidir se aparece lava em um nível
 	int x = 0, y = 0, lava = 0, ind;
@@ -309,6 +373,7 @@ void print_map(MAP** a, int r, int c) {
    Image gate = load_image_from_file("assets/sprites/gate.sprite");
    Image walk = load_image_from_file("assets/sprites/walk.sprite");
    Image lava = load_image_from_file("assets/sprites/lava.sprite");
+   Image grass = load_image_from_file("assets/sprites/grass.sprite");
 
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
@@ -347,6 +412,13 @@ void print_map(MAP** a, int r, int c) {
 			init_pair(k, COLOR_BLACK, lava.pixels[r].color);         
 			attron(COLOR_PAIR(k));
 			mvprintw(i, j*2, "  ");
+            attroff(COLOR_PAIR(k));
+		}
+		else if(a[i][j].object == 5){ 
+			int k = 104;
+			init_pair(k, COLOR_BLACK, grass.pixels[0].color);         
+			attron(COLOR_PAIR(k));
+			mvprintw(i, j*2, "**" );
             attroff(COLOR_PAIR(k));
 		}
       }

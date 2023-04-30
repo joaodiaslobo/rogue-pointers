@@ -1,6 +1,6 @@
 #include "game_types.h"
 
-//extern int NUM_COLUMNS;
+void gen_grass(MAP** a, int r, int c);
 
 void gen_lava(MAP** a, int r, int c);
 
