@@ -31,30 +31,38 @@ void execute_input(GameState *state, World *w, int r, int c){
 	switch (key)
 	{
 		case KEY_UP:
+		case '8':
 			apply_movement(state, NORTH, w[LEVEL].map, r, c);
 			break;
 		case KEY_DOWN:
+		case '2':
 			apply_movement(state, SOUTH, w[LEVEL].map, r, c);
 			break;
 		case KEY_RIGHT:
+		case '6':
 			apply_movement(state, EAST, w[LEVEL].map, r, c);
 			break;
 		case KEY_LEFT:
+		case '4':
 			apply_movement(state, WEST, w[LEVEL].map, r, c);
 			break;
 		case KEY_A1:
+		case '7':
 			apply_movement(state, NORTH, w[LEVEL].map, r, c);
 			apply_movement(state, WEST, w[LEVEL].map, r, c);
 			break;
 		case KEY_A3:
+		case '9':
 			apply_movement(state, NORTH, w[LEVEL].map, r, c);
 			apply_movement(state, EAST, w[LEVEL].map, r, c);
 			break;
 		case KEY_C1:
+		case '1':
 			apply_movement(state, SOUTH, w[LEVEL].map, r, c);
 			apply_movement(state, WEST, w[LEVEL].map, r, c);
 			break;
 		case KEY_C3:
+		case '3':
 			apply_movement(state, SOUTH, w[LEVEL].map, r, c);
 			apply_movement(state, EAST, w[LEVEL].map, r, c);
 			break;
