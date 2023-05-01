@@ -159,6 +159,12 @@ int game(Terminal *terminal) {
 	worlds[LEVEL].mobQuantity = 0;
 	print_map(worlds[LEVEL].map,nrows,ncols);
 
+	// Inicializa a posição do jogador num lugar válido dentro do mapa
+	while(worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 0 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 4 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 5) {
+		gameState->player.position.x = (random() % ncols);
+		gameState->player.position.y = (random() % nrows);
+	}
+
 	endwin(); 
 	
 	/*
