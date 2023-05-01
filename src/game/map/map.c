@@ -69,6 +69,15 @@ void gen_grass(MAP** a, int r, int c) {
 		}
 		n--;
 	}
+	// coloca flores do meio da relva
+	for (int i = 1; i < r-1; i++) {    
+	    for (int j = 1; j < c-1; j++) {
+			if (a[i][j].object == 5){
+				int k = (random() % 10);
+				if (k == 0) a[i][j].object = 6;
+			} 
+		}
+	}
 }
 
 
@@ -460,10 +469,18 @@ void print_map(MAP** a, int r, int c) {
 		}
 		else if(a[i][j].object == 5){ 
 			int k = 104;
-			init_pair(k, COLOR_BLACK, grass.pixels[0].color);         
+			init_pair(k, grass.pixels[0].color, walk.pixels[0].color);         
+			attron(COLOR_PAIR(k));
+			mvprintw(i, j*2, "''" );
+            attroff(COLOR_PAIR(k));
+		} 
+		else if(a[i][j].object == 6){ 
+			int k = 105;
+			init_pair(k, grass.pixels[1].color, walk.pixels[0].color);         
 			attron(COLOR_PAIR(k));
 			mvprintw(i, j*2, "**" );
             attroff(COLOR_PAIR(k));
+			
 		}
       }
     }
