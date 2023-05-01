@@ -427,61 +427,64 @@ void print_map(MAP** a, int r, int c) {
    Image walk = load_image_from_file("assets/sprites/walk.sprite");
    Image lava = load_image_from_file("assets/sprites/lava.sprite");
    Image grass = load_image_from_file("assets/sprites/grass.sprite");
-
+   int k = 0;
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
-		if (a[i][j].object == 0){
-		    //Vector2D pos = {j,i};
-			//draw_to_screen(walk, pos);
-			int k = 100;
-			init_pair(k, COLOR_BLACK, walk.pixels[0].color);         
-			attron(COLOR_PAIR(k));
-			mvprintw(i, j*2, "  ");
-            attroff(COLOR_PAIR(k));
-		}
-		else if(a[i][j].object == 1){ // imprimir a parede 
-			//Vector2D pos = {j,i};
-			//draw_to_screen(wall, pos);
-			    int k = 101;
+		switch (a[i][j].object){
+			case 0: // imprime lugar onde o jogador pode andar
+		    	//Vector2D pos = {j,i};
+				//draw_to_screen(walk, pos);
+				int k = 100;
+				init_pair(k, COLOR_BLACK, walk.pixels[0].color);         
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  ");
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 1: // imprimir a parede 
+				//Vector2D pos = {j,i};
+				//draw_to_screen(wall, pos);
+			    k = 101;
 			    init_pair(k, COLOR_BLACK, wall.pixels[0].color);         
 				attron(COLOR_PAIR(k));
 				mvprintw(i, j*2, "  ");
                 attroff(COLOR_PAIR(k));
-			//move(i,j*2);
-			//printw("#");
-		}
-		else if(a[i][j].object == 2){ // imprimir porta para outro nível
-			//Vector2D pos = {j,i};
-			//draw_to_screen(gate, pos);
-			int k = 102;
-			init_pair(k, COLOR_BLACK, gate.pixels[0].color);         
-			attron(COLOR_PAIR(k));
-			mvprintw(i, j*2, "  ");
-            attroff(COLOR_PAIR(k));
-		}
-		else if(a[i][j].object == 4){ 
-			int r = random() % 5;
-			int k = 103;
-			init_pair(k, COLOR_BLACK, lava.pixels[r].color);         
-			attron(COLOR_PAIR(k));
-			mvprintw(i, j*2, "  ");
-            attroff(COLOR_PAIR(k));
-		}
-		else if(a[i][j].object == 5){ 
-			int k = 104;
-			init_pair(k, grass.pixels[0].color, walk.pixels[0].color);         
-			attron(COLOR_PAIR(k));
-			mvprintw(i, j*2, "''" );
-            attroff(COLOR_PAIR(k));
-		} 
-		else if(a[i][j].object == 6){ 
-			int k = 105;
-			init_pair(k, grass.pixels[1].color, walk.pixels[0].color);         
-			attron(COLOR_PAIR(k));
-			mvprintw(i, j*2, "**" );
-            attroff(COLOR_PAIR(k));
-			
-		}
+				//move(i,j*2);
+				//printw("#");
+				break;
+			case 2: // imprimir porta para outro nível
+				//Vector2D pos = {j,i};
+				//draw_to_screen(gate, pos);
+				k = 102;
+				init_pair(k, COLOR_BLACK, gate.pixels[0].color);         
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  ");
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 4: // imprimir lava	
+				int r = random() % 5;
+				k = 103;
+				init_pair(k, COLOR_BLACK, lava.pixels[r].color);         
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  ");
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 5: // imprimir relva	 
+				k = 104;
+				init_pair(k, grass.pixels[0].color, walk.pixels[0].color);         
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "''" );
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 6: // imprimir flor 
+				k = 105;
+				init_pair(k, grass.pixels[1].color, walk.pixels[0].color);         
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "**" );
+            	attroff(COLOR_PAIR(k));
+				break;
+			default:
+				break;
+		}	
       }
     }
 }
