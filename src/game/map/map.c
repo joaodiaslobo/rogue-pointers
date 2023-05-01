@@ -8,6 +8,78 @@
 
 // Necessário para as funções que geram o mapa
 
+void gen_water(MAP** a, int r, int c) {
+	// decidir se aparece água em um nível
+	int x = 0, y = 0, water = 0, ind, n = 2, prob_water = 0;
+	if (LEVEL != 0) prob_water = (1/LEVEL)*100;
+	else prob_water = 0;
+    while (n > 0) {
+		water = 0;
+		int random_num = rand() % 100;
+   		if (random_num <= 100) {
+			water = 1;
+		}
+		// gerar a relva
+		if (water == 1) {
+			while(a[y][x].object != 0) {
+				x = (random() % c);
+        		y = (random() % r);
+			}
+			a[y][x].object = 7;
+			a[y][x+1].object = 7;
+			a[y][x-1].object = 7;
+			a[y+1][x].object = 7;
+			a[y-1][x].object = 7;
+			for(int i = 1; i < r-1; i++) {    
+	    		for(int j = 1; j < c-1; j++) {
+						if (a[i][j].object == 7) {
+						int conditions[] = {a[i][j+1].object, a[i][j-1].object, a[i+1][j].object, a[i-1][j].object};
+						// dependendo da profundidade do nível é gerada menos água
+						if (LEVEL >= 8 && LEVEL < 9){
+					 		ind = (random() % 3);
+					  	    if (conditions[ind] == 0) conditions[ind] = 7;	
+						} else if (LEVEL >= 6 && LEVEL < 8){
+							ind = (random() % 3);
+					  	    if (conditions[ind] == 0) conditions[ind] = 7;
+							ind = (random() % 3);
+					 		if (conditions[ind] == 0) conditions[ind] = 7;
+						} else if (LEVEL >= 3 && LEVEL < 5){
+							ind = (random() % 3);
+					   		if (conditions[ind] == 0) conditions[ind] = 7;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 7;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 7;
+						} else if (LEVEL >= 0 && LEVEL <= 2) {
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 7;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 7;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 7;
+							ind = (random() % 3);
+					    	if (conditions[ind] == 0) conditions[ind] = 7;
+						}
+						if (conditions[0] == 7) a[i][j+1].object = 7;
+						if (conditions[1] == 7) a[i][j-1].object = 7;
+						if (conditions[2] == 7) a[i+1][j].object = 7;
+						if (conditions[3] == 7) a[i-1][j].object = 7;
+					}
+				}
+			}
+		}
+		n--;
+	}
+	// coloca margens com tipo diferente para poder associar também uma cor diferente
+	for (int i = 1; i < r-1; i++) {    
+	    for (int j = 1; j < c-1; j++) {
+			if (a[i][j].object == 7 && (a[i+1][j].object == 0 || a[i-1][j].object == 0 || a[i][j+1].object == 0 || a[i][j-1].object == 0 || a[i+1][j].object == 5 || a[i-1][j].object == 5 || a[i][j+1].object == 5 || a[i][j-1].object == 5 || a[i+1][j].object == 6 || a[i-1][j].object == 6 || a[i][j+1].object == 6 || a[i][j-1].object == 6)){
+				a[i][j].object = 8;
+			} 
+		}
+	}
+}
+
 void gen_grass(MAP** a, int r, int c) {
 	// decidir se aparece relva em um nível
 	int x = 0, y = 0, grass = 0, ind, n = 3;
@@ -33,7 +105,7 @@ void gen_grass(MAP** a, int r, int c) {
 	    		for(int j = 1; j < c-1; j++) {
 						if (a[i][j].object == 5) {
 						int conditions[] = {a[i][j+1].object, a[i][j-1].object, a[i+1][j].object, a[i-1][j].object};
-						// dependendo da profundidade do nível é gerada mais relva
+						// dependendo da profundidade do nível é gerada menos relva
 						if (LEVEL >= 8 && LEVEL < 9){
 					 		ind = (random() % 3);
 					  	    if (conditions[ind] == 0) conditions[ind] = 5;	
@@ -143,7 +215,7 @@ void gen_lava(MAP** a, int r, int c) {
 
 void new_room_map (MAP** a, int r, int c){
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
-    int k; 
+    int k = 0; 
     while (k < random_rooms) {
         int width_room = (random() % 13) + 14; // largura da sala (14 a 26)
         int height_room = (random() % 13) + 10; // altura da sala (10 a 22)
@@ -427,14 +499,15 @@ void print_map(MAP** a, int r, int c) {
    Image walk = load_image_from_file("assets/sprites/walk.sprite");
    Image lava = load_image_from_file("assets/sprites/lava.sprite");
    Image grass = load_image_from_file("assets/sprites/grass.sprite");
-   int k = 0;
+   Image water = load_image_from_file("assets/sprites/water.sprite");
+   int k = 0, r_num = 0;
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
 		switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
 		    	//Vector2D pos = {j,i};
 				//draw_to_screen(walk, pos);
-				int k = 100;
+				k = 100;
 				init_pair(k, COLOR_BLACK, walk.pixels[0].color);         
 				attron(COLOR_PAIR(k));
 				mvprintw(i, j*2, "  ");
@@ -461,9 +534,9 @@ void print_map(MAP** a, int r, int c) {
             	attroff(COLOR_PAIR(k));
 				break;
 			case 4: // imprimir lava	
-				int r = random() % 5;
+				r_num = random() % 5;
 				k = 103;
-				init_pair(k, COLOR_BLACK, lava.pixels[r].color);         
+				init_pair(k, COLOR_BLACK, lava.pixels[r_num].color);         
 				attron(COLOR_PAIR(k));
 				mvprintw(i, j*2, "  ");
             	attroff(COLOR_PAIR(k));
@@ -480,6 +553,20 @@ void print_map(MAP** a, int r, int c) {
 				init_pair(k, grass.pixels[1].color, walk.pixels[0].color);         
 				attron(COLOR_PAIR(k));
 				mvprintw(i, j*2, "**" );
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 7: // imprimir água profunda 
+				k = 106;
+				init_pair(k, COLOR_BLACK, water.pixels[0].color);          
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  " );
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 8: // imprimir água margem 
+				k = 107;
+				init_pair(k, COLOR_BLACK, water.pixels[1].color);          
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  " );
             	attroff(COLOR_PAIR(k));
 				break;
 			default:

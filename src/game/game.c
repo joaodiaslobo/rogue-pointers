@@ -93,6 +93,7 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 			gen_map(w[LEVEL].map,r,c);
 			gen_lava(w[LEVEL].map,r,c);
 			gen_grass(w[LEVEL].map,r,c);
+			gen_water(w[LEVEL].map,r,c);
 			w[LEVEL].mobQuantity = gen_mobs(w[LEVEL].mobs, w[LEVEL].map, r,c, LEVEL);
 			w[LEVEL].created = 1;
 		}

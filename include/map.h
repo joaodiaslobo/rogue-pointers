@@ -1,5 +1,7 @@
 #include "game_types.h"
 
+void gen_water(MAP** a, int r, int c);
+
 void gen_grass(MAP** a, int r, int c);
 
 void gen_lava(MAP** a, int r, int c);
