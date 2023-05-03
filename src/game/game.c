@@ -8,6 +8,7 @@
 #include "player.h"
 #include "image.h"
 #include "draw.h"
+#include "mobs_ai.h"
 
 int LEVEL = 0;
 // TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
@@ -211,6 +212,10 @@ int game(Terminal *terminal) {
 		button(buttonGradient, "Menu", buttonMenuPos);
 		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
 		button(buttonGradient, "Inventory", buttonInvPos);
+
+		for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
+			can_see_location(worlds[LEVEL].mobs[i].position, gameState->player.position, 15, worlds[LEVEL].map);
+		}
     
 		move(0, 180);
 		printw("Level: %d", LEVEL);
