@@ -3,6 +3,6 @@
 
 #include "engine_types.h"
 
-int can_see_location(Vector2D posA, Vector2D posB, int distance);
+int can_see_location(Vector2D posA, Vector2D posB, int distance, MAP** map);
 
 #endif

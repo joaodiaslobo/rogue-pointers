@@ -214,7 +214,7 @@ int game(Terminal *terminal) {
 		button(buttonGradient, "Inventory", buttonInvPos);
 
 		for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
-			can_see_location(gameState->player.position, worlds[LEVEL].mobs[i].position, 40);
+			can_see_location(worlds[LEVEL].mobs[i].position, gameState->player.position, 15, worlds[LEVEL].map);
 		}
     
 		move(0, 180);
