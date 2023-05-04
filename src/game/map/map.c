@@ -5,8 +5,7 @@
 #include "image.h"
 #include "draw.h"
 #include "game.h"
-
-// Necessário para as funções que geram o mapa
+#include "stdlib.h"
 
 void gen_water(MAP** a, int r, int c) {
 	// decidir se aparece água em um nível
@@ -355,6 +354,7 @@ int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
 		for(int i = 0; i < numMobs; i++){
 			Mob mob;
 			mob.position = get_random_floor_position(map, r, c);
+			mob.targetPosition = mob.position;
 			mob.health = 10;
 			mob.mobBehavior = STUPID;
 			mobs[i] = mob;
