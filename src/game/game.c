@@ -9,6 +9,7 @@
 #include "image.h"
 #include "draw.h"
 #include "mobs_ai.h"
+#include <unistd.h>
 
 int LEVEL = 0;
 // TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
@@ -110,6 +111,7 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 void update(GameState *state, World *w, int r, int c) {
 	execute_input(state, w, r, c);
 	//check_for_portal(state, m, r, c);
+	refresh();
 }
 
 
@@ -214,13 +216,15 @@ int game(Terminal *terminal) {
 		button(buttonGradient, "Inventory", buttonInvPos);
 
 		for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
-			can_see_location(worlds[LEVEL].mobs[i].position, gameState->player.position, 15, worlds[LEVEL].map);
+			//can_see_location(worlds[LEVEL].mobs[i].position, gameState->player.position, 15, worlds[LEVEL].map);
+			wander_ai(&worlds[LEVEL].mobs[i], &gameState->player, worlds[LEVEL].map);
 		}
     
-		move(0, 180);
-		printw("Level: %d", LEVEL);
+		//move(0, 180);
+		//printw("Level: %d", LEVEL);
 		
 		update(gameState, worlds, nrows, ncols);
+		usleep(3000);
 	}
 
 	return 0;

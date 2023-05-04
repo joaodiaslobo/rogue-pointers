@@ -15,6 +15,7 @@ typedef enum {
 
 typedef struct {
     Vector2D position;
+    Vector2D targetPosition;
     int health;
     MobBehavior mobBehavior;
 } Mob;
