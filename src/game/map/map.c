@@ -357,6 +357,7 @@ int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
 			mob.targetPosition = mob.position;
 			mob.health = 10;
 			mob.mobBehavior = STUPID;
+			mob.timeSinceLastUpdate = 0;
 			mobs[i] = mob;
 		}
 

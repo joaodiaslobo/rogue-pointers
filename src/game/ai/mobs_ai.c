@@ -6,17 +6,24 @@
 #include <stdlib.h>
 #include "mobs_ai.h"
 
+void update_timer(Mob *mob, unsigned long elapsedMicroseconds){
+    mob->timeSinceLastUpdate += elapsedMicroseconds;
+}
+
 void wander_ai(Mob *mob, Player *player, MAP** map){
-    if(!can_see_location(mob->position, player->position, 13, map)){
-        if(mob->position.x == mob->targetPosition.x && mob->position.y == mob->targetPosition.y){
-            // Quando já chegou à posição de patrulha que queria
-            mob->targetPosition = pick_random_patrol_position(mob->position, map);
+    if(mob->timeSinceLastUpdate > 1000000){
+        mob->timeSinceLastUpdate = 0;
+        if(!can_see_location(mob->position, player->position, 13, map)){
+            if(mob->position.x == mob->targetPosition.x && mob->position.y == mob->targetPosition.y){
+                // Quando já chegou à posição de patrulha que queria
+                mob->targetPosition = pick_random_patrol_position(mob->position, map);
+            } else {
+                // Ainda não chegou à posição de patrulha? Move-se para a próxima "casa"
+                mob->position = get_next_patrol_path_position(mob->position, mob->targetPosition);
+            }
         } else {
-            // Ainda não chegou à posição de patrulha? Move-se para a próxima "casa"
-            mob->position = get_next_patrol_path_position(mob->position, mob->targetPosition);
+            // Behaviour de atacar player / perseguição
         }
-    } else {
-        // Behaviour de atacar player / perseguição
     }
 }
 
@@ -49,7 +56,6 @@ Vector2D get_next_patrol_path_position(Vector2D pos, Vector2D target){
 
 // Algoritmo de Bresenham, verifica a visibilidade entre a posição do jogador e a posição do inimigo
 int can_see_location(Vector2D posA, Vector2D posB, int distance, MAP** map){
-    Image teste = load_image_from_file("assets/sprites/grass.sprite");
     int dx = abs(posB.x - posA.x);
     int dy = abs(posB.y - posA.y);
     int sx = (posA.x < posB.x) ? 1 : -1;
@@ -57,7 +63,6 @@ int can_see_location(Vector2D posA, Vector2D posB, int distance, MAP** map){
     int err = dx - dy;
      
     Vector2D pos = {posA.x, posA.y};
-    //draw_to_screen(teste, pos);
     
     while ((pos.x != posB.x || pos.y != posB.y) && (map[pos.y][pos.x].object != 1) && (distance > 0))
     {
@@ -73,13 +78,11 @@ int can_see_location(Vector2D posA, Vector2D posB, int distance, MAP** map){
             pos.y += sy;
         }
 
-        //draw_to_screen(teste, pos);
         distance--;
     }
 
     if(pos.x == posB.x && pos.y == posB.y){
         return 1;
-        draw_to_screen(teste, posA);
     }
     return 0;
 }

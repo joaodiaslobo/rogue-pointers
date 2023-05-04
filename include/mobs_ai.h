@@ -3,6 +3,8 @@
 
 #include "engine_types.h"
 
+void update_timer(Mob *mob, unsigned long elapsedMiliseconds);
+
 void wander_ai(Mob *mob, Player *player, MAP** map);
 
 Vector2D get_next_patrol_path_position(Vector2D pos, Vector2D target);

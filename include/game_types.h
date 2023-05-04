@@ -18,6 +18,7 @@ typedef struct {
     Vector2D targetPosition;
     int health;
     MobBehavior mobBehavior;
+    unsigned long timeSinceLastUpdate; // Em microsegundos
 } Mob;
 
 // Mapa

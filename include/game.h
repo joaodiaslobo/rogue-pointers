@@ -3,6 +3,7 @@
 
 #include "game_types.h"
 #include "map.h"
+#include "sys/time.h"
 
 //extern int NUM_COLUMNS;
 extern int LEVEL;
@@ -13,7 +14,7 @@ void execute_input(GameState *state, World *w, int r, int c);
 
 void check_for_portal(GameState *state, World *w, int r, int c, int dir);
 
-void update(GameState *state, World *w, int r, int c) ;
+void update(GameState *state, World *worlds, int r, int c, struct timeval currentTime);
 
 int game(Terminal *terminal);
 
