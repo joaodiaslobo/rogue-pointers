@@ -41,14 +41,25 @@ typedef enum {
     MELEE_WEAPON = 1,
     RANGED_WEAPON = 2,
     BOMB = 3,
-    MISCELLANEOUS = 4
+    MISCELLANEOUS = 4,
+    SPECIAL = 5
 } ItemType;
 
 typedef struct {
-    char name[20];
+    char name[100];
     ItemType type;
-    char description[100];
+    char description[400];
 } Item;
+
+typedef struct {
+    ItemType type;
+    Item items[10];
+} Items_Table;
+
+/*typedef struct {
+    Item items[5];
+    Vector2D position;
+} Chest;*/
 
 typedef struct {
     Item items[INVENTORY_SLOTS];
