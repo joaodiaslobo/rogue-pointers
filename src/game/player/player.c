@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "image.h"
 
 extern int NUM_COLUMNS;
 
@@ -50,4 +51,19 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
     }
 
     //printw("col:%d lin:%d tc:%d tl:%d Obs:%d col:%d, lin:%d", state->player.position.x, state->player.position.y, c, r, m[y][x].object, x,y);
+}
+
+void draw_light(GameState *gameState, int r, int c){
+    Vector2D pos;
+    Image image = load_image_from_file("assets/sprites/shadow.sprite");
+    for(int i = 0; i < c; i++){
+        for(int j = 0; j < r-1; j++){
+            pos.x = i;
+            pos.y = j;
+            //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador
+            if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256){
+                draw_to_screen(image, pos);
+            }
+        }
+    }
 }
