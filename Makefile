@@ -6,7 +6,7 @@ TARGET=game
 SRC = src
 BIN = bin
 
-SOURCES = $(wildcard src/engine/render/*.c) $(wildcard src/engine/ui/*.c) $(wildcard src/engine/utils/*.c) $(wildcard src/game/*.c) $(wildcard src/game/debug/*.c) $(wildcard src/game/inventory/*.c) $(wildcard src/game/map/*.c) $(wildcard src/game/player/*.c) $(wildcard src/game/ui/*.c)
+SOURCES = $(wildcard src/engine/render/*.c) $(wildcard src/engine/ui/*.c) $(wildcard src/engine/utils/*.c) $(wildcard src/game/*.c) $(wildcard src/game/debug/*.c) $(wildcard src/game/inventory/*.c) $(wildcard src/game/map/*.c) $(wildcard src/game/player/*.c) $(wildcard src/game/ui/*.c) $(wildcard src/game/ai/*.c)
 OBJECTS = $(patsubst $(SRC)/%.c, $(SRC)/%.o, $(SOURCES))
 
 all: compile clean

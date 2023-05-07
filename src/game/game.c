@@ -8,6 +8,9 @@
 #include "player.h"
 #include "image.h"
 #include "draw.h"
+#include "mobs_ai.h"
+#include <unistd.h>
+#include "sys/time.h"
 
 int LEVEL = 0;
 // TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
@@ -106,9 +109,22 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 	} 
 }
 
-void update(GameState *state, World *w, int r, int c) {
-	execute_input(state, w, r, c);
-	//check_for_portal(state, m, r, c);
+void update(GameState *state, World *worlds, int r, int c, struct timeval currentTime) {
+	execute_input(state, worlds, r, c);
+	
+	for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
+		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map);
+	}
+
+	struct timeval endTime;
+	gettimeofday(&endTime, NULL);
+
+	unsigned long elapsedMicroseconds = (endTime.tv_sec - currentTime.tv_sec) * 1000000 + (endTime.tv_usec - currentTime.tv_usec);
+	for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
+		update_timer(&worlds[LEVEL].mobs[i], elapsedMicroseconds);
+	}
+
+	refresh();
 }
 
 
@@ -179,8 +195,10 @@ int game(Terminal *terminal) {
 
 	Image characterSprite = load_image_from_file("assets/sprites/characters/player1.sprite");
 
-	
+	struct timeval currentTime;
+
 	while(1) {
+		gettimeofday(&currentTime, NULL);
 		move(nrows - 1, 0);
 		attron(COLOR_PAIR(COLOR_WHITE));
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
@@ -188,7 +206,8 @@ int game(Terminal *terminal) {
 		print_map(worlds[LEVEL].map, nrows, ncols);
 		draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
 		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
-	    draw_to_screen(gate, gameState->player.position); 
+	    draw_to_screen(gate, gameState->player.position);
+		draw_light(gameState, nrows, ncols);
 		//draw_to_screen(characterSprite, gameState->player.position);
 		/*
 		Se utilizarmos apenas 1 quadrado como player, as funcionalidades de não atravessar paredes e descer de níveis, 
@@ -212,10 +231,10 @@ int game(Terminal *terminal) {
 		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
 		button(buttonGradient, "Inventory", buttonInvPos);
     
-		move(0, 180);
-		printw("Level: %d", LEVEL);
+		//move(0, 180);
+		//printw("Level: %d", LEVEL);
 		
-		update(gameState, worlds, nrows, ncols);
+		update(gameState, worlds, nrows, ncols, currentTime);
 	}
 
 	return 0;
