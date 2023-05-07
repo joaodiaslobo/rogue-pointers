@@ -50,7 +50,13 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
         gameState->player.position.y = newPos.y;
     }
 
-    //printw("col:%d lin:%d tc:%d tl:%d Obs:%d col:%d, lin:%d", state->player.position.x, state->player.position.y, c, r, m[y][x].object, x,y);
+    // Valida se o jogador pisou a lava e morreu
+    if(map[newPos.y][newPos.x].object == 4){
+        gameState->player.position.x = newPos.x;
+        gameState->player.position.y = newPos.y;
+        gameState->gameover = 1;
+    }
+
 }
 
 void draw_light(GameState *gameState, int r, int c){

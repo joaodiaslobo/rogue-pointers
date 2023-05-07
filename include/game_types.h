@@ -82,6 +82,7 @@ typedef struct {
 
 typedef struct {
     Player player;
+    int gameover; // 1 - perdeu o jogo
 } GameState;
 
 #endif

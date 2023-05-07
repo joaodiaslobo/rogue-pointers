@@ -40,16 +40,19 @@ int main(){
 	terminal.mainWindow = window;
 
     int selection = main_menu(&terminal);
-    switch (selection)
-    {
-    case 3:
-        inventory_test();
-        break;
-	case 0:
-		game(&terminal);
-		break;
-    default:
-        break;
+    while(selection == 0 || selection == 3){ // permite que o jogador volte ao menu principal, caso perca
+        switch (selection){
+        case 3:
+            inventory_test();
+            break;
+	    case 0:
+		    game(&terminal);
+            clear();
+		    break;
+        default:
+            break; 
+        }
+    selection = main_menu(&terminal);
     }
 
     // Finaliza o ncurses
