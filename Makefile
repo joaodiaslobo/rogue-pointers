@@ -1,4 +1,4 @@
-CFLAGS=-Wall -Wextra -pedantic -O2 -Iinclude
+CFLAGS=-Wall -Wextra -pedantic -O2 -Iinclude -g
 LIBS=-lm -lcurses
 
 TARGET=game

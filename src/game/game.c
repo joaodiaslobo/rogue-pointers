@@ -113,7 +113,7 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 	execute_input(state, worlds, r, c);
 	
 	for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
-		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map);
+		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map, r, c);
 	}
 
 	struct timeval endTime;
@@ -203,11 +203,11 @@ int game(Terminal *terminal) {
 		attron(COLOR_PAIR(COLOR_WHITE));
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 		attroff(COLOR_PAIR(COLOR_WHITE));
-		print_map(worlds[LEVEL].map, nrows, ncols);
+		//print_map(worlds[LEVEL].map, nrows, ncols);
 		draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
 		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
 	    draw_to_screen(gate, gameState->player.position);
-		draw_light(gameState, nrows, ncols);
+		//draw_light(gameState, nrows, ncols);
 		//draw_to_screen(characterSprite, gameState->player.position);
 		/*
 		Se utilizarmos apenas 1 quadrado como player, as funcionalidades de não atravessar paredes e descer de níveis, 

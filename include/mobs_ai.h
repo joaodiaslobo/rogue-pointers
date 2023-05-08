@@ -5,7 +5,7 @@
 
 void update_timer(Mob *mob, unsigned long elapsedMiliseconds);
 
-void wander_ai(Mob *mob, Player *player, MAP** map);
+void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c);
 
 Vector2D get_next_patrol_path_position(Vector2D pos, Vector2D target);
 

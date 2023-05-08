@@ -5,12 +5,13 @@
 #include "image.h"
 #include <stdlib.h>
 #include "mobs_ai.h"
+#include "a_star_pathfinding.h"
 
 void update_timer(Mob *mob, unsigned long elapsedMicroseconds){
     mob->timeSinceLastUpdate += elapsedMicroseconds;
 }
 
-void wander_ai(Mob *mob, Player *player, MAP** map){
+void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
     if(mob->timeSinceLastUpdate > 1000000){
         mob->timeSinceLastUpdate = 0;
         if(!can_see_location(mob->position, player->position, 13, map)){
@@ -23,6 +24,8 @@ void wander_ai(Mob *mob, Player *player, MAP** map){
             }
         } else {
             // Behaviour de atacar player / perseguição
+            Node *nodes = map_to_node_system(map, r, c);
+            //find_path(&nodes[mob->position.y * c + mob->position.x], &nodes[player->position.y * c + player->position.x]);
         }
     }
 }
