@@ -23,7 +23,7 @@ typedef struct {
 
 // Mapa
 typedef struct map {
-	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio | 4: lava | 5: relva | 6:flor | 7: Água 8: Margem
+	int object;  // 0: local onde pode andar | 1: parede | 2: passagem de nível | 3: vazio | 4: lava | 5: relva | 6:flor | 7: água | 8: argem
 } MAP;
 
 // Mundo de Mapas
@@ -76,7 +76,6 @@ typedef struct {
     int selectedSlot;
     int speedMultiplier;
 } Player;
-
 
 // Estado do jogo
 

@@ -6,7 +6,9 @@
 #include <stdio.h>
 #include "image.h"
 
-extern int NUM_COLUMNS;
+struct timeval start_time_drown = (struct timeval) {0};
+int elapsed_time_drown = 0;
+
 
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
@@ -57,6 +59,18 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
         gameState->gameover = 1;
     }
 
+    // Inicializa a contagem do tempo, para verificar se o jogador se afogou
+    if(map[newPos.y][newPos.x].object == 7 && start_time_drown.tv_sec == 0){
+        gettimeofday(&start_time_drown, NULL); // obter o tempo inicial
+        gameState->player.position.x = newPos.x;
+        gameState->player.position.y = newPos.y;
+    }
+    else if (map[newPos.y][newPos.x].object == 7 && start_time_drown.tv_sec != 0){
+        gameState->player.position.x = newPos.x;
+        gameState->player.position.y = newPos.y;
+    }
+    if(map[newPos.y][newPos.x].object != 7 && start_time_drown.tv_sec != 0) start_time_drown = (struct timeval) {0};
+
 }
 
 void draw_light(GameState *gameState, int r, int c){
@@ -68,7 +82,7 @@ void draw_light(GameState *gameState, int r, int c){
             pos.y = j;
             //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador
             if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256){
-                draw_to_screen(image, pos);
+               // draw_to_screen(image, pos);
             }
         }
     }

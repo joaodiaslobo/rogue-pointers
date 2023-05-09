@@ -195,11 +195,8 @@ int game(Terminal *terminal) {
 	 */
 
 	Image characterSprite = load_image_from_file("assets/sprites/characters/player1.sprite");
-
-	struct timeval currentTime;
     
 	while(1) {
-		gettimeofday(&currentTime, NULL);
 		move(nrows - 1, 0);
 		attron(COLOR_PAIR(COLOR_WHITE));
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
@@ -211,13 +208,6 @@ int game(Terminal *terminal) {
 		draw_light(gameState, nrows, ncols);
 
 		//draw_to_screen(characterSprite, gameState->player.position);
-		/*
-		Se utilizarmos apenas 1 quadrado como player, as funcionalidades de não atravessar paredes e descer de níveis, 
-		já funcionam. Não consegui colocar o Dan a funcionar no contexto, pois ele não possui um centro de massa, ou seja,
-		um ponto sincronizado com o mapa. Além disso, com a forma atual do Dan, na horizonal ele só percorre caminhos de 6
-		e na vertical caminhos de 4, ou seja, não sei se faz propriamente sentido e, por isso, apenas tratei desta funciona-
-		lidade para um ponto.
-		*/
 		//move(st.playerX, st.playerY);
 
 		// Botões (temporário)
@@ -247,7 +237,16 @@ int game(Terminal *terminal) {
 
 		move(0, 180);
 		printw("Level: %d", LEVEL);
-		
+
+		struct timeval currentTime;
+	    gettimeofday(&currentTime, NULL);
+		unsigned long elapsed_time_drown = (currentTime.tv_sec - start_time_drown.tv_sec);
+		move(1, 180);
+        if(elapsed_time_drown <= 10) {
+			printw("Time on 7: %d s", elapsed_time_drown); 
+			if (elapsed_time_drown == 10) gameState->gameover = 1;
+			}
+
 		update(gameState, worlds, nrows, ncols, currentTime);
 	}
 
