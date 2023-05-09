@@ -239,14 +239,20 @@ int game(Terminal *terminal) {
 		printw("Level: %d", LEVEL);
 
 		struct timeval currentTime;
-	    gettimeofday(&currentTime, NULL);
-		unsigned long elapsed_time_drown = (currentTime.tv_sec - start_time_drown.tv_sec);
-		move(1, 180);
-        if(elapsed_time_drown <= 10) {
-			printw("Time on 7: %d s", elapsed_time_drown); 
-			if (elapsed_time_drown == 10) gameState->gameover = 1;
+		if(start_time_drown.tv_sec != 0) { // jogador entrou em água, começa a contagem para se afogar 
+	    	gettimeofday(&currentTime, NULL);
+			unsigned long elapsed_time_drown = (currentTime.tv_sec - start_time_drown.tv_sec);
+			move(1, 180);
+        	if(elapsed_time_drown <= 10) {
+				unsigned long aux = 10 - elapsed_time_drown; 
+				printw("Time to drown %d ", aux); 
+				if (elapsed_time_drown == 10) gameState->gameover = 1;
 			}
-
+		}
+		else {
+			move(1, 180);
+			printw("                    "); 
+		}
 		update(gameState, worlds, nrows, ncols, currentTime);
 	}
 
