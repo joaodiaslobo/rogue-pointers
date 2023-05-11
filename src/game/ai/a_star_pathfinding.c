@@ -1,32 +1,34 @@
 #include "a_star_pathfinding.h"
 #include "engine_types.h"
 #include "game_types.h"
-#include "math.h"
-#include "float.h"
+#include <math.h>
+#include <float.h>
 #include <stdlib.h>
 
 #include "image.h"
 #include "draw.h"
-#include  "ncurses.h"
+#include  <ncurses.h>
+#include <string.h>
 
 /* Isto é uma implementação do Algoritmo A* em C
    Algoritmo utilizado na movimentação dos mobs e pathfinding do jogador.
 */
 
-void find_path(Node *startNode, Node *endNode){
-    Node *currentNode = startNode;
-    startNode->localGoal = 0.0f;
-    startNode->globalGoal = distance_between_points(startNode->pos, endNode->pos);
+Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c){
+    Image test = load_image_from_file("assets/sprites/gate.sprite");
+    Node *currentNode = &nodes[start.y * c + start.x];
+    nodes[start.y * c + start.x].localGoal = 0.0f;
+    nodes[start.y * c + start.x].globalGoal = distance_between_points(start, end);
 
     NodeStack untestedNodes;
     untestedNodes.elements = 1;
-    untestedNodes.nodes = malloc(sizeof(Node) * 500);
-    untestedNodes.nodes[0] = *startNode;
+    untestedNodes.nodes = malloc(sizeof(Node *));
+    untestedNodes.nodes[0] = currentNode;
 
     while(untestedNodes.elements != 0){
         order_untested_nodes(&untestedNodes);
 
-        while(untestedNodes.elements != 0 && untestedNodes.nodes[0].visited){
+        while(untestedNodes.elements != 0 && untestedNodes.nodes[0]->visited){
             pop_first(&untestedNodes);
         }
 
@@ -34,15 +36,16 @@ void find_path(Node *startNode, Node *endNode){
             break;
         }
 
-        currentNode = &untestedNodes.nodes[0];
+        currentNode = untestedNodes.nodes[0];
         currentNode->visited = 1;
 
         for(int i = 0; i < currentNode->nNeighbours; i++){
-            if(!currentNode->neighbours[i]->visited && !currentNode->neighbours[i]->obstacle){
-                //untestedNodes.nodes = realloc(untestedNodes.nodes, sizeof(Node) * (untestedNodes.elements + 1));
-                mvprintw(5,5,"%d %d", currentNode->neighbours[i]->pos.x, currentNode->neighbours[i]->pos.y);
-                untestedNodes.nodes[untestedNodes.elements] = *currentNode->neighbours[i];
-                untestedNodes.elements++;
+            if(currentNode->neighbours[i] != NULL){
+                if(!currentNode->neighbours[i]->visited && !currentNode->neighbours[i]->obstacle){
+                    untestedNodes.nodes = realloc(untestedNodes.nodes, sizeof(Node *) * (untestedNodes.elements + 1));
+                    untestedNodes.nodes[untestedNodes.elements] = currentNode->neighbours[i];
+                    untestedNodes.elements++;
+                }
             }
 
             float possibleLowGoal = currentNode->localGoal + distance_between_points(currentNode->pos, currentNode->neighbours[i]->pos);
@@ -51,25 +54,69 @@ void find_path(Node *startNode, Node *endNode){
                 currentNode->neighbours[i]->parent = currentNode;
                 currentNode->neighbours[i]->localGoal = possibleLowGoal;
 
-                currentNode->neighbours[i]->globalGoal = currentNode->neighbours[i]->localGoal + distance_between_points(currentNode->neighbours[i]->pos, endNode->pos);
+                currentNode->neighbours[i]->globalGoal = currentNode->neighbours[i]->localGoal + distance_between_points(currentNode->neighbours[i]->pos, end);
             }
         }
     }
-    //draw_path(&untestedNodes, endNode);
+
+    Vector2D *path = malloc(sizeof(Vector2D));
+    currentNode = &nodes[end.y * c + end.x];
+    int i = 0;
+    while(currentNode->parent != NULL){
+        path = realloc(path, (i + 1) * sizeof(Vector2D));
+        Vector2D pos = { currentNode->pos.x, currentNode->pos.y };
+        path[i] = pos;
+        currentNode = currentNode->parent;
+        i++;
+    }
+    
+
+    return path;
+}
+
+void inspect_node(Node *nodes, Vector2D pos, int c){
+    Node *currentNode = &nodes[pos.y * c + pos.x];
+    mvprintw(0,0, "X: %d", nodes[pos.y * c + pos.x].pos.x);
+    mvprintw(1,0, "Y: %d", nodes[pos.y * c + pos.x].pos.y);
+    mvprintw(2,0, "PARENT: %p", nodes[pos.y * c + pos.x].parent);
+    mvprintw(3,0, "VIZINHOS: %d", nodes[pos.y * c + pos.x].nNeighbours);
+    if(currentNode->neighbours[0] != NULL){
+        mvprintw(4,0, "%d", currentNode->neighbours[0]->obstacle);
+    }
+    if(currentNode->neighbours[1] != NULL){
+        mvprintw(4,2, "%d", currentNode->neighbours[1]->obstacle);
+    }
+    if(currentNode->neighbours[2] != NULL){
+        mvprintw(4,4, "%d", currentNode->neighbours[2]->obstacle);
+    }
+    if(currentNode->neighbours[3] != NULL){
+        mvprintw(5,0, "%d", currentNode->neighbours[3]->obstacle);
+    }
+    if(currentNode->neighbours[4] != NULL){
+        mvprintw(5,4, "%d", currentNode->neighbours[4]->obstacle);
+    }
+    if(currentNode->neighbours[5] != NULL){
+        mvprintw(6,0, "%d", currentNode->neighbours[5]->obstacle);
+    }
+    if(currentNode->neighbours[6] != NULL){
+        mvprintw(6,2, "%d", currentNode->neighbours[6]->obstacle);
+    }
+    if(currentNode->neighbours[7] != NULL){
+        mvprintw(6,4, "%d", currentNode->neighbours[7]->obstacle);
+    }
 }
 
 void pop_first(NodeStack *stack){
+    stack->nodes[0] = NULL;
     stack->elements--;
-    for(int i = 0; i < stack->elements; i++){
-        stack->nodes[i] = stack->nodes[i+1];
-    }
+    memmove(stack->nodes, stack->nodes + 1, (sizeof(Node *) * (stack->elements)));
 }
 
 void order_untested_nodes(NodeStack *stack){
     for(int i = 0; i < stack->elements; i++){
         for(int j = i; j < stack->elements; j++){
-            if(stack->nodes[i].globalGoal < stack->nodes[j].globalGoal){
-                Node temp = stack->nodes[i];
+            if(stack->nodes[i]->globalGoal < stack->nodes[j]->globalGoal){
+                Node *temp = stack->nodes[i];
                 stack->nodes[i] = stack->nodes[j];
                 stack->nodes[j] = temp;
             }
@@ -111,6 +158,14 @@ Node *map_to_node_system(MAP **map, int r, int c){
 
     for (int y = 0; y < r; y++) {
         for (int x = 0; x < c; x++) {
+            nodes[y * c + x].neighbours[0] = NULL;
+            nodes[y * c + x].neighbours[1] = NULL;
+            nodes[y * c + x].neighbours[2] = NULL;
+            nodes[y * c + x].neighbours[3] = NULL;
+            nodes[y * c + x].neighbours[4] = NULL;
+            nodes[y * c + x].neighbours[5] = NULL;
+            nodes[y * c + x].neighbours[6] = NULL;
+            nodes[y * c + x].neighbours[7] = NULL;
             int nNeighbours = 0;
             if(y != 0 && x != 0){
                 nodes[y * c + x].neighbours[0] = &nodes[(y-1) * c + (x-1)];
@@ -145,12 +200,6 @@ Node *map_to_node_system(MAP **map, int r, int c){
                 nNeighbours++;
             }
             nodes[y * c + x].nNeighbours = nNeighbours;
-        }
-    }
-
-    for (int y = 0; y < r; y++) {
-        for (int x = 0; x < c; x++) {
-            mvprintw(nodes[y * c + x].pos.y, nodes[y * c + x].pos.x * 2, "-%d", nodes[y * c + x].obstacle);
         }
     }
 

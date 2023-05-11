@@ -22,10 +22,18 @@ void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
                 // Ainda não chegou à posição de patrulha? Move-se para a próxima "casa"
                 mob->position = get_next_patrol_path_position(mob->position, mob->targetPosition);
             }
-        } else {
+        } else if(mob->pathStep == -1) {
             // Behaviour de atacar player / perseguição
             Node *nodes = map_to_node_system(map, r, c);
-            //find_path(&nodes[mob->position.y * c + mob->position.x], &nodes[player->position.y * c + player->position.x]);
+            //inspect_node(nodes, player->position, c);
+            mob->path = find_path(nodes, player->position, mob->position, c);
+            mob->pathStep = 0;
+            //draw_path(nodes, &nodes[mob->position.y * c + mob->position.x]);
+        } else if(mob->position.x != player->position.x && mob->position.y != player->position.y ) {
+            mob->position = mob->path[mob->pathStep];
+            mob->pathStep++;
+        } else {
+            mob->pathStep = -1;
         }
     }
 }

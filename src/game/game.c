@@ -203,7 +203,7 @@ int game(Terminal *terminal) {
 		attron(COLOR_PAIR(COLOR_WHITE));
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 		attroff(COLOR_PAIR(COLOR_WHITE));
-		//print_map(worlds[LEVEL].map, nrows, ncols);
+		print_map(worlds[LEVEL].map, nrows, ncols);
 		draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
 		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
 	    draw_to_screen(gate, gameState->player.position);

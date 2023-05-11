@@ -16,17 +16,19 @@ typedef struct node {
 } Node;
 
 typedef struct {
-    Node *nodes;
+    Node **nodes;
     int elements;
 } NodeStack;
 
-void find_path(Node *startNode, Node *endNode);
+Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c);
 
 void pop_first(NodeStack *stack);
 
 void order_untested_nodes(NodeStack *stack);
 
 float distance_between_points(Vector2D a, Vector2D b);
+
+void inspect_node(Node *nodes, Vector2D pos, int c);
 
 Node *map_to_node_system(MAP **map, int r, int c);
 

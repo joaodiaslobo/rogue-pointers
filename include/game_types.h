@@ -19,6 +19,9 @@ typedef struct {
     int health;
     MobBehavior mobBehavior;
     unsigned long timeSinceLastUpdate; // Em microsegundos
+    int pathStep;
+    int steps;
+    Vector2D *path;
 } Mob;
 
 // Mapa
