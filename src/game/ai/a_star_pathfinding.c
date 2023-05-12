@@ -14,64 +14,86 @@
    Algoritmo utilizado na movimentação dos mobs e pathfinding do jogador.
 */
 
-Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c){
-    Image test = load_image_from_file("assets/sprites/gate.sprite");
-    Node *currentNode = &nodes[start.y * c + start.x];
-    nodes[start.y * c + start.x].localGoal = 0.0f;
-    nodes[start.y * c + start.x].globalGoal = distance_between_points(start, end);
-
-    NodeStack untestedNodes;
-    untestedNodes.elements = 1;
-    untestedNodes.nodes = malloc(sizeof(Node *));
-    untestedNodes.nodes[0] = currentNode;
-
-    while(untestedNodes.elements != 0){
-        order_untested_nodes(&untestedNodes);
-
-        while(untestedNodes.elements != 0 && untestedNodes.nodes[0]->visited){
-            pop_first(&untestedNodes);
+Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c, int r, int *nSteps) {
+    NodeStack openSet = { malloc(c * r * sizeof(Node *)), 0 };
+    NodeStack closedSet = { malloc(c * r * sizeof(Node *)), 0 };
+    Node *startNode = &nodes[start.y * c + start.x];
+    Node *endNode = &nodes[end.y * c + end.x];
+    startNode->globalGoal = heuristic(start, end);
+    startNode->localGoal = 0.0f;
+    openSet.nodes[openSet.elements] = startNode;
+    openSet.elements++;
+    while (openSet.elements > 0) {
+        Node *currentNode = find_best_node(&openSet, &closedSet, end);
+        if (currentNode == endNode) {
+            Vector2D *path = malloc((int)ceil(currentNode->localGoal) * sizeof(Vector2D));
+            Node *node = currentNode;
+            int steps = 0;
+            for (int i = currentNode->localGoal - 1; i >= 0; i--) {
+                path[i] = node->pos;
+                node = node->parent;
+                steps++;
+            }
+            free(openSet.nodes);
+            free(closedSet.nodes);
+            *nSteps = steps;
+            return path;
         }
-
-        if(untestedNodes.elements == 0){
-            break;
-        }
-
-        currentNode = untestedNodes.nodes[0];
         currentNode->visited = 1;
-
-        for(int i = 0; i < currentNode->nNeighbours; i++){
+        for (int i = 0; i < currentNode->nNeighbours; i++) {
             if(currentNode->neighbours[i] != NULL){
-                if(!currentNode->neighbours[i]->visited && !currentNode->neighbours[i]->obstacle){
-                    untestedNodes.nodes = realloc(untestedNodes.nodes, sizeof(Node *) * (untestedNodes.elements + 1));
-                    untestedNodes.nodes[untestedNodes.elements] = currentNode->neighbours[i];
-                    untestedNodes.elements++;
+                Node *neighbourNode = currentNode->neighbours[i];
+                if (neighbourNode->visited || neighbourNode->obstacle) {
+                    continue;
+                }
+                float tryGoal = currentNode->localGoal + 1.0f;
+                if (tryGoal < neighbourNode->localGoal) {
+                    update_node(neighbourNode, currentNode, end);
+                    if (!neighbourNode->visited) {
+                        openSet.nodes[openSet.elements++] = neighbourNode;
+                    }
                 }
             }
+        }
+        closedSet.nodes[closedSet.elements++] = currentNode;
+    }
+    Vector2D *path = NULL;
+    free(openSet.nodes);
+    free(closedSet.nodes);
+    return path;
+}
 
-            float possibleLowGoal = currentNode->localGoal + distance_between_points(currentNode->pos, currentNode->neighbours[i]->pos);
-
-            if(possibleLowGoal < currentNode->neighbours[i]->localGoal){
-                currentNode->neighbours[i]->parent = currentNode;
-                currentNode->neighbours[i]->localGoal = possibleLowGoal;
-
-                currentNode->neighbours[i]->globalGoal = currentNode->neighbours[i]->localGoal + distance_between_points(currentNode->neighbours[i]->pos, end);
-            }
+Node *find_best_node(NodeStack *openSet, NodeStack *closedSet, Vector2D end) {
+    int i, bestIndex = 0;
+    float lowestScore = INFINITY;
+    for (i = 0; i < openSet->elements; i++) {
+        Node *node = openSet->nodes[i];
+        float score = node->globalGoal + heuristic(node->pos, end);
+        if (score < lowestScore) {
+            lowestScore = score;
+            bestIndex = i;
         }
     }
-
-    Vector2D *path = malloc(sizeof(Vector2D));
-    currentNode = &nodes[end.y * c + end.x];
-    int i = 0;
-    while(currentNode->parent != NULL){
-        path = realloc(path, (i + 1) * sizeof(Vector2D));
-        Vector2D pos = { currentNode->pos.x, currentNode->pos.y };
-        path[i] = pos;
-        currentNode = currentNode->parent;
-        i++;
+    Node *bestNode = openSet->nodes[bestIndex];
+    for (i = 0; i < closedSet->elements; i++) {
+        if (closedSet->nodes[i] == bestNode) {
+            openSet->nodes[bestIndex] = openSet->nodes[openSet->elements--];
+            return find_best_node(openSet, closedSet, end);
+        }
     }
-    
+    openSet->nodes[bestIndex] = openSet->nodes[openSet->elements - 1];
+    openSet->elements--;
+    return bestNode;
+}
 
-    return path;
+void update_node(Node *node, Node *parent, Vector2D end) {
+    node->parent = parent;
+    node->globalGoal = parent->globalGoal + heuristic(node->pos, end);
+    node->localGoal = parent->localGoal + 1.0f;
+}
+
+float heuristic(Vector2D a, Vector2D b) {
+    return sqrtf(powf(b.x - a.x, 2.0f) + powf(b.y - a.y, 2.0f));
 }
 
 void inspect_node(Node *nodes, Vector2D pos, int c){
@@ -106,27 +128,6 @@ void inspect_node(Node *nodes, Vector2D pos, int c){
     }
 }
 
-void pop_first(NodeStack *stack){
-    stack->nodes[0] = NULL;
-    stack->elements--;
-    memmove(stack->nodes, stack->nodes + 1, (sizeof(Node *) * (stack->elements)));
-}
-
-void order_untested_nodes(NodeStack *stack){
-    for(int i = 0; i < stack->elements; i++){
-        for(int j = i; j < stack->elements; j++){
-            if(stack->nodes[i]->globalGoal < stack->nodes[j]->globalGoal){
-                Node *temp = stack->nodes[i];
-                stack->nodes[i] = stack->nodes[j];
-                stack->nodes[j] = temp;
-            }
-        }
-    }
-}
-
-float distance_between_points(Vector2D a, Vector2D b){
-    return sqrt( (a.x - b.x) * (a.x - b.x) +  (a.y - b.y) * (a.y - b.y) );
-}
 
 Node *map_to_node_system(MAP **map, int r, int c){
     Node *nodes = malloc(sizeof(Node) * r * c);
