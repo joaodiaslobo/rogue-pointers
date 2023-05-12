@@ -28,10 +28,6 @@ float heuristic(Vector2D a, Vector2D b);
 
 void update_node(Node *node, Node *parent, Vector2D end);
 
-void inspect_node(Node *nodes, Vector2D pos, int c);
-
 Node *map_to_node_system(MAP **map, int r, int c);
-
-void draw_path(NodeStack *nodes, Node *endNode);
 
 #endif

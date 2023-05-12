@@ -12,7 +12,7 @@ void update_timer(Mob *mob, unsigned long elapsedMicroseconds){
 }
 
 void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
-    if(mob->timeSinceLastUpdate > 1000000 || mob->chasingPlayer && mob->timeSinceLastUpdate > 250000){
+    if(mob->timeSinceLastUpdate > 1000000 ||(mob->chasingPlayer && mob->timeSinceLastUpdate > 250000)){
         mob->timeSinceLastUpdate = 0;
         if(!can_see_location(mob->position, player->position, 13, map) && !mob->chasingPlayer){
             // Não vê player e não está em perseguição (modo de patrulha)
@@ -23,7 +23,7 @@ void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
                 // Ainda não chegou à posição de patrulha? Move-se para a próxima "casa"
                 mob->position = get_next_patrol_path_position(mob->position, mob->targetPosition);
             }
-        } else if(!mob->chasingPlayer || distance_between_points(mob->path[0], player->position) > 1.5f) {
+        } else if((!mob->chasingPlayer || (distance_between_points(mob->path[0], player->position) > 1.5f)) && can_see_location(mob->position, player->position, 13, map)){
             // Caso esteja a ver o player mas ainda não o esteja a perseguir ou caso esteja a perseguir o player mas este tenha entretanto mudado de posição
             Node *nodes = map_to_node_system(map, r, c);
             int steps;
@@ -33,11 +33,15 @@ void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
                 mob->chasingPlayer = 1;
             }
 
+            // Reset alvo de patrulha para prevenir movimentos incorretos
+            mob->targetPosition = mob->path[0];
+
             if(mob->pathStep >= 0){
                 mob->position = mob->path[mob->pathStep];
                 mob->pathStep--;
             }
         } else {
+            // Em perseguição
             if(mob->pathStep >= 0){
                 mob->position = mob->path[mob->pathStep];
                 mob->pathStep--;

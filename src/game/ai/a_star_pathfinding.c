@@ -96,39 +96,6 @@ float heuristic(Vector2D a, Vector2D b) {
     return sqrtf(powf(b.x - a.x, 2.0f) + powf(b.y - a.y, 2.0f));
 }
 
-void inspect_node(Node *nodes, Vector2D pos, int c){
-    Node *currentNode = &nodes[pos.y * c + pos.x];
-    mvprintw(0,0, "X: %d", nodes[pos.y * c + pos.x].pos.x);
-    mvprintw(1,0, "Y: %d", nodes[pos.y * c + pos.x].pos.y);
-    mvprintw(2,0, "PARENT: %p", nodes[pos.y * c + pos.x].parent);
-    mvprintw(3,0, "VIZINHOS: %d", nodes[pos.y * c + pos.x].nNeighbours);
-    if(currentNode->neighbours[0] != NULL){
-        mvprintw(4,0, "%d", currentNode->neighbours[0]->obstacle);
-    }
-    if(currentNode->neighbours[1] != NULL){
-        mvprintw(4,2, "%d", currentNode->neighbours[1]->obstacle);
-    }
-    if(currentNode->neighbours[2] != NULL){
-        mvprintw(4,4, "%d", currentNode->neighbours[2]->obstacle);
-    }
-    if(currentNode->neighbours[3] != NULL){
-        mvprintw(5,0, "%d", currentNode->neighbours[3]->obstacle);
-    }
-    if(currentNode->neighbours[4] != NULL){
-        mvprintw(5,4, "%d", currentNode->neighbours[4]->obstacle);
-    }
-    if(currentNode->neighbours[5] != NULL){
-        mvprintw(6,0, "%d", currentNode->neighbours[5]->obstacle);
-    }
-    if(currentNode->neighbours[6] != NULL){
-        mvprintw(6,2, "%d", currentNode->neighbours[6]->obstacle);
-    }
-    if(currentNode->neighbours[7] != NULL){
-        mvprintw(6,4, "%d", currentNode->neighbours[7]->obstacle);
-    }
-}
-
-
 Node *map_to_node_system(MAP **map, int r, int c){
     Node *nodes = malloc(sizeof(Node) * r * c);
 
@@ -205,15 +172,4 @@ Node *map_to_node_system(MAP **map, int r, int c){
     }
 
     return nodes;
-}
-
-void draw_path(NodeStack *nodes, Node *endNode){
-
-    Image test = load_image_from_file("assets/sprites/gate.sprite");
-
-    Node *curr = endNode;
-    while(curr->parent != NULL){
-        draw_to_screen(test, curr->pos);
-        curr = curr->parent;
-    }
 }
