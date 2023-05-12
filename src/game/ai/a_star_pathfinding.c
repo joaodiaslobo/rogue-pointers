@@ -50,7 +50,8 @@ Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c, int r, int
                 if (tryGoal < neighbourNode->localGoal) {
                     update_node(neighbourNode, currentNode, end);
                     if (!neighbourNode->visited) {
-                        openSet.nodes[openSet.elements++] = neighbourNode;
+                        openSet.nodes[openSet.elements] = neighbourNode;
+                        openSet.elements++;
                     }
                 }
             }
@@ -76,13 +77,14 @@ Node *find_best_node(NodeStack *openSet, NodeStack *closedSet, Vector2D end) {
     }
     Node *bestNode = openSet->nodes[bestIndex];
     for (i = 0; i < closedSet->elements; i++) {
-        if (closedSet->nodes[i] == bestNode) {
-            openSet->nodes[bestIndex] = openSet->nodes[openSet->elements--];
+        if (closedSet->nodes[i] == bestNode) { 
+            openSet->nodes[bestIndex] = openSet->nodes[openSet->elements];
+            openSet->elements--;
             return find_best_node(openSet, closedSet, end);
         }
     }
-    openSet->nodes[bestIndex] = openSet->nodes[openSet->elements - 1];
     openSet->elements--;
+    openSet->nodes[bestIndex] = openSet->nodes[openSet->elements];
     return bestNode;
 }
 
@@ -126,14 +128,9 @@ Node *map_to_node_system(MAP **map, int r, int c){
 
     for (int y = 0; y < r; y++) {
         for (int x = 0; x < c; x++) {
-            nodes[y * c + x].neighbours[0] = NULL;
-            nodes[y * c + x].neighbours[1] = NULL;
-            nodes[y * c + x].neighbours[2] = NULL;
-            nodes[y * c + x].neighbours[3] = NULL;
-            nodes[y * c + x].neighbours[4] = NULL;
-            nodes[y * c + x].neighbours[5] = NULL;
-            nodes[y * c + x].neighbours[6] = NULL;
-            nodes[y * c + x].neighbours[7] = NULL;
+            for(int i = 0; i < 8; i++){
+                nodes[y * c + x].neighbours[i] = NULL;
+            }
             int nNeighbours = 0;
             if(y != 0 && x != 0){
                 nodes[y * c + x].neighbours[0] = &nodes[(y-1) * c + (x-1)];
