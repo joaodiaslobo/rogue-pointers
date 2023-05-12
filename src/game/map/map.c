@@ -127,10 +127,10 @@ void gen_water(MAP** a, int r, int c) {
         		y = (random() % r);
 			}
 			a[y][x].object = 7;
-			a[y][x+1].object = 7;
-			a[y][x-1].object = 7;
-			a[y+1][x].object = 7;
-			a[y-1][x].object = 7;
+			if(a[y][x+1].object == 0) a[y][x+1].object = 7;
+			if(a[y][x-1].object == 0) a[y][x-1].object = 7;
+			if(a[y+1][x].object == 0) a[y+1][x].object = 7;
+			if(a[y-1][x].object == 0) a[y-1][x].object = 7;
 			for(int i = 1; i < r-1; i++) {    
 	    		for(int j = 1; j < c-1; j++) {
 						if (a[i][j].object == 7) {
@@ -198,10 +198,10 @@ void gen_grass(MAP** a, int r, int c) {
         		y = (random() % r);
 			}
 			a[y][x].object = 5;
-			a[y][x+1].object = 5;
-			a[y][x-1].object = 5;
-			a[y+1][x].object = 5;
-			a[y-1][x].object = 5;
+			if(a[y][x+1].object == 0) a[y][x+1].object = 5;
+			if(a[y][x-1].object == 0) a[y][x-1].object = 5;
+			if(a[y+1][x].object == 0) a[y+1][x].object = 5;
+			if(a[y-1][x].object == 0) a[y-1][x].object = 5;
 			for(int i = 1; i < r-1; i++) {    
 	    		for(int j = 1; j < c-1; j++) {
 						if (a[i][j].object == 5) {
@@ -269,10 +269,10 @@ void gen_lava(MAP** a, int r, int c) {
         	y = (random() % r);
 		}
 		a[y][x].object = 4;
-		a[y][x+1].object = 4;
-		a[y][x-1].object = 4;
-		a[y+1][x].object = 4;
-		a[y-1][x].object = 4;
+		if(a[y][x+1].object == 0) a[y][x+1].object = 4;
+		if(a[y][x-1].object == 0) a[y][x-1].object = 4;
+		if(a[y+1][x].object == 0) a[y+1][x].object = 4;
+		if(a[y-1][x].object == 0) a[y-1][x].object = 4;
 
 		for(int i = 1; i < r-1; i++) {    
 	    	for(int j = 1; j < c-1; j++) {
