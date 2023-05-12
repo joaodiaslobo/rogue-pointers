@@ -113,7 +113,7 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 	execute_input(state, worlds, r, c);
 	
 	for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
-		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map);
+		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map, r, c);
 	}
 
 	struct timeval endTime;
