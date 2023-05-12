@@ -1,17 +1,119 @@
 #include "map.h"
 #include <string.h>
 #include <ncurses.h>
+#include <stdlib.h>
 #include "game_types.h"
 #include "image.h"
 #include "draw.h"
 #include "game.h"
+#include "engine_types.h"
 #include "stdlib.h"
+
+// Necessário para as funções que geram o mapa
+
+int elem(Vector2D e, Vector2D *v, int N) {
+    int i, ans = 0;
+    for(i = 0; i < N && !ans; i++)
+        if(e.x == v[i].x && e.y == v[i].y)
+            ans = 1;
+    return ans;
+}
+
+Vector2D* remove_elem(Vector2D* old, int old_size) {
+    if (old == 0 || old_size <= 1) { // verifica se o array_antigo tem pelo menos um elemento
+	    return old;
+    }
+    Vector2D* new= (Vector2D*) malloc((old_size-1)*sizeof(Vector2D));
+    for (int i = 1; i < old_size; i++) { // copia os elementos do vetor_antigo a partir do segundo elemento para o vetor_novo
+        new[i - 1] = old[i];
+    }
+	if (new != NULL) free(new);    
+    return &old[1]; // Retorna o ponteiro para o vetor_antigo sem o primeiro elemento
+}
+
+int valid_map(MAP** a, int r, int c) {
+	Vector2D fst, tmp;
+	int i, count = 0, k = 0;
+
+	fst.x = -1;
+	fst.y = -1;
+	for(i = 1; i < r-1; i++) { // encontra o primeiro ponto e guarda num array todas as posições onde o jogador pode andar
+		for(int j = 1; j < c-1; j++) {
+			if (a[i][j].object == 0){
+				count++;
+			    if (fst.x == -1) { // não volta a fazer esta condição depois de encontrar um primeiro ponto
+					fst.x = j; 
+					fst.y = i;
+				}
+			}
+		}
+	}
+	i = 0;
+	Vector2D* visit = malloc(count * sizeof(Vector2D));
+	if (visit == NULL) {
+		exit(EXIT_FAILURE);
+	}
+	Vector2D* walk = malloc(count * sizeof(Vector2D));
+	if (walk == NULL) {
+		exit(EXIT_FAILURE);
+	}
+	visit[i].x = fst.x;
+	visit[i].y = fst.y;
+	while (i != -1) { 
+		tmp.x = visit[0].x;
+		tmp.y = visit[0].y+1;
+		if (a[tmp.y][tmp.x].object == 0 && elem(tmp, walk, count) == 0) {
+			walk[k].x = tmp.x;
+			walk[k].y = tmp.y;
+			i++;
+			visit[i].x = tmp.x;
+			visit[i].y = tmp.y;
+			k++;
+		}
+		tmp.x = visit[0].x;
+		tmp.y = visit[0].y-1; 
+		if (a[tmp.y][tmp.x].object == 0 && elem(tmp, walk, count) == 0) {
+			walk[k].x = tmp.x;
+			walk[k].y = tmp.y;
+			i++;
+			visit[i].x = tmp.x;
+			visit[i].y = tmp.y;
+			k++;
+		}
+		tmp.x = visit[0].x+1;
+		tmp.y = visit[0].y; 
+		if (a[tmp.y][tmp.x].object == 0 && elem(tmp, walk, count) == 0) {
+			walk[k].x = tmp.x;
+			walk[k].y = tmp.y;
+			i++;
+			visit[i].x = tmp.x;
+			visit[i].y = tmp.y;
+			k++;
+		}
+		tmp.x = visit[0].x-1;
+		tmp.y = visit[0].y; 
+		if (a[tmp.y][tmp.x].object == 0 && elem(tmp, walk, count) == 0) {
+			walk[k].x = tmp.x;
+			walk[k].y = tmp.y;
+			i++;
+			visit[i].x = tmp.x;
+			visit[i].y = tmp.y;
+			k++;
+		}
+		visit = remove_elem (visit, i+1);
+		i--;
+	} 
+	//if (visit != NULL)  free(visit);
+	//if (walk != NULL)  free(walk);
+	if (k >= count) return 0; // 0 - mapa valido | 1 - Mapa inválido
+	else return 1;
+}
+
 
 void gen_water(MAP** a, int r, int c) {
 	// decidir se aparece água em um nível
 	int x = 0, y = 0, water = 0, ind, n = 2, prob_water = 0;
 	if (LEVEL != 0) prob_water = (1/LEVEL)*100;
-	else prob_water = 0;
     while (n > 0) {
 		water = 0;
 		int random_num = rand() % 100;
@@ -420,92 +522,17 @@ Vector2D get_random_floor_position(MAP** map, int r, int c){
 	return pos;
 }
 
-// Gera as borders do mapa
-/*
-void gen_border_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
-   for(int j = 0; j < c; j++){ // Constroi a border horizontal
-		a[0][j].object = 1; 
-		a[r-1][j].object = 1;
-	} 
-	
-    for(int i = 0; i < r; i++) { // Constroi a border vertical
-        a[i][0].object = 1; 
-	    a[i][c-1].object = 1;
-	} 
-}
-*/
-
-// Gera a primeira versão do mapa de uma forma aleatória
-/*
-void gen_first_map(MAP (*a)[NUM_COLUMNS], int r, int c) {  
-   int i = 0;
-
-   for(i = 1; i < r-1; i++) {    
-	    for(int j = 1; j < c-1; j++) {
-           int valid_objects[] = {1, 1, 1, 0, 0}; //60% de paredes e 40% de espaços por onde andar
-           int random_num = (random() % 5);
-           a[i][j].object = valid_objects[random_num];
-		}
-   } 
-}
-*/
-
-// Aliza o mapa
-/*void smooth_map(MAP (*a)[NUM_COLUMNS], int r, int c, int x1, int x2) {
-   int count = 0, i;
-   
-   for(i = 2; i < r-2; i = i+3) {    
-	    for(int j = 2; j < c-2; j = j+3) {
-		   if (a[i][j].object == 1){ // conta
-		      if (a[i][j-1].object == 0) count++;
-			  if (a[i][j+1].object == 0) count++;
-			  if (a[i-1][j].object == 0) count++;
-			  if (a[i+1][j].object == 0) count++;
-			  if (a[i-1][j-1].object == 0) count++;
-			  if (a[i-1][j+1].object == 0) count++; 
-			  if (a[i+1][j-1].object == 0) count++;
-			  if (a[i+1][j+1].object == 0) count++;
-		   }
-		   //printw("contador:%d ",count);
-		   //getch();
-		   if (count >= x1){
-			  a[i][j].object = 1;
-			  a[i][j-1].object = 1;
-			  a[i][j+1].object = 1;
-			  a[i-1][j].object = 1;
-			  a[i+1][j].object = 1;
-			  a[i+1][j+1].object = 1;
-			  a[i+1][j-1].object = 1;
-			  a[i-1][j+1].object = 1;
-			  a[i-1][j-1].object = 1;
-		   } else if (count <= x2){
-			  a[i][j].object = 0;
-			  a[i][j-1].object = 0;
-			  a[i][j+1].object = 0;
-			  a[i-1][j].object = 0;
-			  a[i+1][j].object = 0;
-			  a[i+1][j+1].object = 0;
-			  a[i+1][j-1].object = 0;
-			  a[i-1][j+1].object = 0;
-			  a[i-1][j-1].object = 0;
-		   } 
-		   count = 0;
-		}
-    }
-}
-*/
-
 // Gera o mapa
 void gen_map(MAP** a, int r, int c) {
-   
-   /*
-      gen_border_map(a,r,c);
-      gen_first_map(a,r,c);
-      smooth_map(a,r,c,5,2);
-	  new_level_map(a,r,c);
-   */
-   
     new_room_map(a,r,c);
+	while (valid_map(a,r,c) == 1) {
+		for (int j = 0; j < r; j++) {
+		   for (int k = 0; k < c; k++) {
+				a[j][k].object = 3; // Inicializando o valor do campo object como 3 (vazio)
+		   }
+	   	}
+		new_room_map(a,r,c);
+	}
     new_level_map(a,r,c);
 }
 

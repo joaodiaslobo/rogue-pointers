@@ -181,6 +181,7 @@ int game(Terminal *terminal) {
 		gameState->player.position.x = (random() % ncols);
 		gameState->player.position.y = (random() % nrows);
 	}
+	gameState->gameover = 0;
 
 	endwin(); 
 	
@@ -196,7 +197,7 @@ int game(Terminal *terminal) {
 	Image characterSprite = load_image_from_file("assets/sprites/characters/player1.sprite");
 
 	struct timeval currentTime;
-
+    
 	while(1) {
 		gettimeofday(&currentTime, NULL);
 		move(nrows - 1, 0);
@@ -208,6 +209,7 @@ int game(Terminal *terminal) {
 		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
 	    draw_to_screen(gate, gameState->player.position);
 		draw_light(gameState, nrows, ncols);
+
 		//draw_to_screen(characterSprite, gameState->player.position);
 		/*
 		Se utilizarmos apenas 1 quadrado como player, as funcionalidades de não atravessar paredes e descer de níveis, 
@@ -231,8 +233,20 @@ int game(Terminal *terminal) {
 		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
 		button(buttonGradient, "Inventory", buttonInvPos);
     
-		//move(0, 180);
-		//printw("Level: %d", LEVEL);
+		if (gameState->gameover == 1){
+			move(0,150);
+			printw("** PERDEU O JOGO PRIMA c para continuar**");
+			refresh();
+        	int c;
+        	do {
+            	c = getchar();
+        	} while (c != 'c');
+        	endwin();
+        	return(0);
+		}
+
+		move(0, 180);
+		printw("Level: %d", LEVEL);
 		
 		update(gameState, worlds, nrows, ncols, currentTime);
 	}
