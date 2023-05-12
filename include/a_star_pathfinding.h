@@ -20,13 +20,13 @@ typedef struct {
     int elements;
 } NodeStack;
 
-Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c);
+Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c, int r, int *nSteps);
 
-void pop_first(NodeStack *stack);
+Node *find_best_node(NodeStack *open_set, NodeStack *closed_set, Vector2D end);
 
-void order_untested_nodes(NodeStack *stack);
+float heuristic(Vector2D a, Vector2D b);
 
-float distance_between_points(Vector2D a, Vector2D b);
+void update_node(Node *node, Node *parent, Vector2D end);
 
 void inspect_node(Node *nodes, Vector2D pos, int c);
 

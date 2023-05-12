@@ -12,9 +12,10 @@ void update_timer(Mob *mob, unsigned long elapsedMicroseconds){
 }
 
 void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
-    if(mob->timeSinceLastUpdate > 1000000){
+    if(mob->timeSinceLastUpdate > 1000000 || mob->chasingPlayer && mob->timeSinceLastUpdate > 250000){
         mob->timeSinceLastUpdate = 0;
-        if(!can_see_location(mob->position, player->position, 13, map)){
+        if(!can_see_location(mob->position, player->position, 13, map) && !mob->chasingPlayer){
+            // Não vê player e não está em perseguição (modo de patrulha)
             if(mob->position.x == mob->targetPosition.x && mob->position.y == mob->targetPosition.y){
                 // Quando já chegou à posição de patrulha que queria
                 mob->targetPosition = pick_random_patrol_position(mob->position, map);
@@ -22,18 +23,27 @@ void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
                 // Ainda não chegou à posição de patrulha? Move-se para a próxima "casa"
                 mob->position = get_next_patrol_path_position(mob->position, mob->targetPosition);
             }
-        } else if(mob->pathStep == -1) {
-            // Behaviour de atacar player / perseguição
+        } else if(!mob->chasingPlayer || distance_between_points(mob->path[0], player->position) > 1.5f) {
+            // Caso esteja a ver o player mas ainda não o esteja a perseguir ou caso esteja a perseguir o player mas este tenha entretanto mudado de posição
             Node *nodes = map_to_node_system(map, r, c);
-            //inspect_node(nodes, player->position, c);
-            mob->path = find_path(nodes, player->position, mob->position, c);
-            mob->pathStep = 0;
-            //draw_path(nodes, &nodes[mob->position.y * c + mob->position.x]);
-        } else if(mob->position.x != player->position.x && mob->position.y != player->position.y ) {
-            mob->position = mob->path[mob->pathStep];
-            mob->pathStep++;
+            int steps;
+            mob->path = find_path(nodes, player->position, mob->position, c, r, &steps);
+            if(mob->path != NULL){
+                mob->pathStep = steps - 1;
+                mob->chasingPlayer = 1;
+            }
+
+            if(mob->pathStep >= 0){
+                mob->position = mob->path[mob->pathStep];
+                mob->pathStep--;
+            }
         } else {
-            mob->pathStep = -1;
+            if(mob->pathStep >= 0){
+                mob->position = mob->path[mob->pathStep];
+                mob->pathStep--;
+            } else {
+                mob->chasingPlayer = 0;
+            }
         }
     }
 }
@@ -65,6 +75,10 @@ Vector2D get_next_patrol_path_position(Vector2D pos, Vector2D target){
     return pos;
 }
 
+float distance_between_points(Vector2D a, Vector2D b){
+    return sqrt( (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) );
+}
+
 // Algoritmo de Bresenham, verifica a visibilidade entre a posição do jogador e a posição do inimigo
 int can_see_location(Vector2D posA, Vector2D posB, int distance, MAP** map){
     int dx = abs(posB.x - posA.x);
@@ -75,7 +89,7 @@ int can_see_location(Vector2D posA, Vector2D posB, int distance, MAP** map){
      
     Vector2D pos = {posA.x, posA.y};
     
-    while ((pos.x != posB.x || pos.y != posB.y) && (map[pos.y][pos.x].object != 1) && (distance > 0))
+    while ((pos.x != posB.x || pos.y != posB.y) && (map[pos.y][pos.x].object != 1) && (map[pos.y][pos.x].object != 3) && (distance > 0))
     {
         int e2 = 2 * err;
         if (e2 > -dy)
