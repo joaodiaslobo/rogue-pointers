@@ -11,6 +11,7 @@
 #include "mobs_ai.h"
 #include <unistd.h>
 #include "sys/time.h"
+#include "components.h"
 
 int LEVEL = 0;
 
@@ -126,6 +127,7 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 	update_drowning(worlds[LEVEL].map, state, elapsedMicroseconds);
 
 	if(state->player.timeSinceDrownStart > 10000000){
+		state->player.health = 0;
 		state->gameover = 1;
 	}
 	
@@ -203,7 +205,7 @@ int game(Terminal *terminal) {
 		draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
 		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
 	    draw_to_screen(gate, gameState->player.position);
-		draw_light(gameState, nrows, ncols);
+		draw_light(gameState, nrows, ncols, worlds[LEVEL].map);
 
 		//draw_to_screen(characterSprite, gameState->player.position);
 		//move(st.playerX, st.playerY);
@@ -220,6 +222,14 @@ int game(Terminal *terminal) {
 		button(buttonGradient, "Menu", buttonMenuPos);
 		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
 		button(buttonGradient, "Inventory", buttonInvPos);
+
+		Vector2D healthBarPos = {0,1};
+		progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);
+
+		int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
+
+		Vector2D oxygenBarPos = {0,3};
+		progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
     
 		if (gameState->gameover == 1){
 			move(0,150);
@@ -233,15 +243,7 @@ int game(Terminal *terminal) {
         	return(0);
 		}
 
-		move(0, 180);
-		printw("Level: %d", LEVEL);
-
-		if(gameState->player.timeSinceDrownStart > 0){
-			int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
-			mvprintw(1, 180, "Time to drown %d ", timeToDrownSecs); 
-		} else {
-			mvprintw(1, 180, "                    "); 
-		}
+		mvprintw(0, 180, "Level: %d", LEVEL);
 
 		update(gameState, worlds, nrows, ncols, currentTime);
 	}

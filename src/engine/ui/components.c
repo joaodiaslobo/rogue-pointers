@@ -145,3 +145,34 @@ void button(short color_gradient[4], char *text, Vector2D pos){
     mvaddch(pos.y, pos.x + 5 + textSize, ' ');
     attroff(COLOR_PAIR(color_gradient[3]+8));
 }
+
+void progress_bar(int value, int max, int width, short primaryColor, short secondaryColor, char *text, Vector2D pos){
+    int posX = (width / 2) - (strlen(text) / 2);
+
+    int index = 0;
+    for(int i = 0; i < pos.x + width; i++){
+        if(i < (value * width / max)){
+            attron(COLOR_PAIR(primaryColor+8));
+            attron(A_BOLD);
+            if(i >= posX && i < posX+strlen(text)){
+                mvaddch(pos.y, pos.x + i, text[index]);
+                index++;
+            } else {
+                mvaddch(pos.y, pos.x + i, ' ');
+            }
+            attroff(A_BOLD);
+            attroff(COLOR_PAIR(primaryColor+8));
+        } else {
+            attron(COLOR_PAIR(secondaryColor+8));
+            attron(A_BOLD);
+            if(i >= posX && i < posX+strlen(text)){
+                mvaddch(pos.y, pos.x + i, text[index]);
+                index++;
+            } else {
+                mvaddch(pos.y, pos.x + i, ' ');
+            }
+            attroff(A_BOLD);
+            attroff(COLOR_PAIR(secondaryColor+8));
+        }
+    }
+}

@@ -10,6 +10,6 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
 
 void update_drowning(MAP** map, GameState *gameState, unsigned long elapsedMicroseconds);
 
-void draw_light(GameState *gameState, int r, int c);
+void draw_light(GameState *gameState, int r, int c, MAP **map);
 
 #endif

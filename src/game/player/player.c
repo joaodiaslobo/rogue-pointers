@@ -15,6 +15,7 @@ Player *init_player(char name[15], Vector2D pos){
     Inventory inventory;
     strcpy(player->name, name);
     player->position = pos;
+    player->health = 50;
     player->gold = 0;
     player->inventory = inventory;
     player->selectedSlot = 0;
@@ -57,7 +58,7 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
     }
 }
 
-void update_drowning(MAP** map, GameState *gameState, unsigned long elapsedMicroseconds){
+void update_drowning(MAP **map, GameState *gameState, unsigned long elapsedMicroseconds){
     if(map[gameState->player.position.y][gameState->player.position.x].object == 7){
         gameState->player.timeSinceDrownStart += elapsedMicroseconds;
     } else {
@@ -65,7 +66,7 @@ void update_drowning(MAP** map, GameState *gameState, unsigned long elapsedMicro
     }
 }
 
-void draw_light(GameState *gameState, int r, int c){
+void draw_light(GameState *gameState, int r, int c, MAP **map){
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
     for(int i = 0; i < c; i++){
@@ -73,7 +74,7 @@ void draw_light(GameState *gameState, int r, int c){
             pos.x = i;
             pos.y = j;
             //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador
-            if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256){
+            if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256 && map[j][i].object != 3){
                 draw_to_screen(image, pos);
             }
         }
