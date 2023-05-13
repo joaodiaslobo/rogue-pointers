@@ -6,8 +6,7 @@
 #include "player.h"
 #include "sys/time.h"
 
-extern int LEVEL, elapsed_time_drown;
-extern struct timeval start_time_drown;
+extern int LEVEL;
     
 GameState *init_game_state();
 

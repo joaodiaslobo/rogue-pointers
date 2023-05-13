@@ -78,6 +78,7 @@ typedef struct {
     Inventory inventory;
     int selectedSlot;
     int speedMultiplier;
+    unsigned long timeSinceDrownStart; 
 } Player;
 
 // Estado do jogo

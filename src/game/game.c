@@ -13,7 +13,6 @@
 #include "sys/time.h"
 
 int LEVEL = 0;
-// TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
 
 GameState *init_game_state(){
 	GameState *state = malloc(sizeof(GameState));
@@ -124,6 +123,12 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 		update_timer(&worlds[LEVEL].mobs[i], elapsedMicroseconds);
 	}
 
+	update_drowning(worlds[LEVEL].map, state, elapsedMicroseconds);
+
+	if(state->player.timeSinceDrownStart > 10000000){
+		state->gameover = 1;
+	}
+	
 	refresh();
 }
 
@@ -184,19 +189,12 @@ int game(Terminal *terminal) {
 	gameState->gameover = 0;
 
 	endwin(); 
-	
-	/*
-	 * Este código está muito mal escrito!
-	 * Deveria existir uma função chamada draw_player!
-	 *
-	 * Se estamos a desenhar uma luz à volta do jogador
-	 * deveria existir uma função chamada draw_light!
-	 *
-	 */
 
 	Image characterSprite = load_image_from_file("assets/sprites/characters/player1.sprite");
     
+	struct timeval currentTime;
 	while(1) {
+		gettimeofday(&currentTime, NULL);
 		move(nrows - 1, 0);
 		attron(COLOR_PAIR(COLOR_WHITE));
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
@@ -238,21 +236,13 @@ int game(Terminal *terminal) {
 		move(0, 180);
 		printw("Level: %d", LEVEL);
 
-		struct timeval currentTime;
-		if(start_time_drown.tv_sec != 0) { // jogador entrou em água, começa a contagem para se afogar 
-	    	gettimeofday(&currentTime, NULL);
-			unsigned long elapsed_time_drown = (currentTime.tv_sec - start_time_drown.tv_sec);
-			move(1, 180);
-        	if(elapsed_time_drown <= 10) {
-				unsigned long aux = 10 - elapsed_time_drown; 
-				printw("Time to drown %d ", aux); 
-				if (elapsed_time_drown == 10) gameState->gameover = 1;
-			}
+		if(gameState->player.timeSinceDrownStart > 0){
+			int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
+			mvprintw(1, 180, "Time to drown %d ", timeToDrownSecs); 
+		} else {
+			mvprintw(1, 180, "                    "); 
 		}
-		else {
-			move(1, 180);
-			printw("                    "); 
-		}
+
 		update(gameState, worlds, nrows, ncols, currentTime);
 	}
 
