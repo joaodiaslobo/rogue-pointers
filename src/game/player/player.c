@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "image.h"
+#include "sound.h"
 
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
@@ -63,7 +64,10 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
         gameState->player.position.y = newPos.y;
         for(int i = 1; i < r; i++) {  
 		    for(int j = 1; j < c; j++) {
-                if(map[i][j].object == 10) map[i][j].object = 0;
+                if(map[i][j].object == 10){
+                    map[i][j].object = 0;
+                    play_sound(0);
+                }
             }
         }       
     }
