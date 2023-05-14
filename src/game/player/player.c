@@ -91,7 +91,7 @@ void draw_light(GameState *gameState, int r, int c, MAP **map){
             pos.y = j;
             //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador
             if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256 && map[j][i].object != 3){
-                draw_to_screen(image, pos);
+                //draw_to_screen(image, pos);
             }
         }
     }

@@ -12,10 +12,9 @@
 // Necessário para as funções que geram o mapa
 
 void chest_room(MAP** a, int r, int c) {
-	 Image gate = load_image_from_file("assets/sprites/gate.sprite");
 	for(int i = 1; i < r-1; i++) {  
 		for(int j = 1; j < c-1; j++) {
-			Vector2D v1 = {0, 0}, v2 = {0, 0}, v3 = {0, 0}, v4 = {0, 0}, d1 = {0, 0}, d2 = {0, 0};
+			Vector2D v1 = {0, 0}, d1 = {0, 0}, d2 = {0, 0};
 			int l1 = 1, l2 = 1, l3 = 1, l4 = 1, num_doors = 0, aux1 = 0, aux2 = 0;
 			if(a[i][j].object == 1 && a[i][j+1].object == 1 && a[i+1][j].object == 1){ //encontra o canto superior esquerdo da sala
 				v1.x = j;
@@ -35,11 +34,6 @@ void chest_room(MAP** a, int r, int c) {
 					} 
 					aux1++;	
 				}
-				if(a[aux1][j].object == 1 && a[aux1][j+1].object == 1){ //encontra o canto inferior esquerdo da sala
-					v2.x = j;
-					v2.y = aux1;
-				}
-				
 				aux2 = j+1;
 				while(a[i+1][aux2].object != 1 && aux2 < c-1){ //percorre parede superior da sala (lado 2)
 					l2 = l2+1;
@@ -54,11 +48,6 @@ void chest_room(MAP** a, int r, int c) {
 					} 
 					aux2++;	
 				}
-				if(a[i][aux2].object == 1 && a[i+1][aux2].object == 1){ //encontra o canto superior direito da sala
-					v3.x = aux2;
-					v3.y = i;
-				}
-				
 				j++;
 				while(a[aux1-1][j].object != 1 && j < c-1){ //percorre parede inferior da sala (lado 3)
 					l3 = l3+1;
@@ -73,11 +62,6 @@ void chest_room(MAP** a, int r, int c) {
 					} 
 					j++;	
 				}
-				if(a[aux1][j].object == 1 && a[aux1-1][j].object == 1){ //encontra o canto inferior esquerdo da sala
-					v4.x = j;
-					v4.y = aux2;
-				}
-				
 				aux1 = i+1;
 				while(a[aux1][j-1].object != 1 && aux1 < r-1){ //percorre parede direita da sala (lado 4)
 					l4 = l4+1;
@@ -92,11 +76,16 @@ void chest_room(MAP** a, int r, int c) {
 					} 
 					aux1++;
 				}
-				
 				if(num_doors == 2 && l1 == l4 && l2 == l3){
+					for(int k = v1.y + 1; k < v1.y + l1; k++) { //muda a cor do chão da sala fechada  
+						for(int l = v1.x + 1 ; l < v1.x + l2; l++) {
+							a[k][l].object = 12;
+						}
+					}
 					a[v1.y+1][v1.x+1].object = 9; // posiciona o baú perto do canto superior esquerdo
 					a[d1.y][d1.x].object = 10; // fecha a porta - duas posições
 					a[d2.y][d2.x].object = 10; // fecha a porta - duas posições
+                    
 					// posiciona a chave
 					int x = (random() % c);
         			int y = (random() % r);
@@ -105,7 +94,7 @@ void chest_room(MAP** a, int r, int c) {
         				y = (random() % r);
 					}
 					a[y][x].object = 11;
-					return(0);
+					return;
 				}
 			}
 		}
@@ -221,7 +210,6 @@ void gen_water(MAP** a, int r, int c) {
    		if (random_num <= 100) {
 			water = 1;
 		}
-		// gerar a relva
 		if (water == 1) {
 			while(a[y][x].object != 0) {
 				x = (random() % c);
@@ -746,6 +734,13 @@ void print_map(MAP** a, int r, int c) {
 				init_pair(k, key.pixels[0].color, walk.pixels[0].color);          
 				attron(COLOR_PAIR(k));
 				mvprintw(i, j*2, "-o" );
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 12: // imprimir chão da sala enquanto fechada com um cor própria 
+				k = 111;
+				init_pair(k, COLOR_BLACK, walk.pixels[1].color);          
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  " );
             	attroff(COLOR_PAIR(k));
 				break;
 			default:
