@@ -44,8 +44,8 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
             break;
     }
 
-    // Valida a posição do jogador no mapa, se este move para uma parede ou para fora do mapa não pode avançar.
-    if(!(map[newPos.y][newPos.x].object == 1 ||  map[newPos.y][newPos.x].object == 3 || newPos.x < 0 || newPos.y < 0 || newPos.y >= r || newPos.x >= c)){
+    // Valida a posição do jogador no mapa, se este move para uma parede, porta ou para fora do mapa não pode avançar
+    if(!(map[newPos.y][newPos.x].object == 1 ||  map[newPos.y][newPos.x].object == 10 || map[newPos.y][newPos.x].object == 3 || newPos.x < 0 || newPos.y < 0 || newPos.y >= r || newPos.x >= c)){
         gameState->player.position.x = newPos.x;
         gameState->player.position.y = newPos.y;
     }
