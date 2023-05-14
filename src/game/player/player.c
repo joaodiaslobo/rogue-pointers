@@ -57,18 +57,6 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
         gameState->gameover = 1;
     }
 
-    // Inicializa a contagem do tempo, para verificar se o jogador se afogou
-    if(map[newPos.y][newPos.x].object == 7 && start_time_drown.tv_sec == 0){
-        gettimeofday(&start_time_drown, NULL); // obter o tempo inicial
-        gameState->player.position.x = newPos.x;
-        gameState->player.position.y = newPos.y;
-    }
-    else if (map[newPos.y][newPos.x].object == 7 && start_time_drown.tv_sec != 0){
-        gameState->player.position.x = newPos.x;
-        gameState->player.position.y = newPos.y;
-    }
-    if(map[newPos.y][newPos.x].object != 7 && map[newPos.y][newPos.x].object != 1 && start_time_drown.tv_sec != 0) start_time_drown = (struct timeval) {0};
-
     // Se o jogador encountrou a chave abre a porta da sala com o baú
     if(map[newPos.y][newPos.x].object == 11){
         gameState->player.position.x = newPos.x;
