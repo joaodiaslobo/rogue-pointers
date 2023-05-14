@@ -9,4 +9,6 @@ int modal_confim(char text[], int width, int screenYMax, int screenXMax);
 
 void button(short color_gradient[4], char *text, Vector2D pos);
 
+void progress_bar(int value, int max, int width, short primaryColor, short secondaryColor, char *text, Vector2D pos);
+
 #endif

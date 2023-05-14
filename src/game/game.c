@@ -11,9 +11,9 @@
 #include "mobs_ai.h"
 #include <unistd.h>
 #include "sys/time.h"
+#include "components.h"
 
 int LEVEL = 0;
-// TODO: Este ficheiro tem coisas a mais, algumas funcionalidades devem ser separadas para uma pasta à parte
 
 GameState *init_game_state(){
 	GameState *state = malloc(sizeof(GameState));
@@ -113,7 +113,7 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 	execute_input(state, worlds, r, c);
 	
 	for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
-		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map);
+		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map, r, c);
 	}
 
 	struct timeval endTime;
@@ -124,6 +124,13 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 		update_timer(&worlds[LEVEL].mobs[i], elapsedMicroseconds);
 	}
 
+	update_drowning(worlds[LEVEL].map, state, elapsedMicroseconds);
+
+	if(state->player.timeSinceDrownStart > 10000000){
+		state->player.health = 0;
+		state->gameover = 1;
+	}
+	
 	refresh();
 }
 
@@ -184,19 +191,12 @@ int game(Terminal *terminal) {
 	gameState->gameover = 0;
 
 	endwin(); 
-	
-	/*
-	 * Este código está muito mal escrito!
-	 * Deveria existir uma função chamada draw_player!
-	 *
-	 * Se estamos a desenhar uma luz à volta do jogador
-	 * deveria existir uma função chamada draw_light!
-	 *
-	 */
 
 	Image characterSprite = load_image_from_file("assets/sprites/characters/player1.sprite");
     
+	struct timeval currentTime;
 	while(1) {
+		gettimeofday(&currentTime, NULL);
 		move(nrows - 1, 0);
 		attron(COLOR_PAIR(COLOR_WHITE));
 		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
@@ -205,7 +205,7 @@ int game(Terminal *terminal) {
 		draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
 		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
 	    draw_to_screen(gate, gameState->player.position);
-		draw_light(gameState, nrows, ncols);
+		draw_light(gameState, nrows, ncols, worlds[LEVEL].map);
 
 		//draw_to_screen(characterSprite, gameState->player.position);
 		//move(st.playerX, st.playerY);
@@ -222,6 +222,14 @@ int game(Terminal *terminal) {
 		button(buttonGradient, "Menu", buttonMenuPos);
 		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
 		button(buttonGradient, "Inventory", buttonInvPos);
+
+		Vector2D healthBarPos = {0,1};
+		progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);
+
+		int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
+
+		Vector2D oxygenBarPos = {0,3};
+		progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
     
 		if (gameState->gameover == 1){
 			move(0,150);
@@ -235,24 +243,8 @@ int game(Terminal *terminal) {
         	return(0);
 		}
 
-		move(0, 180);
-		printw("Level: %d", LEVEL);
+		mvprintw(0, 180, "Level: %d", LEVEL);
 
-		struct timeval currentTime;
-		if(start_time_drown.tv_sec != 0) { // jogador entrou em água, começa a contagem para se afogar 
-	    	gettimeofday(&currentTime, NULL);
-			unsigned long elapsed_time_drown = (currentTime.tv_sec - start_time_drown.tv_sec);
-			move(1, 180);
-        	if(elapsed_time_drown <= 10) {
-				unsigned long aux = 10 - elapsed_time_drown; 
-				printw("Time to drown %d ", aux); 
-				if (elapsed_time_drown == 10) gameState->gameover = 1;
-			}
-		}
-		else {
-			move(1, 180);
-			printw("                    "); 
-		}
 		update(gameState, worlds, nrows, ncols, currentTime);
 	}
 

@@ -6,10 +6,6 @@
 #include <stdio.h>
 #include "image.h"
 
-struct timeval start_time_drown = (struct timeval) {0};
-int elapsed_time_drown = 0;
-
-
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
     if (player == NULL) {
@@ -19,10 +15,12 @@ Player *init_player(char name[15], Vector2D pos){
     Inventory inventory;
     strcpy(player->name, name);
     player->position = pos;
+    player->health = 50;
     player->gold = 0;
     player->inventory = inventory;
     player->selectedSlot = 0;
     player->speedMultiplier = 1;
+    player->timeSinceDrownStart = 0;
     return player;
 }
 
@@ -84,7 +82,15 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
 
 }
 
-void draw_light(GameState *gameState, int r, int c){
+void update_drowning(MAP **map, GameState *gameState, unsigned long elapsedMicroseconds){
+    if(map[gameState->player.position.y][gameState->player.position.x].object == 7){
+        gameState->player.timeSinceDrownStart += elapsedMicroseconds;
+    } else {
+        gameState->player.timeSinceDrownStart = 0;
+    }
+}
+
+void draw_light(GameState *gameState, int r, int c, MAP **map){
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
     for(int i = 0; i < c; i++){
@@ -92,8 +98,8 @@ void draw_light(GameState *gameState, int r, int c){
             pos.x = i;
             pos.y = j;
             //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador
-            if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256){
-            //draw_to_screen(image, pos);
+            if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256 && map[j][i].object != 3){
+                draw_to_screen(image, pos);
             }
         }
     }

@@ -582,6 +582,9 @@ int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
 			mob.health = 10;
 			mob.mobBehavior = STUPID;
 			mob.timeSinceLastUpdate = 0;
+			mob.pathStep = 0;
+			mob.path = NULL;
+			mob.chasingPlayer = 0;
 			mobs[i] = mob;
 		}
 
