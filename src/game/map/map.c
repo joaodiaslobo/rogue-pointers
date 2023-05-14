@@ -651,33 +651,18 @@ void print_map(MAP** a, int r, int c) {
       for (int j = 0; j < c; j++){
 		switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
-		    	//Vector2D pos = {j,i};
-				//draw_to_screen(walk, pos);
-				k = 100;
-				init_pair(k, COLOR_BLACK, walk.pixels[0].color);         
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  ");
-            	attroff(COLOR_PAIR(k));
+		    	Vector2D pos = {j,i};
+				draw_to_screen(walk, pos);
 				break;
 			case 1: // imprimir a parede 
-				//Vector2D pos = {j,i};
-				//draw_to_screen(wall, pos);
-			    k = 101;
-			    init_pair(k, COLOR_BLACK, wall.pixels[0].color);         
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  ");
-                attroff(COLOR_PAIR(k));
-				//move(i,j*2);
-				//printw("#");
+				pos.x = j;
+				pos.y = i;
+				draw_to_screen(wall, pos);
 				break;
 			case 2: // imprimir porta para outro nível
-				//Vector2D pos = {j,i};
-				//draw_to_screen(gate, pos);
-				k = 102;
-				init_pair(k, COLOR_BLACK, gate.pixels[0].color);         
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  ");
-            	attroff(COLOR_PAIR(k));
+				pos.x = j;
+				pos.y = i;
+				draw_to_screen(gate, pos);
 				break;
 			case 4: // imprimir lava	
 				r_num = random() % 5;
@@ -702,6 +687,9 @@ void print_map(MAP** a, int r, int c) {
             	attroff(COLOR_PAIR(k));
 				break;
 			case 7: // imprimir água profunda 
+				pos.x = j;
+				pos.y = i;
+				draw_to_screen(water, pos);
 				k = 106;
 				init_pair(k, COLOR_BLACK, water.pixels[0].color);          
 				attron(COLOR_PAIR(k));
@@ -716,18 +704,14 @@ void print_map(MAP** a, int r, int c) {
             	attroff(COLOR_PAIR(k));
 				break;
 			case 9: // imprimir baú 
-				k = 108;
-				init_pair(k, COLOR_BLACK, chest.pixels[0].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+				pos.x = j;
+				pos.y = i;
+				draw_to_screen(chest, pos);
 				break;
 			case 10: // imprimir porta 
-				k = 109;
-				init_pair(k, COLOR_BLACK, door.pixels[0].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+				pos.x = j;
+				pos.y = i;
+				draw_to_screen(door, pos);
 				break;
 			case 11: // imprimir chave 
 				k = 110;
