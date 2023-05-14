@@ -11,6 +11,107 @@
 
 // Necessário para as funções que geram o mapa
 
+void chest_room(MAP** a, int r, int c) {
+	 Image gate = load_image_from_file("assets/sprites/gate.sprite");
+	for(int i = 1; i < r-1; i++) {  
+		for(int j = 1; j < c-1; j++) {
+			Vector2D v1 = {0, 0}, v2 = {0, 0}, v3 = {0, 0}, v4 = {0, 0}, d1 = {0, 0}, d2 = {0, 0};
+			int l1 = 1, l2 = 1, l3 = 1, l4 = 1, num_doors = 0, aux1 = 0, aux2 = 0;
+			if(a[i][j].object == 1 && a[i][j+1].object == 1 && a[i+1][j].object == 1){ //encontra o canto superior esquerdo da sala
+				v1.x = j;
+				v1.y = i;
+            	
+				aux1 = i+1;
+				while(a[aux1][j+1].object != 1 && aux1 < r-1){ //percorre parede esquerda da sala (lado 1)
+					l1 = l1+1;
+					if(a[aux1][j].object == 0){ 
+						num_doors++; //encontrou uma porta
+						if(num_doors == 2){ //guarda posição da porta
+							d1.x = j;
+							d1.y = aux1-1;
+							d2.x = j;
+							d2.y = aux1;
+						}
+					} 
+					aux1++;	
+				}
+				if(a[aux1][j].object == 1 && a[aux1][j+1].object == 1){ //encontra o canto inferior esquerdo da sala
+					v2.x = j;
+					v2.y = aux1;
+				}
+				
+				aux2 = j+1;
+				while(a[i+1][aux2].object != 1 && aux2 < c-1){ //percorre parede superior da sala (lado 2)
+					l2 = l2+1;
+					if(a[i][aux2].object == 0){ 
+						num_doors++; //encontrou uma porta
+						if(num_doors == 2){ //guarda posição da porta
+							d1.x = aux2-1;
+							d1.y = i;
+							d2.x = aux2;
+							d2.y = i;
+						}
+					} 
+					aux2++;	
+				}
+				if(a[i][aux2].object == 1 && a[i+1][aux2].object == 1){ //encontra o canto superior direito da sala
+					v3.x = aux2;
+					v3.y = i;
+				}
+				
+				j++;
+				while(a[aux1-1][j].object != 1 && j < c-1){ //percorre parede inferior da sala (lado 3)
+					l3 = l3+1;
+					if(a[aux1][j].object == 0){ 
+						num_doors++; //encontrou uma porta
+						if(num_doors == 2){ //guarda posição da porta
+							d1.x = j-1;
+							d1.y = aux1;
+							d2.x = j;
+							d2.y = aux1;
+						}
+					} 
+					j++;	
+				}
+				if(a[aux1][j].object == 1 && a[aux1-1][j].object == 1){ //encontra o canto inferior esquerdo da sala
+					v4.x = j;
+					v4.y = aux2;
+				}
+				
+				aux1 = i+1;
+				while(a[aux1][j-1].object != 1 && aux1 < r-1){ //percorre parede direita da sala (lado 4)
+					l4 = l4+1;
+					if(a[aux1][j].object == 0){ 
+						num_doors++; //encontrou uma porta
+						if(num_doors == 2){ //guarda posição da porta
+							d1.x = j;
+							d1.y = aux1-1;
+							d2.x = j;
+							d2.y = aux1;
+						}
+					} 
+					aux1++;
+				}
+				
+				if(num_doors == 2 && l1 == l4 && l2 == l3){
+					a[v1.y+1][v1.x+1].object = 9; // posiciona o baú perto do canto superior esquerdo
+					a[d1.y][d1.x].object = 10; // fecha a porta - duas posições
+					a[d2.y][d2.x].object = 10; // fecha a porta - duas posições
+					// posiciona a chave
+					int x = (random() % c);
+        			int y = (random() % r);
+					while(a[y][x].object != 0 || (x > v1.x && x < v1.x + l2) || (y > v1.y && y < v1.y + l1)){ // garante que a chave não fica na mesma sala do baú
+						x = (random() % c); 	
+        				y = (random() % r);
+					}
+					a[y][x].object = 11;
+					return(0);
+				}
+			}
+		}
+	}
+}
+
 int elem(Vector2D e, Vector2D *v, int N) {
     int i, ans = 0;
     for(i = 0; i < N && !ans; i++)
@@ -531,6 +632,7 @@ void gen_map(MAP** a, int r, int c) {
 		new_room_map(a,r,c);
 	}
     new_level_map(a,r,c);
+	chest_room(a,r,c);
 }
 
 void draw_mobs(Mob *mobs, int r, int c, int mobQuantity){
@@ -549,6 +651,10 @@ void print_map(MAP** a, int r, int c) {
    Image lava = load_image_from_file("assets/sprites/lava.sprite");
    Image grass = load_image_from_file("assets/sprites/grass.sprite");
    Image water = load_image_from_file("assets/sprites/water.sprite");
+   Image chest = load_image_from_file("assets/sprites/chest.sprite");
+   Image door = load_image_from_file("assets/sprites/door.sprite");
+   Image key = load_image_from_file("assets/sprites/key.sprite");
+
    int k = 0, r_num = 0;
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
@@ -616,6 +722,27 @@ void print_map(MAP** a, int r, int c) {
 				init_pair(k, COLOR_BLACK, water.pixels[1].color);          
 				attron(COLOR_PAIR(k));
 				mvprintw(i, j*2, "  " );
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 9: // imprimir baú 
+				k = 108;
+				init_pair(k, COLOR_BLACK, chest.pixels[0].color);          
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  " );
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 10: // imprimir porta 
+				k = 109;
+				init_pair(k, COLOR_BLACK, door.pixels[0].color);          
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  " );
+            	attroff(COLOR_PAIR(k));
+				break;
+			case 11: // imprimir chave 
+				k = 110;
+				init_pair(k, key.pixels[0].color, walk.pixels[0].color);          
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "-o" );
             	attroff(COLOR_PAIR(k));
 				break;
 			default:

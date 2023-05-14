@@ -71,6 +71,17 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
     }
     if(map[newPos.y][newPos.x].object != 7 && map[newPos.y][newPos.x].object != 1 && start_time_drown.tv_sec != 0) start_time_drown = (struct timeval) {0};
 
+    // Se o jogador encountrou a chave abre a porta da sala com o baú
+    if(map[newPos.y][newPos.x].object == 11){
+        gameState->player.position.x = newPos.x;
+        gameState->player.position.y = newPos.y;
+        for(int i = 1; i < r; i++) {  
+		    for(int j = 1; j < c; j++) {
+                if(map[i][j].object == 10) map[i][j].object = 0;
+            }
+        }       
+    }
+
 }
 
 void draw_light(GameState *gameState, int r, int c){
@@ -82,7 +93,7 @@ void draw_light(GameState *gameState, int r, int c){
             pos.y = j;
             //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador
             if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256){
-            draw_to_screen(image, pos);
+            //draw_to_screen(image, pos);
             }
         }
     }
