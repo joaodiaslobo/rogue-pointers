@@ -203,7 +203,8 @@ int valid_map(Map** a, int r, int c) {
 
 void gen_water(Map** a, int r, int c) {
 	// decidir se aparece água em um nível
-	int x = 0, y = 0, water = 0, ind, n = 2;
+	int x = 0, y = 0, water = 0, ind, n = 2, prob_water = 0;
+	if (LEVEL != 0) prob_water = (1/LEVEL)*100;
     while (n > 0) {
 		water = 0;
 		int random_num = rand() % 100;
@@ -640,8 +641,6 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
    Image lava = load_image_from_file("assets/sprites/lava.sprite");
    Image chest = load_image_from_file("assets/sprites/chest.sprite");
    Image door = load_image_from_file("assets/sprites/door.sprite");
-   Image key = load_image_from_file("assets/sprites/key.sprite");
-   Vector2D pos;	
    int k = 0, r_num = 0;
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
@@ -649,7 +648,6 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
 		if(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)){
 			continue;
 		}
-
 		switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
 				draw_empty_pixel(pos, 14);
