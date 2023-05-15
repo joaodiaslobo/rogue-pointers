@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "image.h"
 #include "sound.h"
+#include <pthread.h>
 
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
@@ -58,18 +59,30 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
         gameState->gameover = 1;
     }
 
+    int aux = 1;
     // Se o jogador encountrou a chave abre a porta da sala com o baú
     if(map[newPos.y][newPos.x].object == 11){
         gameState->player.position.x = newPos.x;
         gameState->player.position.y = newPos.y;
         for(int i = 1; i < r; i++) {  
 		    for(int j = 1; j < c; j++) {
-                if(map[i][j].object == 10){
+                if(map[i][j].object == 10) {
                     map[i][j].object = 0;
-                    play_sound(0);
+                    aux = 0;
                 }
             }
-        }       
+        }         
+        if (aux == 0){
+            pthread_t thread1; // Cria uma thread para reproduzir o som da porta a abrir
+
+            Sound *fich1 = malloc(sizeof(Sound));
+            fich1->filename = "assets/sound/door_opening.wav";
+            fich1->time_ms = 1000;
+            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  {
+                printw("Erro ao criar a thread\n");
+                return;
+            }
+        }
     }
 
 }
@@ -91,7 +104,7 @@ void draw_light(GameState *gameState, int r, int c, MAP **map){
             pos.y = j;
             //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador
             if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256 && map[j][i].object != 3){
-                //draw_to_screen(image, pos);
+                draw_to_screen(image, pos);
             }
         }
     }

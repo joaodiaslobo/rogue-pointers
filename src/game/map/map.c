@@ -207,7 +207,7 @@ void gen_water(MAP** a, int r, int c) {
     while (n > 0) {
 		water = 0;
 		int random_num = rand() % 100;
-   		if (random_num <= 100) {
+   		if (prob_water <= random_num) {
 			water = 1;
 		}
 		if (water == 1) {
@@ -645,14 +645,20 @@ void print_map(MAP** a, int r, int c) {
    Image chest = load_image_from_file("assets/sprites/chest.sprite");
    Image door = load_image_from_file("assets/sprites/door.sprite");
    Image key = load_image_from_file("assets/sprites/key.sprite");
-
+   Vector2D pos;	
    int k = 0, r_num = 0;
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
 		switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
-		    	Vector2D pos = {j,i};
-				draw_to_screen(walk, pos);
+		    	//pos.x = j;
+				//pos.y = i;
+				//draw_to_screen(walk, pos);
+				k = 100;
+				init_pair(k, COLOR_BLACK, walk.pixels[0].color);          
+				attron(COLOR_PAIR(k));
+				mvprintw(i, j*2, "  " );
+            	attroff(COLOR_PAIR(k));
 				break;
 			case 1: // imprimir a parede 
 				pos.x = j;

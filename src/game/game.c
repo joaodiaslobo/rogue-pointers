@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include "sys/time.h"
 #include "components.h"
+#include "sound.h"
 
 int LEVEL = 0;
 
@@ -175,6 +176,8 @@ int game(Terminal *terminal) {
 	srandom(time(NULL));
 
 	intrflush(stdscr, false);
+
+	SDL_Init(SDL_INIT_AUDIO); //inicializa o áudio da SDL
     
     // Gera e imprime o primeiro mapa/nível do mundo
 	gen_map(worlds[LEVEL].map,nrows,ncols);
