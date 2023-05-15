@@ -8,6 +8,7 @@
 #include "game.h"
 #include "engine_types.h"
 #include "stdlib.h"
+#include "player_pathfinding.h"
 
 // Necessário para as funções que geram o mapa
 
@@ -635,7 +636,7 @@ void draw_mobs(Mob *mobs, int r, int c, int mobQuantity){
 }
 
 // Imprime o mapa
-void print_map(MAP** a, int r, int c) {
+void print_map(MAP** a, int r, int c, GameState *gameState) {
    Image wall = load_image_from_file("assets/sprites/wall.sprite");
    Image gate = load_image_from_file("assets/sprites/gate.sprite");
    Image walk = load_image_from_file("assets/sprites/walk.sprite");
@@ -649,6 +650,11 @@ void print_map(MAP** a, int r, int c) {
    int k = 0, r_num = 0;
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
+		Vector2D pos = {j,i};
+		if(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)){
+			continue;
+		}
+
 		switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
 		    	Vector2D pos = {j,i};

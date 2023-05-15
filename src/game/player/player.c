@@ -34,13 +34,13 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
             break;
         case SOUTH:
             newPos.y += gameState->player.speedMultiplier;
-                break;
+            break;
         case EAST:
             newPos.x += gameState->player.speedMultiplier;
             break;
         case WEST:
             newPos.x -= gameState->player.speedMultiplier;
-                break;
+            break;
         default:
             break;
     }
@@ -55,7 +55,7 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
     if(map[newPos.y][newPos.x].object == 4){
         gameState->player.position.x = newPos.x;
         gameState->player.position.y = newPos.y;
-        gameState->gameover = 1;
+        gameState->gameOver = 1;
     }
 
     // Se o jogador encountrou a chave abre a porta da sala com o baú
@@ -71,7 +71,6 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
             }
         }       
     }
-
 }
 
 void update_drowning(MAP **map, GameState *gameState, unsigned long elapsedMicroseconds){

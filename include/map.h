@@ -16,4 +16,4 @@ void gen_map(MAP** a, int r, int c);
 
 void draw_mobs(Mob *mobs, int r, int c, int mobQuantity);
 
-void print_map(MAP** a, int r, int c);
+void print_map(MAP** a, int r, int c, GameState *gameState);

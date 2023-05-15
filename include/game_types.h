@@ -83,12 +83,22 @@ typedef struct {
     unsigned long timeSinceDrownStart; 
 } Player;
 
+typedef struct {
+    Vector2D pathPos;
+    Vector2D *path;
+    int pathStep;
+    int moving;
+    unsigned long timeSinceLastUpdate; // Em microsegundos
+} PathBehaviour;
+
 // Estado do jogo
 
 typedef struct {
     Player player;
-    int gameover; // 1 - perdeu o jogo
+    int gameOver; // 1 - perdeu o jogo
     int paused;
+    int pathSelection;
+    PathBehaviour pathState;
 } GameState;
 
 #endif

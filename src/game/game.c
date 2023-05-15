@@ -14,6 +14,8 @@
 #include "sys/time.h"
 #include "components.h"
 #include "global_items.h"
+#include "player_pathfinding.h"
+#include "math.h"
 
 int LEVEL = 0;
 
@@ -26,8 +28,11 @@ GameState *init_game_state(){
 	Vector2D pos = {20,20};
 	char name[15] = "NOME";
 	state->player = *init_player(name, pos);
-	state->gameover = 0;
+	state->gameOver = 0;
 	state->paused = 0;
+	state->pathSelection = 0;
+	PathBehaviour pathBehaviour = {pos, NULL, 0, 0, 0};
+	state->pathState = pathBehaviour;
 	return state;
 }
 
@@ -39,19 +44,35 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 	{
 		case KEY_UP:
 		case '8':
-			apply_movement(state, NORTH, w[LEVEL].map, r, c);
+			if(state->pathSelection == 0){
+				apply_movement(state, NORTH, w[LEVEL].map, r, c);
+			} else {
+				apply_path_change(state, NORTH, w[LEVEL].map, r, c);
+			}
 			break;
 		case KEY_DOWN:
 		case '2':
-			apply_movement(state, SOUTH, w[LEVEL].map, r, c);
+			if(state->pathSelection == 0){
+				apply_movement(state, SOUTH, w[LEVEL].map, r, c);
+			} else {
+				apply_path_change(state, SOUTH, w[LEVEL].map, r, c);
+			}
 			break;
 		case KEY_RIGHT:
 		case '6':
-			apply_movement(state, EAST, w[LEVEL].map, r, c);
+			if(state->pathSelection == 0){
+				apply_movement(state, EAST, w[LEVEL].map, r, c);
+			} else {
+				apply_path_change(state, EAST, w[LEVEL].map, r, c);
+			}
 			break;
 		case KEY_LEFT:
 		case '4':
-			apply_movement(state, WEST, w[LEVEL].map, r, c);
+			if(state->pathSelection == 0){
+				apply_movement(state, WEST, w[LEVEL].map, r, c);
+			} else {
+				apply_path_change(state, WEST, w[LEVEL].map, r, c);
+			}
 			break;
 		case KEY_A1:
 		case '7':
@@ -99,6 +120,14 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 				}
 			}
 			break;
+		case 'm':
+			if(state->pathSelection && !state->pathState.moving){
+				state->pathState.moving = 1;
+			} else{
+				state->pathSelection = 1;
+				state->pathState.pathPos = state->player.position;
+			} 
+			break;
 		default:
 			break;
 	}
@@ -144,11 +173,15 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 		update_timer(&worlds[LEVEL].mobs[i], elapsedMicroseconds);
 	}
 
+	if(state->pathSelection && state->pathState.moving){
+		update_player_path(state, elapsedMicroseconds);
+	}
+
 	update_drowning(worlds[LEVEL].map, state, elapsedMicroseconds);
 
 	if(state->player.timeSinceDrownStart > 10000000){
 		state->player.health = 0;
-		state->gameover = 1;
+		state->gameOver = 1;
 	}
 	
 	refresh();
@@ -201,14 +234,14 @@ int game(Terminal *terminal) {
 	worlds[LEVEL].created = 1;
 	gen_grass(worlds[LEVEL].map,nrows,ncols); // no nível 0 é possível existir relva
 	worlds[LEVEL].mobQuantity = 0;
-	print_map(worlds[LEVEL].map,nrows,ncols);
+	print_map(worlds[LEVEL].map, nrows, ncols, gameState);
 
 	// Inicializa a posição do jogador num lugar válido dentro do mapa
 	while(worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 0 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 4 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 5) {
 		gameState->player.position.x = (random() % ncols);
 		gameState->player.position.y = (random() % nrows);
 	}
-	gameState->gameover = 0;
+	gameState->gameOver = 0;
 
 	endwin(); 
 
@@ -222,7 +255,7 @@ int game(Terminal *terminal) {
 			attron(COLOR_PAIR(COLOR_WHITE));
 			printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 			attroff(COLOR_PAIR(COLOR_WHITE));
-			print_map(worlds[LEVEL].map, nrows, ncols);
+			print_map(worlds[LEVEL].map, nrows, ncols, gameState);
 			draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
 			Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
 			draw_to_screen(gate, gameState->player.position);
@@ -252,7 +285,7 @@ int game(Terminal *terminal) {
 			Vector2D oxygenBarPos = {0,3};
 			progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
 		
-			if (gameState->gameover == 1){
+			if (gameState->gameOver == 1){
 				move(0,150);
 				printw("** PERDEU O JOGO PRIMA c para continuar**");
 				refresh();
@@ -266,6 +299,11 @@ int game(Terminal *terminal) {
 
 			mvprintw(0, 180, "Level: %d", LEVEL);
 		}
+
+		if(gameState->pathSelection == 1){
+			draw_path(gameState);
+		}
+
 		update(gameState, worlds, nrows, ncols, currentTime, terminal);
 	}
 
