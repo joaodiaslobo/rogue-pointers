@@ -88,10 +88,44 @@ void draw_light(GameState *gameState, int r, int c, MAP **map){
         for(int j = 0; j < r-1; j++){
             pos.x = i;
             pos.y = j;
-            //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador
-            if((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 256 && map[j][i].object != 3){
+            //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador, e verificação se antes dessa posição, na mesma diagonal, há parede - caso haja, fica às escuras a partir daí na diagonal
+            if(map[j][i].object != 3 && ((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 4096 || !(light_before_walls(pos, gameState->player.position, 64, map)))){
                 draw_to_screen(image, pos);
             }
         }
     }
+}
+
+int light_before_walls(Vector2D posA, Vector2D posB, int distance, MAP** map){
+    
+    int dx = abs(posB.x - posA.x);
+    int dy = abs(posB.y - posA.y);
+    int sx = (posA.x < posB.x) ? 1 : -1;
+    int sy = (posA.y < posB.y) ? 1 : -1;
+    int err = dx - dy;
+     
+    Vector2D pos = {posA.x, posA.y};
+    
+    do {
+
+        int e2 = 2 * err;
+        if (e2 > -dy){
+
+            err -= dy;
+            pos.x += sx;
+        }
+        if (e2 < dx){
+
+            err += dx;
+            pos.y += sy;
+        }
+
+        distance--;
+
+    } while((pos.x != posB.x || pos.y != posB.y) && (map[pos.y][pos.x].object != 1) && (map[pos.y][pos.x].object != 3) && (distance > 0));
+
+    if(pos.x == posB.x && pos.y == posB.y){
+        return 1;
+    }
+    return 0;
 }

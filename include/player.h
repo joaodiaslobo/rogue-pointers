@@ -12,4 +12,6 @@ void update_drowning(MAP** map, GameState *gameState, unsigned long elapsedMicro
 
 void draw_light(GameState *gameState, int r, int c, MAP **map);
 
+int light_before_walls(Vector2D posA, Vector2D posB, int distance, MAP** map);
+
 #endif

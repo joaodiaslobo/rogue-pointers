@@ -95,8 +95,8 @@ void clear_item(Terminal *terminal, WINDOW *window){
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
 
-    for(int i = (terminal->xMax / 2 - 36); i < (terminal->xMax / 2); i++){
-        for(int j = (terminal->yMax / 2 - 4); j < (terminal->yMax - 3); j++){
+    for(int i = (terminal->xMax / 2 - 36); i < terminal->xMax; i++){
+        for(int j = (terminal->yMax / 2 - 4); j < terminal->yMax; j++){
             
             pos.x = i; pos.y = j;
             draw_to_window(window, image, pos);
