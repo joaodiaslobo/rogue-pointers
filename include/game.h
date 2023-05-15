@@ -10,11 +10,11 @@ extern int LEVEL;
     
 GameState *init_game_state();
 
-void execute_input(GameState *state, World *w, int r, int c);
+void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal);
 
 void check_for_portal(GameState *state, World *w, int r, int c, int dir);
 
-void update(GameState *state, World *worlds, int r, int c, struct timeval currentTime);
+void update(GameState *state, World *worlds, int r, int c, struct timeval currentTime, Terminal *terminal);
 
 int game(Terminal *terminal);
 

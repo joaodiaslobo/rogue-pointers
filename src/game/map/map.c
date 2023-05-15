@@ -8,10 +8,11 @@
 #include "game.h"
 #include "engine_types.h"
 #include "stdlib.h"
+#include "player_pathfinding.h"
 
 // Necessário para as funções que geram o mapa
 
-void chest_room(MAP** a, int r, int c) {
+void chest_room(Map** a, int r, int c) {
 	for(int i = 1; i < r-1; i++) {  
 		for(int j = 1; j < c-1; j++) {
 			Vector2D v1 = {0, 0}, d1 = {0, 0}, d2 = {0, 0};
@@ -121,7 +122,7 @@ Vector2D* remove_elem(Vector2D* old, int old_size) {
     return &old[1]; // Retorna o ponteiro para o vetor_antigo sem o primeiro elemento
 }
 
-int valid_map(MAP** a, int r, int c) {
+int valid_map(Map** a, int r, int c) {
 	Vector2D fst, tmp;
 	int i, count = 0, k = 0;
 
@@ -200,10 +201,9 @@ int valid_map(MAP** a, int r, int c) {
 }
 
 
-void gen_water(MAP** a, int r, int c) {
+void gen_water(Map** a, int r, int c) {
 	// decidir se aparece água em um nível
-	int x = 0, y = 0, water = 0, ind, n = 2, prob_water = 0;
-	if (LEVEL != 0) prob_water = (1/LEVEL)*100;
+	int x = 0, y = 0, water = 0, ind, n = 2;
     while (n > 0) {
 		water = 0;
 		int random_num = rand() % 100;
@@ -270,7 +270,7 @@ void gen_water(MAP** a, int r, int c) {
 	}
 }
 
-void gen_grass(MAP** a, int r, int c) {
+void gen_grass(Map** a, int r, int c) {
 	// decidir se aparece relva em um nível
 	int x = 0, y = 0, grass = 0, ind, n = 3;
 	int prob_grass = 90 - 10*LEVEL;
@@ -343,7 +343,7 @@ void gen_grass(MAP** a, int r, int c) {
 }
 
 
-void gen_lava(MAP** a, int r, int c) {
+void gen_lava(Map** a, int r, int c) {
 	// decidir se aparece lava em um nível
 	int x = 0, y = 0, lava = 0, ind;
 	int prob_lava = 10 * LEVEL;
@@ -403,7 +403,7 @@ void gen_lava(MAP** a, int r, int c) {
 	}
 }
 
-void new_room_map (MAP** a, int r, int c){
+void new_room_map (Map** a, int r, int c){
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
     int k = 0; 
     while (k < random_rooms) {
@@ -535,7 +535,7 @@ void new_room_map (MAP** a, int r, int c){
     }
 }
 
-/*int gen_loot_chests(Chest *chest, MAP **map, int r, int c, int level){
+/*int gen_loot_chests(Chest *chest, Map **map, int r, int c, int level){
 	
 	if(level >= 1){
 		
@@ -556,7 +556,7 @@ void new_room_map (MAP** a, int r, int c){
 	return numChest;
 }*/
 
-int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
+int gen_mobs(Mob *mobs, Map **map, int r, int c, int level){
 	// Isto pode servir para fazer um modo dificíl mais tarde, subindo o valor
 	int mobSpawnRate = 2;
 	// Só spawna mobs a partir do segundo nível
@@ -573,6 +573,7 @@ int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
 			mob.pathStep = 0;
 			mob.path = NULL;
 			mob.chasingPlayer = 0;
+			mob.attackDamage = 5;
 			mobs[i] = mob;
 		}
 
@@ -582,7 +583,7 @@ int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
 	return 0;
 }
 
-void new_level_map (MAP** a, int r, int c){
+void new_level_map (Map** a, int r, int c){
 	int random_num, count = 0, rc, rr;
 
 	random_num = (random() % 3) + 1;
@@ -596,7 +597,7 @@ void new_level_map (MAP** a, int r, int c){
 	}
 }
 
-Vector2D get_random_floor_position(MAP** map, int r, int c){
+Vector2D get_random_floor_position(Map** map, int r, int c){
 	int available = 0;
 	Vector2D pos;
 	while(!available){
@@ -612,7 +613,7 @@ Vector2D get_random_floor_position(MAP** map, int r, int c){
 }
 
 // Gera o mapa
-void gen_map(MAP** a, int r, int c) {
+void gen_map(Map** a, int r, int c) {
     new_room_map(a,r,c);
 	while (valid_map(a,r,c) == 1) {
 		for (int j = 0; j < r; j++) {
@@ -626,7 +627,7 @@ void gen_map(MAP** a, int r, int c) {
 	chest_room(a,r,c);
 }
 
-void draw_mobs(Mob *mobs, int r, int c, int mobQuantity){
+void draw_mobs(Mob *mobs, int mobQuantity){
 	Image enemy = load_image_from_file("assets/sprites/characters/enemy.sprite");
 
 	for(int i = 0; i < mobQuantity; i++){
@@ -635,13 +636,8 @@ void draw_mobs(Mob *mobs, int r, int c, int mobQuantity){
 }
 
 // Imprime o mapa
-void print_map(MAP** a, int r, int c) {
-   Image wall = load_image_from_file("assets/sprites/wall.sprite");
-   Image gate = load_image_from_file("assets/sprites/gate.sprite");
-   Image walk = load_image_from_file("assets/sprites/walk.sprite");
+void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) {
    Image lava = load_image_from_file("assets/sprites/lava.sprite");
-   Image grass = load_image_from_file("assets/sprites/grass.sprite");
-   Image water = load_image_from_file("assets/sprites/water.sprite");
    Image chest = load_image_from_file("assets/sprites/chest.sprite");
    Image door = load_image_from_file("assets/sprites/door.sprite");
    Image key = load_image_from_file("assets/sprites/key.sprite");
@@ -649,26 +645,20 @@ void print_map(MAP** a, int r, int c) {
    int k = 0, r_num = 0;
    for (int i = 0; i < r; i++){
       for (int j = 0; j < c; j++){
+		Vector2D pos = {j,i};
+		if(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)){
+			continue;
+		}
+
 		switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
-		    	//pos.x = j;
-				//pos.y = i;
-				//draw_to_screen(walk, pos);
-				k = 100;
-				init_pair(k, COLOR_BLACK, walk.pixels[0].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+				draw_empty_pixel(pos, 14);
 				break;
 			case 1: // imprimir a parede 
-				pos.x = j;
-				pos.y = i;
-				draw_to_screen(wall, pos);
+				draw_empty_pixel(pos, 15);
 				break;
 			case 2: // imprimir porta para outro nível
-				pos.x = j;
-				pos.y = i;
-				draw_to_screen(gate, pos);
+				draw_empty_pixel(pos, 5);
 				break;
 			case 4: // imprimir lava	
 				r_num = random() % 5;
@@ -678,60 +668,29 @@ void print_map(MAP** a, int r, int c) {
 				mvprintw(i, j*2, "  ");
             	attroff(COLOR_PAIR(k));
 				break;
-			case 5: // imprimir relva	 
-				k = 104;
-				init_pair(k, grass.pixels[0].color, walk.pixels[0].color);         
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "''" );
-            	attroff(COLOR_PAIR(k));
+			case 5: // imprimir relva
+				draw_custom_pixel(pos, "''", 27, 14, terminal);
 				break;
 			case 6: // imprimir flor 
-				k = 105;
-				init_pair(k, grass.pixels[1].color, walk.pixels[0].color);         
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "**" );
-            	attroff(COLOR_PAIR(k));
+				draw_custom_pixel(pos, "**", 13, 14, terminal);
 				break;
 			case 7: // imprimir água profunda 
-				pos.x = j;
-				pos.y = i;
-				draw_to_screen(water, pos);
-				k = 106;
-				init_pair(k, COLOR_BLACK, water.pixels[0].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+				draw_empty_pixel(pos, 16);
 				break;
-			case 8: // imprimir água margem 
-				k = 107;
-				init_pair(k, COLOR_BLACK, water.pixels[1].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+			case 8: // imprimir água margem
+				draw_empty_pixel(pos, 43);
 				break;
 			case 9: // imprimir baú 
-				pos.x = j;
-				pos.y = i;
 				draw_to_screen(chest, pos);
 				break;
 			case 10: // imprimir porta 
-				pos.x = j;
-				pos.y = i;
 				draw_to_screen(door, pos);
 				break;
 			case 11: // imprimir chave 
-				k = 110;
-				init_pair(k, key.pixels[0].color, walk.pixels[0].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "-o" );
-            	attroff(COLOR_PAIR(k));
+				draw_custom_pixel(pos, "-o", 26, 14, terminal);
 				break;
 			case 12: // imprimir chão da sala enquanto fechada com um cor própria 
-				k = 111;
-				init_pair(k, COLOR_BLACK, walk.pixels[1].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+				draw_empty_pixel(pos, 28);
 				break;
 			default:
 				break;

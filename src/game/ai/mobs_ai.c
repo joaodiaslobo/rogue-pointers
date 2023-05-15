@@ -11,7 +11,7 @@ void update_timer(Mob *mob, unsigned long elapsedMicroseconds){
     mob->timeSinceLastUpdate += elapsedMicroseconds;
 }
 
-void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
+void wander_ai(Mob *mob, Player *player, Map** map, int r, int c){
     if(mob->timeSinceLastUpdate > 1000000 ||(mob->chasingPlayer && mob->timeSinceLastUpdate > 250000)){
         mob->timeSinceLastUpdate = 0;
         if(!can_see_location(mob->position, player->position, 13, map) && !mob->chasingPlayer){
@@ -40,6 +40,8 @@ void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
                 mob->position = mob->path[mob->pathStep];
                 mob->pathStep--;
             }
+
+            apply_damage(mob, player);
         } else {
             // Em perseguição
             if(mob->pathStep >= 0){
@@ -48,7 +50,16 @@ void wander_ai(Mob *mob, Player *player, MAP** map, int r, int c){
             } else {
                 mob->chasingPlayer = 0;
             }
+
+            apply_damage(mob, player);
         }
+    }
+}
+
+void apply_damage(Mob *mob, Player *player){
+    // Se o mob estiver a uma distância suficiente de ataque, ataca o player
+    if(distance_between_points(mob->position, player->position) <= 1.5f){
+        player->health -= mob->attackDamage;
     }
 }
 
@@ -84,7 +95,7 @@ float distance_between_points(Vector2D a, Vector2D b){
 }
 
 // Algoritmo de Bresenham, verifica a visibilidade entre a posição do jogador e a posição do inimigo
-int can_see_location(Vector2D posA, Vector2D posB, int distance, MAP** map){
+int can_see_location(Vector2D posA, Vector2D posB, int distance, Map** map){
     int dx = abs(posB.x - posA.x);
     int dy = abs(posB.y - posA.y);
     int sx = (posA.x < posB.x) ? 1 : -1;
@@ -116,7 +127,7 @@ int can_see_location(Vector2D posA, Vector2D posB, int distance, MAP** map){
     return 0;
 }
 
-Vector2D pick_random_patrol_position(Vector2D pos, MAP **map){
+Vector2D pick_random_patrol_position(Vector2D pos, Map **map){
     // Primeiro, escolhe uma direção aleatória
     Direction direction = random() % 4;
     // Descobre quantas casas pode andar nessa direção
@@ -149,7 +160,7 @@ Vector2D pick_random_patrol_position(Vector2D pos, MAP **map){
     }
 }
 
-int available_floor_in_direction(Vector2D pos, MAP **map, Direction direction){
+int available_floor_in_direction(Vector2D pos, Map **map, Direction direction){
     int distance = 0;
     switch (direction)
     {

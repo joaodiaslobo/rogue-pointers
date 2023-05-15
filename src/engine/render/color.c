@@ -5,33 +5,42 @@
 #include "engine_types.h"
 
 // Carrega um ficheiro palette e adicona as cores à memória do ncurses, a partir do index de cores 8
-int load_palette_from_file(char *path){
+int load_palette_from_file(char *path, Terminal *terminal){
     FILE* file = fopen(path, "r");
 
     if (NULL == file) {
         return 0;
     }
 
-    char ch;
+    char ch = '\0';
     char hex[8];
     int index = 0;
     short colorIndex = 0;
     
-    do {
+    while (ch != EOF){
         ch = fgetc(file);
-        if(ch != EOF){
-            if(ch != '\n'){
-                hex[index] = ch;
-                index++;
-            } else {
-                add_color_to_palette(hex_to_color(hex), 8 + colorIndex);
-                index = 0;
-                colorIndex++;
+
+        // Ignora comentários
+        if(ch == '/'){
+            while(ch != '\n'){
+                ch = fgetc(file);
             }
+            continue;
         }
-    } while (ch != EOF);
+
+        if(ch != '\n' && ch != EOF){
+            hex[index] = ch;
+            index++;
+        } else {
+            add_color_to_palette(hex_to_color(hex), 8 + colorIndex);
+            index = 0;
+            colorIndex++;
+        }
+    }
     
     fclose(file);
+
+    terminal->loadedColors = colorIndex + 1;
     return 1;
 }
 

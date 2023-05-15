@@ -1,7 +1,6 @@
 #include <ncurses.h>
 #include "engine_types.h"
 #include "color.h"
-#include "inventory_test.h"
 #include "main_menu.h"
 #include "game.h"
 
@@ -27,24 +26,25 @@ int main(){
 	meta(stdscr, TRUE);
 	keypad(stdscr, TRUE);
 
-    start_color();
+    mousemask(BUTTON1_CLICKED, NULL);
 
-    // Carrega a palette para o ncurses
-    if(!load_palette_from_file("assets/main.palette")){
-        printw("Falha no carregamento da palette.");
-    }
 
     // Obtem tamanho do terminal
     Terminal terminal;
     getmaxyx(stdscr, terminal.yMax, terminal.xMax);
 	terminal.mainWindow = window;
+    terminal.loadedRuntimePairs = 0;
+
+    start_color();
+
+    // Carrega a palette para o ncurses
+    if(!load_palette_from_file("assets/main.palette", &terminal)){
+        printw("Falha no carregamento da palette.");
+    }
 
     int selection = main_menu(&terminal);
     while(selection == 0 || selection == 3){ // permite que o jogador volte ao menu principal, caso perca
         switch (selection){
-        case 3:
-            inventory_test();
-            break;
 	    case 0:
 		    game(&terminal);
             clear();

@@ -15,7 +15,7 @@ typedef struct node {
     struct node *parent;
 } Node;
 
-typedef struct {
+typedef struct nodeStack {
     Node **nodes;
     int elements;
 } NodeStack;
@@ -28,6 +28,6 @@ float heuristic(Vector2D a, Vector2D b);
 
 void update_node(Node *node, Node *parent, Vector2D end);
 
-Node *map_to_node_system(MAP **map, int r, int c);
+Node *map_to_node_system(Map **map, int r, int c);
 
 #endif

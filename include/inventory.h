@@ -17,4 +17,8 @@ int get_item_quantity_by_type(Inventory *inventory, ItemType type);
 
 Item init_empty_item();
 
+void add_table_to_inventory(Inventory *inventory, ItemsTable *table);
+
+Inventory initialize_inventory();
+
 #endif
