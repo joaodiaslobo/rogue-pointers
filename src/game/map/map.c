@@ -12,7 +12,7 @@
 
 // Necessário para as funções que geram o mapa
 
-void chest_room(MAP** a, int r, int c) {
+void chest_room(Map** a, int r, int c) {
 	for(int i = 1; i < r-1; i++) {  
 		for(int j = 1; j < c-1; j++) {
 			Vector2D v1 = {0, 0}, d1 = {0, 0}, d2 = {0, 0};
@@ -122,7 +122,7 @@ Vector2D* remove_elem(Vector2D* old, int old_size) {
     return &old[1]; // Retorna o ponteiro para o vetor_antigo sem o primeiro elemento
 }
 
-int valid_map(MAP** a, int r, int c) {
+int valid_map(Map** a, int r, int c) {
 	Vector2D fst, tmp;
 	int i, count = 0, k = 0;
 
@@ -201,10 +201,9 @@ int valid_map(MAP** a, int r, int c) {
 }
 
 
-void gen_water(MAP** a, int r, int c) {
+void gen_water(Map** a, int r, int c) {
 	// decidir se aparece água em um nível
-	int x = 0, y = 0, water = 0, ind, n = 2, prob_water = 0;
-	if (LEVEL != 0) prob_water = (1/LEVEL)*100;
+	int x = 0, y = 0, water = 0, ind, n = 2;
     while (n > 0) {
 		water = 0;
 		int random_num = rand() % 100;
@@ -271,7 +270,7 @@ void gen_water(MAP** a, int r, int c) {
 	}
 }
 
-void gen_grass(MAP** a, int r, int c) {
+void gen_grass(Map** a, int r, int c) {
 	// decidir se aparece relva em um nível
 	int x = 0, y = 0, grass = 0, ind, n = 3;
 	int prob_grass = 90 - 10*LEVEL;
@@ -344,7 +343,7 @@ void gen_grass(MAP** a, int r, int c) {
 }
 
 
-void gen_lava(MAP** a, int r, int c) {
+void gen_lava(Map** a, int r, int c) {
 	// decidir se aparece lava em um nível
 	int x = 0, y = 0, lava = 0, ind;
 	int prob_lava = 10 * LEVEL;
@@ -404,7 +403,7 @@ void gen_lava(MAP** a, int r, int c) {
 	}
 }
 
-void new_room_map (MAP** a, int r, int c){
+void new_room_map (Map** a, int r, int c){
     int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
     int k = 0; 
     while (k < random_rooms) {
@@ -536,7 +535,7 @@ void new_room_map (MAP** a, int r, int c){
     }
 }
 
-/*int gen_loot_chests(Chest *chest, MAP **map, int r, int c, int level){
+/*int gen_loot_chests(Chest *chest, Map **map, int r, int c, int level){
 	
 	if(level >= 1){
 		
@@ -557,7 +556,7 @@ void new_room_map (MAP** a, int r, int c){
 	return numChest;
 }*/
 
-int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
+int gen_mobs(Mob *mobs, Map **map, int r, int c, int level){
 	// Isto pode servir para fazer um modo dificíl mais tarde, subindo o valor
 	int mobSpawnRate = 2;
 	// Só spawna mobs a partir do segundo nível
@@ -583,7 +582,7 @@ int gen_mobs(Mob *mobs, MAP **map, int r, int c, int level){
 	return 0;
 }
 
-void new_level_map (MAP** a, int r, int c){
+void new_level_map (Map** a, int r, int c){
 	int random_num, count = 0, rc, rr;
 
 	random_num = (random() % 3) + 1;
@@ -597,7 +596,7 @@ void new_level_map (MAP** a, int r, int c){
 	}
 }
 
-Vector2D get_random_floor_position(MAP** map, int r, int c){
+Vector2D get_random_floor_position(Map** map, int r, int c){
 	int available = 0;
 	Vector2D pos;
 	while(!available){
@@ -613,7 +612,7 @@ Vector2D get_random_floor_position(MAP** map, int r, int c){
 }
 
 // Gera o mapa
-void gen_map(MAP** a, int r, int c) {
+void gen_map(Map** a, int r, int c) {
     new_room_map(a,r,c);
 	while (valid_map(a,r,c) == 1) {
 		for (int j = 0; j < r; j++) {
@@ -627,7 +626,7 @@ void gen_map(MAP** a, int r, int c) {
 	chest_room(a,r,c);
 }
 
-void draw_mobs(Mob *mobs, int r, int c, int mobQuantity){
+void draw_mobs(Mob *mobs, int mobQuantity){
 	Image enemy = load_image_from_file("assets/sprites/characters/enemy.sprite");
 
 	for(int i = 0; i < mobQuantity; i++){
@@ -636,7 +635,7 @@ void draw_mobs(Mob *mobs, int r, int c, int mobQuantity){
 }
 
 // Imprime o mapa
-void print_map(MAP** a, int r, int c, GameState *gameState) {
+void print_map(Map** a, int r, int c, GameState *gameState) {
    Image wall = load_image_from_file("assets/sprites/wall.sprite");
    Image gate = load_image_from_file("assets/sprites/gate.sprite");
    Image walk = load_image_from_file("assets/sprites/walk.sprite");
@@ -657,7 +656,6 @@ void print_map(MAP** a, int r, int c, GameState *gameState) {
 
 		switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
-		    	Vector2D pos = {j,i};
 				draw_to_screen(walk, pos);
 				break;
 			case 1: // imprimir a parede 

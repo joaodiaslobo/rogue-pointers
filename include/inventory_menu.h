@@ -6,4 +6,8 @@
 
 void show_inventory(Terminal *terminal, WINDOW * inventoryWindow);
 
+void clear_item(Terminal *terminal, WINDOW *window);
+
+void item_description(Terminal *terminal, WINDOW *window, char description[]);
+
 #endif

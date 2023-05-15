@@ -1,7 +1,6 @@
 #include <ncurses.h>
 #include "engine_types.h"
 #include "color.h"
-#include "inventory_test.h"
 #include "main_menu.h"
 #include "game.h"
 
@@ -44,9 +43,6 @@ int main(){
     int selection = main_menu(&terminal);
     while(selection == 0 || selection == 3){ // permite que o jogador volte ao menu principal, caso perca
         switch (selection){
-        case 3:
-            inventory_test();
-            break;
 	    case 0:
 		    game(&terminal);
             clear();

@@ -5,8 +5,7 @@
 #include "image.h"
 #include "draw.h"
 
-void apply_path_change(GameState *gameState, Direction facing, MAP** map, int r, int c){
-
+void apply_path_change(GameState *gameState, Direction facing, Map** map, int r, int c){
     if(gameState->pathState.moving){
         return;
     }
@@ -43,7 +42,7 @@ void apply_path_change(GameState *gameState, Direction facing, MAP** map, int r,
     }
 }
 
-void apply_mouse_path_selection(GameState *gameState, MAP **map, Vector2D clickPos, int r, int c){
+void apply_mouse_path_selection(GameState *gameState, Map **map, Vector2D clickPos, int r, int c){
     gameState->pathSelection = 1;
     gameState->pathState.pathPos = gameState->player.position;
     

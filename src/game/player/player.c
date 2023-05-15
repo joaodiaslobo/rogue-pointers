@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include "image.h"
 #include "sound.h"
+#include "draw.h"
+#include "inventory.h"
 
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
@@ -13,7 +15,12 @@ Player *init_player(char name[15], Vector2D pos){
         fprintf(stderr, "ERRO: Nao foi possivel alocar memoria\n");
         exit(EXIT_FAILURE);
     }
+
     Inventory inventory;
+    for(int i = 0; i < INVENTORY_SLOTS; i++){
+        inventory.items[i].type = NONE;
+    }
+
     strcpy(player->name, name);
     player->position = pos;
     player->health = 50;
@@ -25,7 +32,7 @@ Player *init_player(char name[15], Vector2D pos){
     return player;
 }
 
-void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, int c){
+void apply_movement(GameState *gameState, Direction facing, Map** map, int r, int c){
     Vector2D newPos = {gameState->player.position.x, gameState->player.position.y};
     switch (facing)
     {
@@ -73,7 +80,7 @@ void apply_movement(GameState *gameState, Direction facing, MAP** map, int r, in
     }
 }
 
-void update_drowning(MAP **map, GameState *gameState, unsigned long elapsedMicroseconds){
+void update_drowning(Map **map, GameState *gameState, unsigned long elapsedMicroseconds){
     if(map[gameState->player.position.y][gameState->player.position.x].object == 7){
         gameState->player.timeSinceDrownStart += elapsedMicroseconds;
     } else {
@@ -81,7 +88,7 @@ void update_drowning(MAP **map, GameState *gameState, unsigned long elapsedMicro
     }
 }
 
-void draw_light(GameState *gameState, int r, int c, MAP **map){
+void draw_light(GameState *gameState, int r, int c, Map **map){
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
     for(int i = 0; i < c; i++){
@@ -96,8 +103,7 @@ void draw_light(GameState *gameState, int r, int c, MAP **map){
     }
 }
 
-int light_before_walls(Vector2D posA, Vector2D posB, int distance, MAP** map){
-    
+int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map){
     int dx = abs(posB.x - posA.x);
     int dy = abs(posB.y - posA.y);
     int sx = (posA.x < posB.x) ? 1 : -1;

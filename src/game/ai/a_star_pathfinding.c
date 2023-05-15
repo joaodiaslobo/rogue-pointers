@@ -98,7 +98,7 @@ float heuristic(Vector2D a, Vector2D b) {
     return sqrtf(powf(b.x - a.x, 2.0f) + powf(b.y - a.y, 2.0f));
 }
 
-Node *map_to_node_system(MAP **map, int r, int c){
+Node *map_to_node_system(Map **map, int r, int c){
     Node *nodes = malloc(sizeof(Node) * r * c);
 
     // Criar nodos da grelha

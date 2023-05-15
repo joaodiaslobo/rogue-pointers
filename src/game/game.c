@@ -105,22 +105,24 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			check_for_portal(state, w, r, c, 1);
 			break;
 		case KEY_MOUSE:
-			MEVENT event;
-			if(getmouse(&event) == OK){
-				int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
-				Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
-				if((event.x >= buttonInvPos.x && event.x <= 16 + buttonInvPos.x) && event.y == buttonInvPos.y){
-					state->paused = 1;
-					WINDOW * inventoryWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
-					box(inventoryWindow, 0, 0);
-					clear();
-					refresh();
-					show_inventory(terminal, inventoryWindow);
-    				wrefresh(inventoryWindow);
-				}
-				else {
-					Vector2D clickPos = {event.x / 2, event.y};
-					apply_mouse_path_selection(state, w[LEVEL].map, clickPos, r, c);
+			{
+				MEVENT event;
+				if(getmouse(&event) == OK){
+					int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
+					Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
+					if((event.x >= buttonInvPos.x && event.x <= 16 + buttonInvPos.x) && event.y == buttonInvPos.y){
+						state->paused = 1;
+						WINDOW * inventoryWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
+						box(inventoryWindow, 0, 0);
+						clear();
+						refresh();
+						show_inventory(terminal, inventoryWindow);
+						wrefresh(inventoryWindow);
+					}
+					else {
+						Vector2D clickPos = {event.x / 2, event.y};
+						apply_mouse_path_selection(state, w[LEVEL].map, clickPos, r, c);
+					}
 				}
 			}
 			break;
@@ -217,13 +219,13 @@ int game(Terminal *terminal) {
 	}
     for (int i = 0; i < num_levels; i++) {
 		worlds[i].created = 0;
-		worlds[i].map = (MAP**)malloc(nrows * sizeof(MAP*));
+		worlds[i].map = (Map**)malloc(nrows * sizeof(Map*));
 		worlds[i].mobs = (Mob*)malloc(i * sizeof(Mob) * 2);
 	    if (worlds[i].map == NULL) {
 		   exit(EXIT_FAILURE);
 	   }
 	   for (int j = 0; j < nrows; j++) {
-		   worlds[i].map[j] = (MAP*)malloc(ncols * sizeof(MAP));
+		   worlds[i].map[j] = (Map*)malloc(ncols * sizeof(Map));
 		   if (worlds[i].map[j] == NULL) {
 			   exit(EXIT_FAILURE);
 		   }
@@ -254,7 +256,7 @@ int game(Terminal *terminal) {
 
 	endwin(); 
 
-	Image characterSprite = load_image_from_file("assets/sprites/characters/player1.sprite");
+	Image characterSprite = load_image_from_file("assets/sprites/gate.sprite");
     
 	struct timeval currentTime;
 	while(1) {
@@ -265,9 +267,8 @@ int game(Terminal *terminal) {
 			printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 			attroff(COLOR_PAIR(COLOR_WHITE));
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState);
-			draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
-			Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
-			draw_to_screen(gate, gameState->player.position);
+			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity);
+			draw_to_screen(characterSprite, gameState->player.position);
 			draw_light(gameState, nrows, ncols, worlds[LEVEL].map);
 
 			//draw_to_screen(characterSprite, gameState->player.position);

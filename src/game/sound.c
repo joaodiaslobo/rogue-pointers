@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include "sound.h"
 
 void play_sound(int sound_type){
 
@@ -12,7 +13,6 @@ void play_sound(int sound_type){
     if(sound_type == 0){
         if (SDL_LoadWAV("assets/sound/door_opening.wav", &spec, &audio_buf, &audio_len) == NULL) { // carrega um ficherio de som .WAV
             printf("Erro ao carregar o ficheiro de som: %s\n", SDL_GetError());
-            return 1;
          }
     }
 

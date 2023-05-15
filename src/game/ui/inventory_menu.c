@@ -1,3 +1,4 @@
+#include "inventory_menu.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,9 +8,9 @@
 #include "global_items.h"
 #include "inventory.h"
 #include "image.h"
+#include "draw.h"
 
 void show_inventory(Terminal *terminal, WINDOW *inventoryWindow){
-
     Inventory game_inventory = {
         {
             {"Bread & Blood", MELEE_WEAPON, "Perfect for slicing through the soft, pillowy texture\nof freshly baked bread, but it is also a formidable weapon,\ncapable of drawing blood with just a flick of the wrist.\nThis knife is a contradiction,\na blend of the mundane and the macabre,\na tool for both nourishment and destruction.", "assets/sprites/inventory/items/breadandblood.sprite"},
@@ -22,11 +23,11 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow){
             {"God Glock", RANGED_WEAPON, "God Glock is a pistol of exceptional power\nand divine precision.\nSome even say that the weapon is divinely blessed,\nguided by a higher power that ensures\nits bullets always find their mark.", " "},
             {"Shy Sniper", RANGED_WEAPON, "A weapon that demands both precision and secrecy,\nwith mystical properties that makes it almost undetectable.\nWith Shy Sniper in your hand,\nyou will be a master of the art of stealth,\na true warrior who strikes from the shadows\nand disappears without a trace.", " "},
             {"Arabella", RANGED_WEAPON, "Arabella is a pistol of elegance and power,\na weapon that combines beauty with deadly efficiency.\nWith a classic, vintage design and exquisite details,\nthis pistol is a true work of art.\nStreaking hearts with a single shot will never be so intense.", " "},
-            {"Blind Gas", BOMB, "Turns off the light."},
-            {"Defensive", BOMB, "Makes noise and damage."},
-            {"The Fireman's Worst Nightmare", BOMB, "Light, heat and fire: the arsonist."},
-            {"Flashbang", BOMB, "Flash and noise, dizziness and confusion."},
-            {"Nightstick", BOMB, "Enlightening your path for a moment."}
+            {"Blind Gas", BOMB, "Turns off the light.", " "},
+            {"Defensive", BOMB, "Makes noise and damage.", " "},
+            {"The Fireman's Worst Nightmare", BOMB, "Light, heat and fire: the arsonist.", " "},
+            {"Flashbang", BOMB, "Flash and noise, dizziness and confusion.", " "},
+            {"Nightstick", BOMB, "Enlightening your path for a moment.", " "}
         }
     };
     
@@ -91,7 +92,6 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow){
 }
 
 void clear_item(Terminal *terminal, WINDOW *window){
-    
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
 
@@ -105,7 +105,6 @@ void clear_item(Terminal *terminal, WINDOW *window){
 }
 
 void item_description(Terminal *terminal, WINDOW *window, char description[]){
-    
     int r = (terminal->yMax / 2 + 15);
     int c = (terminal->xMax / 2 + 37);
 
@@ -115,8 +114,9 @@ void item_description(Terminal *terminal, WINDOW *window, char description[]){
         mvwprintw(window, r, c, "%s", description);
     }
 
-    else{
-        for(int i = 0; i < strlen(description); i++){
+    else {
+        int descriptionLength = strlen(description);
+        for(int i = 0; i < descriptionLength; i++){
             
             if(description[i] != '\n'){
                 mvwprintw(window, r, c, "%c", description[i]);

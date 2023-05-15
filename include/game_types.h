@@ -13,7 +13,7 @@ typedef enum {
     INTELLIGENT = 2
 } MobBehavior;
 
-typedef struct {
+typedef struct mob {
     Vector2D position;
     Vector2D targetPosition;
     int health;
@@ -27,11 +27,11 @@ typedef struct {
 // Mapa
 typedef struct map {
 	int object;  //0:local onde pode andar|1:parede|2:passagem de nível|3:vazio|4:lava|5:relva|6:flor|7:água|8:margem|9:baú|10:porta|11:chave|12:chão sala fechada
-} MAP;
+} Map;
 
 // Mundo de Mapas
 typedef struct world {
-	MAP** map;
+	Map** map;
     Mob *mobs;
     int mobQuantity;
     int created; // valida se um nível já foi gerado ou não
@@ -48,14 +48,14 @@ typedef enum {
     SPECIAL = 5
 } ItemType;
 
-typedef struct {
+typedef struct item {
     char name[100];
     ItemType type;
     char description[400];
     char sprite[200];
 } Item;
 
-typedef struct {
+typedef struct itemTable {
     int size;
     ItemType type;
     Item items[10];
@@ -66,13 +66,13 @@ typedef struct {
     Vector2D position;
 } Chest;*/
 
-typedef struct {
+typedef struct inventory {
     Item items[INVENTORY_SLOTS];
 } Inventory;
 
 // Jogador
 
-typedef struct {
+typedef struct player {
     char name[15];
     int health;
     Vector2D position;
@@ -83,7 +83,7 @@ typedef struct {
     unsigned long timeSinceDrownStart; 
 } Player;
 
-typedef struct {
+typedef struct pathBehaviour {
     Vector2D pathPos;
     Vector2D *path;
     int pathStep;
@@ -93,7 +93,7 @@ typedef struct {
 
 // Estado do jogo
 
-typedef struct {
+typedef struct gameState {
     Player player;
     int gameOver; // 1 - perdeu o jogo
     int paused;

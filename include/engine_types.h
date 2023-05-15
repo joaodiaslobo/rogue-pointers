@@ -8,7 +8,7 @@
 
 // Controlo do terminal
 
-typedef struct {
+typedef struct terminal {
     int yMax;
     int xMax;
     WINDOW *mainWindow;
@@ -16,7 +16,7 @@ typedef struct {
 
 // Math
 
-typedef struct {
+typedef struct vector2d {
     int x;
     int y;
 } Vector2D;
@@ -30,18 +30,18 @@ typedef enum {
 
 // Desenhar no terminal
 
-typedef struct {
+typedef struct color {
     int red;
     int green;
     int blue;
 } Color;
 
-typedef struct {
+typedef struct pixel {
     Vector2D position;
     short color;
 } Pixel;
 
-typedef struct {
+typedef struct image {
     int size;
     Pixel pixels[MAX_IMAGE_PIXELS];
 } Image;
