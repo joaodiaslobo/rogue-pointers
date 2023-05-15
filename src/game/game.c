@@ -189,7 +189,7 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 
 	update_drowning(worlds[LEVEL].map, state, elapsedMicroseconds);
 
-	if(state->player.timeSinceDrownStart > 10000000){
+	if(state->player.timeSinceDrownStart > 10000000 || state->player.health <= 0){
 		state->player.health = 0;
 		state->gameOver = 1;
 	}

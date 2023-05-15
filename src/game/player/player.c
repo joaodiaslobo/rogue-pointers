@@ -23,7 +23,7 @@ Player *init_player(char name[15], Vector2D pos){
 
     strcpy(player->name, name);
     player->position = pos;
-    player->health = 50;
+    player->health = 100;
     player->gold = 0;
     player->inventory = inventory;
     player->selectedSlot = 0;

@@ -22,6 +22,7 @@ typedef struct mob {
     int chasingPlayer;
     int pathStep;
     Vector2D *path;
+    int attackDamage;
 } Mob;
 
 // Mapa

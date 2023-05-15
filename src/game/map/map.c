@@ -573,6 +573,7 @@ int gen_mobs(Mob *mobs, Map **map, int r, int c, int level){
 			mob.pathStep = 0;
 			mob.path = NULL;
 			mob.chasingPlayer = 0;
+			mob.attackDamage = 5;
 			mobs[i] = mob;
 		}
 

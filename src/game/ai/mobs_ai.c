@@ -40,6 +40,8 @@ void wander_ai(Mob *mob, Player *player, Map** map, int r, int c){
                 mob->position = mob->path[mob->pathStep];
                 mob->pathStep--;
             }
+
+            apply_damage(mob, player);
         } else {
             // Em perseguição
             if(mob->pathStep >= 0){
@@ -48,7 +50,16 @@ void wander_ai(Mob *mob, Player *player, Map** map, int r, int c){
             } else {
                 mob->chasingPlayer = 0;
             }
+
+            apply_damage(mob, player);
         }
+    }
+}
+
+void apply_damage(Mob *mob, Player *player){
+    // Se o mob estiver a uma distância suficiente de ataque, ataca o player
+    if(distance_between_points(mob->position, player->position) <= 1.5f){
+        player->health -= mob->attackDamage;
     }
 }
 
