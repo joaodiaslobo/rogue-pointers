@@ -2,7 +2,6 @@
 #include "game_types.h"
 #include "player_pathfinding.h"
 #include "a_star_pathfinding.h"
-#include "image.h"
 #include "draw.h"
 
 void apply_path_change(GameState *gameState, Direction facing, Map** map, int r, int c){
@@ -64,8 +63,6 @@ void draw_path(GameState *gameState){
         return;
     }
 
-    Image pathOverlay = load_image_from_file("assets/sprites/miscellaneous/pathOverlay.sprite");
-
     int j = gameState->pathState.pathStep;
 
     if(gameState->pathState.moving){
@@ -73,7 +70,7 @@ void draw_path(GameState *gameState){
     }
 
     for(int i = 0; i < j; i++){
-        draw_to_screen(pathOverlay, gameState->pathState.path[i]);
+        draw_empty_pixel(gameState->pathState.path[i], 26);
     }
 }
 

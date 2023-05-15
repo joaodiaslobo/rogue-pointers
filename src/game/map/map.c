@@ -636,16 +636,10 @@ void draw_mobs(Mob *mobs, int mobQuantity){
 }
 
 // Imprime o mapa
-void print_map(Map** a, int r, int c, GameState *gameState) {
-   Image wall = load_image_from_file("assets/sprites/wall.sprite");
-   Image gate = load_image_from_file("assets/sprites/gate.sprite");
-   Image walk = load_image_from_file("assets/sprites/walk.sprite");
+void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) {
    Image lava = load_image_from_file("assets/sprites/lava.sprite");
-   Image grass = load_image_from_file("assets/sprites/grass.sprite");
-   Image water = load_image_from_file("assets/sprites/water.sprite");
    Image chest = load_image_from_file("assets/sprites/chest.sprite");
    Image door = load_image_from_file("assets/sprites/door.sprite");
-   Image key = load_image_from_file("assets/sprites/key.sprite");
 
    int k = 0, r_num = 0;
    for (int i = 0; i < r; i++){
@@ -657,17 +651,13 @@ void print_map(Map** a, int r, int c, GameState *gameState) {
 
 		switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
-				draw_to_screen(walk, pos);
+				draw_empty_pixel(pos, 14);
 				break;
 			case 1: // imprimir a parede 
-				pos.x = j;
-				pos.y = i;
-				draw_to_screen(wall, pos);
+				draw_empty_pixel(pos, 15);
 				break;
 			case 2: // imprimir porta para outro nível
-				pos.x = j;
-				pos.y = i;
-				draw_to_screen(gate, pos);
+				draw_empty_pixel(pos, 5);
 				break;
 			case 4: // imprimir lava	
 				r_num = random() % 5;
@@ -677,60 +667,29 @@ void print_map(Map** a, int r, int c, GameState *gameState) {
 				mvprintw(i, j*2, "  ");
             	attroff(COLOR_PAIR(k));
 				break;
-			case 5: // imprimir relva	 
-				k = 104;
-				init_pair(k, grass.pixels[0].color, walk.pixels[0].color);         
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "''" );
-            	attroff(COLOR_PAIR(k));
+			case 5: // imprimir relva
+				draw_custom_pixel(pos, "''", 27, 14, terminal);
 				break;
 			case 6: // imprimir flor 
-				k = 105;
-				init_pair(k, grass.pixels[1].color, walk.pixels[0].color);         
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "**" );
-            	attroff(COLOR_PAIR(k));
+				draw_custom_pixel(pos, "**", 13, 14, terminal);
 				break;
 			case 7: // imprimir água profunda 
-				pos.x = j;
-				pos.y = i;
-				draw_to_screen(water, pos);
-				k = 106;
-				init_pair(k, COLOR_BLACK, water.pixels[0].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+				draw_empty_pixel(pos, 16);
 				break;
-			case 8: // imprimir água margem 
-				k = 107;
-				init_pair(k, COLOR_BLACK, water.pixels[1].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+			case 8: // imprimir água margem
+				draw_empty_pixel(pos, 35);
 				break;
 			case 9: // imprimir baú 
-				pos.x = j;
-				pos.y = i;
 				draw_to_screen(chest, pos);
 				break;
 			case 10: // imprimir porta 
-				pos.x = j;
-				pos.y = i;
 				draw_to_screen(door, pos);
 				break;
 			case 11: // imprimir chave 
-				k = 110;
-				init_pair(k, key.pixels[0].color, walk.pixels[0].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "-o" );
-            	attroff(COLOR_PAIR(k));
+				draw_custom_pixel(pos, "-o", 26, 14, terminal);
 				break;
 			case 12: // imprimir chão da sala enquanto fechada com um cor própria 
-				k = 111;
-				init_pair(k, COLOR_BLACK, walk.pixels[1].color);          
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  " );
-            	attroff(COLOR_PAIR(k));
+				draw_empty_pixel(pos, 28);
 				break;
 			default:
 				break;

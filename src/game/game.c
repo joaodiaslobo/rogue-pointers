@@ -245,7 +245,7 @@ int game(Terminal *terminal) {
 	worlds[LEVEL].created = 1;
 	gen_grass(worlds[LEVEL].map,nrows,ncols); // no nível 0 é possível existir relva
 	worlds[LEVEL].mobQuantity = 0;
-	print_map(worlds[LEVEL].map, nrows, ncols, gameState);
+	print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 
 	// Inicializa a posição do jogador num lugar válido dentro do mapa
 	while(worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 0 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 4 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 5) {
@@ -255,8 +255,6 @@ int game(Terminal *terminal) {
 	gameState->gameOver = 0;
 
 	endwin(); 
-
-	Image characterSprite = load_image_from_file("assets/sprites/gate.sprite");
     
 	struct timeval currentTime;
 	while(1) {
@@ -266,12 +264,12 @@ int game(Terminal *terminal) {
 			attron(COLOR_PAIR(COLOR_WHITE));
 			printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 			attroff(COLOR_PAIR(COLOR_WHITE));
-			print_map(worlds[LEVEL].map, nrows, ncols, gameState);
+			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity);
-			draw_to_screen(characterSprite, gameState->player.position);
+			draw_custom_pixel(gameState->player.position, "O!", 10, 4, terminal);
+			//draw_empty_pixel(gameState->player.position, 4);
 			draw_light(gameState, nrows, ncols, worlds[LEVEL].map);
 
-			//draw_to_screen(characterSprite, gameState->player.position);
 			//move(st.playerX, st.playerY);
 
 			// Botões (temporário)

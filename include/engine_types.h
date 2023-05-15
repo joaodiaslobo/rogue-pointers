@@ -12,6 +12,8 @@ typedef struct terminal {
     int yMax;
     int xMax;
     WINDOW *mainWindow;
+    short loadedColors;
+    short loadedRuntimePairs;
 } Terminal;
 
 // Math

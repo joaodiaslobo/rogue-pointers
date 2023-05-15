@@ -28,17 +28,19 @@ int main(){
 
     mousemask(BUTTON1_CLICKED, NULL);
 
-    start_color();
-
-    // Carrega a palette para o ncurses
-    if(!load_palette_from_file("assets/main.palette")){
-        printw("Falha no carregamento da palette.");
-    }
 
     // Obtem tamanho do terminal
     Terminal terminal;
     getmaxyx(stdscr, terminal.yMax, terminal.xMax);
 	terminal.mainWindow = window;
+    terminal.loadedRuntimePairs = 0;
+
+    start_color();
+
+    // Carrega a palette para o ncurses
+    if(!load_palette_from_file("assets/main.palette", &terminal)){
+        printw("Falha no carregamento da palette.");
+    }
 
     int selection = main_menu(&terminal);
     while(selection == 0 || selection == 3){ // permite que o jogador volte ao menu principal, caso perca

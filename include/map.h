@@ -1,4 +1,8 @@
+#ifndef MAP
+#define MAP
+
 #include "game_types.h"
+#include "engine_types.h"
 
 void gen_water(Map** a, int r, int c);
 
@@ -16,4 +20,6 @@ void gen_map(Map** a, int r, int c);
 
 void draw_mobs(Mob *mobs, int mobQuantity);
 
-void print_map(Map** a, int r, int c, GameState *gameState);
+void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal);
+
+#endif
