@@ -27,6 +27,8 @@ int main(){
 	meta(stdscr, TRUE);
 	keypad(stdscr, TRUE);
 
+    mousemask(BUTTON1_CLICKED, NULL);
+
     start_color();
 
     // Carrega a palette para o ncurses

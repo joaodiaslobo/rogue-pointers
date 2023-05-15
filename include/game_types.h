@@ -3,7 +3,7 @@
 
 #include "engine_types.h"
 
-#define INVENTORY_SLOTS 40
+#define INVENTORY_SLOTS 15
 
 // Mobs
 
@@ -52,12 +52,14 @@ typedef struct {
     char name[100];
     ItemType type;
     char description[400];
+    char sprite[200];
 } Item;
 
 typedef struct {
+    int size;
     ItemType type;
     Item items[10];
-} Items_Table;
+} ItemsTable;
 
 /*typedef struct {
     Item items[5];
@@ -86,6 +88,7 @@ typedef struct {
 typedef struct {
     Player player;
     int gameover; // 1 - perdeu o jogo
+    int paused;
 } GameState;
 
 #endif

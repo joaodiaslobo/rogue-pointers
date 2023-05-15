@@ -50,3 +50,17 @@ Item init_empty_item(){
     item.type = NONE;
     return item;
 }
+
+void add_table_to_inventory(Inventory *inventory, ItemsTable *table){
+    for(int i = 0; i < table->size; i++){
+        add_item(inventory, &table->items[i]);
+    }
+}
+
+Inventory initialize_inventory(){
+    Inventory inventory;
+    for(int i = 0; i < INVENTORY_SLOTS; i++){
+        inventory.items[i].type = NONE;
+    }
+    return inventory;
+}

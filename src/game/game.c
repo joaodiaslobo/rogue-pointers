@@ -6,12 +6,14 @@
 #include "game_types.h"
 #include "engine_types.h"
 #include "player.h"
+#include "inventory_menu.h"
 #include "image.h"
 #include "draw.h"
 #include "mobs_ai.h"
 #include <unistd.h>
 #include "sys/time.h"
 #include "components.h"
+#include "global_items.h"
 
 int LEVEL = 0;
 
@@ -24,11 +26,13 @@ GameState *init_game_state(){
 	Vector2D pos = {20,20};
 	char name[15] = "NOME";
 	state->player = *init_player(name, pos);
+	state->gameover = 0;
+	state->paused = 0;
 	return state;
 }
 
 
-void execute_input(GameState *state, World *w, int r, int c){
+void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal){
 	int key = getch();
     
 	switch (key)
@@ -79,6 +83,22 @@ void execute_input(GameState *state, World *w, int r, int c){
 		case 'd':
 			check_for_portal(state, w, r, c, 1);
 			break;
+		case KEY_MOUSE:
+			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
+			Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
+			MEVENT event1;
+			if(getmouse(&event1) == OK){
+				if((event1.x >= buttonInvPos.x && event1.x <= 16 + buttonInvPos.x) && event1.y == buttonInvPos.y){
+					state->paused = 1;
+					WINDOW * inventoryWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
+					box(inventoryWindow, 0, 0);
+					clear();
+					refresh();
+					show_inventory(terminal, inventoryWindow);
+    				wrefresh(inventoryWindow);
+				}
+			}
+			break;
 		default:
 			break;
 	}
@@ -109,8 +129,8 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 	} 
 }
 
-void update(GameState *state, World *worlds, int r, int c, struct timeval currentTime) {
-	execute_input(state, worlds, r, c);
+void update(GameState *state, World *worlds, int r, int c, struct timeval currentTime, Terminal *terminal) {
+	execute_input(state, worlds, r, c, terminal);
 	
 	for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
 		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map, r, c);
@@ -196,56 +216,57 @@ int game(Terminal *terminal) {
     
 	struct timeval currentTime;
 	while(1) {
-		gettimeofday(&currentTime, NULL);
-		move(nrows - 1, 0);
-		attron(COLOR_PAIR(COLOR_WHITE));
-		printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
-		attroff(COLOR_PAIR(COLOR_WHITE));
-		print_map(worlds[LEVEL].map, nrows, ncols);
-		draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
-		Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
-	    draw_to_screen(gate, gameState->player.position);
-		draw_light(gameState, nrows, ncols, worlds[LEVEL].map);
+		if(!gameState->paused){
+			gettimeofday(&currentTime, NULL);
+			move(nrows - 1, 0);
+			attron(COLOR_PAIR(COLOR_WHITE));
+			printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
+			attroff(COLOR_PAIR(COLOR_WHITE));
+			print_map(worlds[LEVEL].map, nrows, ncols);
+			draw_mobs(worlds[LEVEL].mobs, nrows, ncols, worlds[LEVEL].mobQuantity);
+			Image gate = load_image_from_file("assets/sprites/gate.sprite"); //Não apagar estas 3 linhas, usadas p/ testes
+			draw_to_screen(gate, gameState->player.position);
+			draw_light(gameState, nrows, ncols, worlds[LEVEL].map);
 
-		//draw_to_screen(characterSprite, gameState->player.position);
-		//move(st.playerX, st.playerY);
+			//draw_to_screen(characterSprite, gameState->player.position);
+			//move(st.playerX, st.playerY);
 
-		// Botões (temporário)
-		int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
-		Vector2D buttonExplorePos = {buttonToolbarX,terminal->yMax-1};
-		button(buttonGradient, "Explore", buttonExplorePos);
-		Vector2D buttonRestPos = {buttonToolbarX+13+4,terminal->yMax-1};
-		button(buttonGradient, "Rest", buttonRestPos);
-		Vector2D buttonSearchPos = {buttonToolbarX+13+4+14,terminal->yMax-1};
-		button(buttonGradient, "Search", buttonSearchPos);
-		Vector2D buttonMenuPos = {buttonToolbarX+12+4+13+4+14,terminal->yMax-1};
-		button(buttonGradient, "Menu", buttonMenuPos);
-		Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
-		button(buttonGradient, "Inventory", buttonInvPos);
+			// Botões (temporário)
+			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
+			Vector2D buttonExplorePos = {buttonToolbarX,terminal->yMax-1};
+			button(buttonGradient, "Explore", buttonExplorePos);
+			Vector2D buttonRestPos = {buttonToolbarX+13+4,terminal->yMax-1};
+			button(buttonGradient, "Rest", buttonRestPos);
+			Vector2D buttonSearchPos = {buttonToolbarX+13+4+14,terminal->yMax-1};
+			button(buttonGradient, "Search", buttonSearchPos);
+			Vector2D buttonMenuPos = {buttonToolbarX+12+4+13+4+14,terminal->yMax-1};
+			button(buttonGradient, "Menu", buttonMenuPos);
+			Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
+			button(buttonGradient, "Inventory", buttonInvPos);
 
-		Vector2D healthBarPos = {0,1};
-		progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);
+			Vector2D healthBarPos = {0,1};
+			progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);
 
-		int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
+			int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
 
-		Vector2D oxygenBarPos = {0,3};
-		progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
-    
-		if (gameState->gameover == 1){
-			move(0,150);
-			printw("** PERDEU O JOGO PRIMA c para continuar**");
-			refresh();
-        	int c;
-        	do {
-            	c = getchar();
-        	} while (c != 'c');
-        	endwin();
-        	return(0);
+			Vector2D oxygenBarPos = {0,3};
+			progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
+		
+			if (gameState->gameover == 1){
+				move(0,150);
+				printw("** PERDEU O JOGO PRIMA c para continuar**");
+				refresh();
+				int c;
+				do {
+					c = getchar();
+				} while (c != 'c');
+				endwin();
+				return(0);
+			}
+
+			mvprintw(0, 180, "Level: %d", LEVEL);
 		}
-
-		mvprintw(0, 180, "Level: %d", LEVEL);
-
-		update(gameState, worlds, nrows, ncols, currentTime);
+		update(gameState, worlds, nrows, ncols, currentTime, terminal);
 	}
 
 	return 0;
