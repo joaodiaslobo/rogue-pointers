@@ -12,24 +12,31 @@ int load_palette_from_file(char *path, Terminal *terminal){
         return 0;
     }
 
-    char ch;
+    char ch = '\0';
     char hex[8];
     int index = 0;
     short colorIndex = 0;
     
-    do {
+    while (ch != EOF){
         ch = fgetc(file);
-        if(ch != EOF){
-            if(ch != '\n'){
-                hex[index] = ch;
-                index++;
-            } else {
-                add_color_to_palette(hex_to_color(hex), 8 + colorIndex);
-                index = 0;
-                colorIndex++;
+
+        // Ignora comentários
+        if(ch == '/'){
+            while(ch != '\n'){
+                ch = fgetc(file);
             }
+            continue;
         }
-    } while (ch != EOF);
+
+        if(ch != '\n' && ch != EOF){
+            hex[index] = ch;
+            index++;
+        } else {
+            add_color_to_palette(hex_to_color(hex), 8 + colorIndex);
+            index = 0;
+            colorIndex++;
+        }
+    }
     
     fclose(file);
 
