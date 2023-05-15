@@ -25,6 +25,10 @@ Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c, int r, int
     openSet.elements++;
     while (openSet.elements > 0) {
         Node *currentNode = find_best_node(&openSet, &closedSet, end);
+        // Handling de erro quando nodos são mal alocados nos sets
+        if(currentNode == NULL){
+            return NULL;
+        }
         if (currentNode == endNode) {
             Vector2D *path = malloc((int)ceil(currentNode->localGoal) * sizeof(Vector2D));
             Node *node = currentNode;
@@ -69,6 +73,9 @@ Node *find_best_node(NodeStack *openSet, NodeStack *closedSet, Vector2D end) {
     float lowestScore = INFINITY;
     for (i = 0; i < openSet->elements; i++) {
         Node *node = openSet->nodes[i];
+        if(node == NULL){
+            return NULL;
+        }
         float score = node->globalGoal + heuristic(node->pos, end);
         if (score < lowestScore) {
             lowestScore = score;
