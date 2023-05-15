@@ -43,6 +43,23 @@ void apply_path_change(GameState *gameState, Direction facing, MAP** map, int r,
     }
 }
 
+void apply_mouse_path_selection(GameState *gameState, MAP **map, Vector2D clickPos, int r, int c){
+    gameState->pathSelection = 1;
+    gameState->pathState.pathPos = gameState->player.position;
+    
+    if(clickPos.x > 0 && clickPos.y > 0 && clickPos.x < c && clickPos.y < r && !(map[clickPos.y][clickPos.x].object == 1 ||  map[clickPos.y][clickPos.x].object == 10 || map[clickPos.y][clickPos.x].object == 3)){
+        gameState->pathState.pathPos.x = clickPos.x;
+        gameState->pathState.pathPos.y = clickPos.y;
+        Node *nodes = map_to_node_system(map, r, c);
+        int steps;
+        gameState->pathState.path = find_path(nodes, gameState->pathState.pathPos, gameState->player.position, c, r, &steps);
+        if(gameState->pathState.path != NULL){
+            gameState->pathState.pathStep = steps - 1;
+        }
+        gameState->pathState.moving = 1;
+    }
+}
+
 void draw_path(GameState *gameState){
     if(gameState->pathState.pathStep == 0 || gameState->pathState.path == NULL){
         return;
@@ -79,7 +96,7 @@ void update_player_path(GameState *gameState, unsigned long elapsedMicroseconds)
     gameState->pathState.timeSinceLastUpdate += elapsedMicroseconds;
     if(gameState->pathState.timeSinceLastUpdate > 250000){
         gameState->pathState.timeSinceLastUpdate = 0;
-        if(gameState->pathState.moving){
+        if(gameState->pathState.moving && gameState->pathState.path != NULL  && gameState->pathState.pathStep >= 0){
             gameState->player.position = gameState->pathState.path[gameState->pathState.pathStep];
             gameState->pathState.pathStep--;
             if(gameState->pathState.pathStep < 0){
@@ -87,6 +104,10 @@ void update_player_path(GameState *gameState, unsigned long elapsedMicroseconds)
                 gameState->pathState = pathBehaviour;
                 gameState->pathSelection = 0;
             }
+        } else {
+            PathBehaviour pathBehaviour = {gameState->player.position, NULL, 0, 0, 0};
+            gameState->pathState = pathBehaviour;
+            gameState->pathSelection = 0;
         }
     }
 }

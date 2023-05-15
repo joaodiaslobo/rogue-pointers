@@ -6,6 +6,8 @@
 
 void apply_path_change(GameState *gameState, Direction facing, MAP** map, int r, int c);
 
+void apply_mouse_path_selection(GameState *gameState, MAP **map, Vector2D clickPos, int r, int c);
+
 void draw_path(GameState *gameState);
 
 int is_cell_path_part(GameState *gameState, Vector2D pos);

@@ -111,7 +111,7 @@ Node *map_to_node_system(MAP **map, int r, int c){
             nodes[y * c + x].visited = 0;
             nodes[y * c + x].globalGoal = FLT_MAX;
             nodes[y * c + x].localGoal = FLT_MAX;
-            if(map[y][x].object != 1 && map[y][x].object != 3){
+            if(map[y][x].object != 1 && map[y][x].object != 3 && map[y][x].object != 10){
                 nodes[y * c + x].obstacle = 0;
             } else {
                 nodes[y * c + x].obstacle = 1;

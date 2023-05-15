@@ -105,11 +105,11 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			check_for_portal(state, w, r, c, 1);
 			break;
 		case KEY_MOUSE:
-			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
-			Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
-			MEVENT event1;
-			if(getmouse(&event1) == OK){
-				if((event1.x >= buttonInvPos.x && event1.x <= 16 + buttonInvPos.x) && event1.y == buttonInvPos.y){
+			MEVENT event;
+			if(getmouse(&event) == OK){
+				int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
+				Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
+				if((event.x >= buttonInvPos.x && event.x <= 16 + buttonInvPos.x) && event.y == buttonInvPos.y){
 					state->paused = 1;
 					WINDOW * inventoryWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
 					box(inventoryWindow, 0, 0);
@@ -118,11 +118,19 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 					show_inventory(terminal, inventoryWindow);
     				wrefresh(inventoryWindow);
 				}
+				else {
+					Vector2D clickPos = {event.x / 2, event.y};
+					apply_mouse_path_selection(state, w[LEVEL].map, clickPos, r, c);
+				}
 			}
 			break;
 		case 'm':
 			if(state->pathSelection && !state->pathState.moving){
-				state->pathState.moving = 1;
+				if(state->pathState.pathStep != 0){
+					state->pathState.moving = 1;
+				} else {
+					state->pathSelection = 0;
+				}
 			} else{
 				state->pathSelection = 1;
 				state->pathState.pathPos = state->player.position;
@@ -189,6 +197,7 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 
 
 int game(Terminal *terminal) {
+	clear();
 	GameState *gameState = init_game_state();
 
 	int ncols, nrows;
