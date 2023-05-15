@@ -677,7 +677,7 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
 				draw_empty_pixel(pos, 16);
 				break;
 			case 8: // imprimir água margem
-				draw_empty_pixel(pos, 35);
+				draw_empty_pixel(pos, 43);
 				break;
 			case 9: // imprimir baú 
 				draw_to_screen(chest, pos);
