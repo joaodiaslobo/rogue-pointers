@@ -267,6 +267,11 @@ int game(Terminal *terminal) {
 			attron(COLOR_PAIR(COLOR_WHITE));
 			printw("(%d, %d) %d %d", gameState->player.position.x, gameState->player.position.y, ncols, nrows);
 			attroff(COLOR_PAIR(COLOR_WHITE));
+
+			if(gameState->pathSelection == 1){
+				draw_path(gameState);
+			}
+			
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity);
 			draw_custom_pixel(gameState->player.position, "O!", 10, 4, terminal);
@@ -309,10 +314,6 @@ int game(Terminal *terminal) {
 			}
 
 			mvprintw(0, 180, "Level: %d", LEVEL);
-		}
-
-		if(gameState->pathSelection == 1){
-			draw_path(gameState);
 		}
 
 		update(gameState, worlds, nrows, ncols, currentTime, terminal);
