@@ -4,7 +4,7 @@
 #include "game_types.h"
 #include "engine_types.h"
 
-void show_inventory(Terminal *terminal, WINDOW * inventoryWindow);
+void show_inventory(Terminal *terminal, WINDOW * inventoryWindow, GameState *state);
 
 void clear_item(Terminal *terminal, WINDOW *window);
 
