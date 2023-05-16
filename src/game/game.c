@@ -117,8 +117,12 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 						box(inventoryWindow, 0, 0);
 						clear();
 						refresh();
-						show_inventory(terminal, inventoryWindow);
+						show_inventory(terminal, inventoryWindow, state);
 						wrefresh(inventoryWindow);
+						delwin(inventoryWindow);
+						clear();
+						refresh();
+						state->paused = 0;
 					}
 					else {
 						Vector2D clickPos = {event.x / 2, event.y};
@@ -262,6 +266,7 @@ int game(Terminal *terminal) {
 	struct timeval currentTime;
 	while(1) {
 		if(!gameState->paused){
+			mvprintw(0,0,"%d",gameState->player.selectedSlot);
 			gettimeofday(&currentTime, NULL);
 			move(nrows - 1, 0);
 			attron(COLOR_PAIR(COLOR_WHITE));

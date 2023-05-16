@@ -10,7 +10,7 @@
 #include "image.h"
 #include "draw.h"
 
-void show_inventory(Terminal *terminal, WINDOW *inventoryWindow){
+void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *state){
     Inventory game_inventory = {
         {
             {"Bread & Blood", MELEE_WEAPON, "Perfect for slicing through the soft, pillowy texture\nof freshly baked bread, but it is also a formidable weapon,\ncapable of drawing blood with just a flick of the wrist.\nThis knife is a contradiction,\na blend of the mundane and the macabre,\na tool for both nourishment and destruction.", "assets/sprites/inventory/items/breadandblood.sprite"},
@@ -39,7 +39,7 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow){
     
     keypad(inventoryWindow, true);
 
-    int selection = 0, key = 0, options = 15;
+    int selection = state->player.selectedSlot, key = 0, options = 15;
 
     while (key != 10){
 
@@ -83,6 +83,9 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow){
                 } else {
                     selection = 0;
                 }
+                break;
+            case 10:
+                state->player.selectedSlot = selection;
                 break;
             default:
                 break;
