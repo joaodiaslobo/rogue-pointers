@@ -254,6 +254,17 @@ int game(Terminal *terminal) {
 	worlds[LEVEL].mobQuantity = 0;
 	print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 
+	//coloca som no jogo
+	pthread_t thread; // Cria uma thread para reproduzir o som do jogo
+
+    Sound *fich = malloc(sizeof(Sound));
+    fich->filename = "assets/sound/game.wav";
+    fich->time_ms = 30000;
+    if (pthread_create(&thread, NULL, play_sound_thread, fich) != 0)  {
+        printw("Erro ao criar a thread\n");
+        return;
+    }
+
 	// Inicializa a posição do jogador num lugar válido dentro do mapa
 	while(worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 0 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 4 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 5) {
 		gameState->player.position.x = (random() % ncols);
