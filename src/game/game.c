@@ -277,7 +277,6 @@ int game(Terminal *terminal) {
 	struct timeval currentTime;
 	while(1) {
 		if(!gameState->paused){
-			mvprintw(0,0,"%d",gameState->player.selectedSlot);
 			gettimeofday(&currentTime, NULL);
 			move(nrows - 1, 0);
 			attron(COLOR_PAIR(COLOR_WHITE));

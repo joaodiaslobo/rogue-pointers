@@ -28,7 +28,6 @@ int main(){
 
     mousemask(BUTTON1_CLICKED, NULL);
 
-
     // Obtem tamanho do terminal
     Terminal terminal;
     getmaxyx(stdscr, terminal.yMax, terminal.xMax);

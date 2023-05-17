@@ -21,4 +21,12 @@ void add_table_to_inventory(Inventory *inventory, ItemsTable *table);
 
 Inventory initialize_inventory();
 
+int pick_random_item(Inventory *inventory, int picked[], int level);
+
+int getRandomNumber(int min, int max);
+
+int all_collected(int picked[], int x);
+
+int choose_item_freq(ItemType type, int level);
+
 #endif
