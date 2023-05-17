@@ -54,6 +54,8 @@ typedef struct item {
     ItemType type;
     char description[400];
     char sprite[200];
+    int damage;
+    unsigned long cooldown;
 } Item;
 
 typedef struct itemTable {
@@ -81,7 +83,8 @@ typedef struct player {
     Inventory inventory;
     int selectedSlot;
     int speedMultiplier;
-    unsigned long timeSinceDrownStart; 
+    unsigned long timeSinceDrownStart;
+    unsigned long timeSinceLastAction;
 } Player;
 
 typedef struct pathBehaviour {

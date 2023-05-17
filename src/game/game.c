@@ -95,6 +95,10 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			apply_movement(state, SOUTH, w[LEVEL].map, r, c);
 			apply_movement(state, EAST, w[LEVEL].map, r, c);
 			break;
+		case 10:
+			// Ações do jogador
+			perform_action(state, &w[LEVEL]);
+			break;
 		case 'q':
 			endwin();
 			exit(0);
@@ -197,6 +201,12 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 	if(state->player.timeSinceDrownStart > 10000000 || state->player.health <= 0){
 		state->player.health = 0;
 		state->gameOver = 1;
+	}
+
+	if(state->player.timeSinceLastAction < 10000000){
+		state->player.timeSinceLastAction += elapsedMicroseconds;
+	} else if(state->player.timeSinceLastAction > 10000000){
+		state->player.timeSinceLastAction = 10000000;
 	}
 	
 	refresh();
@@ -315,7 +325,6 @@ int game(Terminal *terminal) {
 
 			Vector2D oxygenBarPos = {0,3};
 			progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
-		
 			if (gameState->gameOver == 1){
 				move(0,150);
 				printw("** PERDEU O JOGO PRIMA c para continuar**");
@@ -326,6 +335,22 @@ int game(Terminal *terminal) {
 				} while (c != 'c');
 				endwin();
 				return(0);
+			}
+
+			// Display de item selecionado e cooldown se aplicável
+			if(gameState->player.inventory.items[gameState->player.selectedSlot].type != NONE){
+				mvprintw(0,2, "%s", gameState->player.inventory.items[gameState->player.selectedSlot].name);
+				if(gameState->player.inventory.items[gameState->player.selectedSlot].type == MELEE_WEAPON){
+					if(gameState->player.timeSinceLastAction < gameState->player.inventory.items[gameState->player.selectedSlot].cooldown){
+						attron(COLOR_PAIR(8));
+						mvaddch(0, 0, ACS_PLUS);
+						attroff(COLOR_PAIR(8));
+					} else {
+						mvaddch(0, 0, ACS_PLUS);
+					}
+				} else {
+					mvaddch(0, 0, ' ');
+				}
 			}
 
 			mvprintw(0, 180, "Level: %d", LEVEL);

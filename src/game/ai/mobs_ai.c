@@ -56,6 +56,14 @@ void wander_ai(Mob *mob, Player *player, Map** map, int r, int c){
     }
 }
 
+void remove_enemy_from_world(World *world, int enemyIndex){
+    if(world->mobQuantity > 1){
+        world->mobs[enemyIndex] = world->mobs[world->mobQuantity - 1];
+    }
+
+    world->mobQuantity--;
+}
+
 void apply_damage(Mob *mob, Player *player){
     // Se o mob estiver a uma distância suficiente de ataque, ataca o player
     if(distance_between_points(mob->position, player->position) <= 1.5f){

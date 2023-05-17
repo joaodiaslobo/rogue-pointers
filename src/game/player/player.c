@@ -9,6 +9,10 @@
 #include <pthread.h>
 #include "draw.h"
 #include "inventory.h"
+#include "global_items.h"
+#include "mobs_ai.h"
+#include "player_pathfinding.h"
+#include <ncurses.h>
 
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
@@ -30,7 +34,46 @@ Player *init_player(char name[15], Vector2D pos){
     player->selectedSlot = 0;
     player->speedMultiplier = 1;
     player->timeSinceDrownStart = 0;
+    player->timeSinceLastAction = 10000000;
+
+    // Espada para testes
+    Item sword = globalItems[3]; 
+    add_item(&player->inventory, &sword);
+
     return player;
+}
+
+void perform_action(GameState *gameState, World* world){
+    int actionType = gameState->player.inventory.items[gameState->player.selectedSlot].type; 
+
+    switch (actionType)
+    {
+        case MELEE_WEAPON:
+            if(gameState->player.timeSinceLastAction >= gameState->player.inventory.items[gameState->player.selectedSlot].cooldown){
+                int attackDamage = gameState->player.inventory.items[gameState->player.selectedSlot].damage;
+
+                for(int i = 0; i < world->mobQuantity; i++){
+                    if(distance_between_points(gameState->player.position, world->mobs[i].position) <= 1.5f){
+                        apply_damage_to_enemy(i, world, attackDamage);
+                    }
+                }
+
+                gameState->player.timeSinceLastAction = 0;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void apply_damage_to_enemy(int enemyIndex, World *world, int damage){
+    Mob *mob = &(world->mobs[enemyIndex]);
+
+    mob->health -= damage;
+
+    if(mob->health <= 0){
+        remove_enemy_from_world(world, enemyIndex);
+    }
 }
 
 void apply_movement(GameState *gameState, Direction facing, Map** map, int r, int c){

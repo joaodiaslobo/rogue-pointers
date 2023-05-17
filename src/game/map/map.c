@@ -568,7 +568,7 @@ int gen_mobs(Mob *mobs, Map **map, int r, int c, int level){
 			Mob mob;
 			mob.position = get_random_floor_position(map, r, c);
 			mob.targetPosition = mob.position;
-			mob.health = 10;
+			mob.health = 100;
 			mob.mobBehavior = STUPID;
 			mob.timeSinceLastUpdate = 0;
 			mob.pathStep = 0;
