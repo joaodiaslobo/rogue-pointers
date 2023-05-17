@@ -17,6 +17,8 @@ int can_see_location(Vector2D posA, Vector2D posB, int distance, Map** map);
 
 Vector2D pick_random_patrol_position(Vector2D pos, Map **map);
 
+void remove_enemy_from_world(World *world, int enemyIndex);
+
 int available_floor_in_direction(Vector2D pos, Map **map, Direction direction);
 
 #endif

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "mobs_ai.h"
 #include "a_star_pathfinding.h"
+#include "enemy_info.h"
 
 void update_timer(Mob *mob, unsigned long elapsedMicroseconds){
     mob->timeSinceLastUpdate += elapsedMicroseconds;
@@ -60,6 +61,9 @@ void remove_enemy_from_world(World *world, int enemyIndex){
     if(world->mobQuantity > 1){
         world->mobs[enemyIndex] = world->mobs[world->mobQuantity - 1];
     }
+
+    // Reset mob stats UI
+    clean_ui();
 
     world->mobQuantity--;
 }

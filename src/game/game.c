@@ -16,7 +16,9 @@
 #include "sound.h"
 #include "global_items.h"
 #include "player_pathfinding.h"
+#include <pthread.h>
 #include "math.h"
+#include "enemy_info.h"
 
 int LEVEL = 0;
 
@@ -34,6 +36,7 @@ GameState *init_game_state(){
 	state->pathSelection = 0;
 	PathBehaviour pathBehaviour = {pos, NULL, 0, 0, 0};
 	state->pathState = pathBehaviour;
+	state->mobsInUI = 0;
 	return state;
 }
 
@@ -272,7 +275,6 @@ int game(Terminal *terminal) {
     fich->time_ms = 30000;
     if (pthread_create(&thread, NULL, play_sound_thread, fich) != 0)  {
         printw("Erro ao criar a thread\n");
-        return;
     }
 
 	// Inicializa a posição do jogador num lugar válido dentro do mapa
@@ -352,6 +354,9 @@ int game(Terminal *terminal) {
 					mvaddch(0, 0, ' ');
 				}
 			}
+
+			Vector2D enemyInfoPos = { 0, 5 };
+			enemy_info_ui(gameState, &worlds[LEVEL], enemyInfoPos);
 
 			mvprintw(0, 180, "Level: %d", LEVEL);
 		}

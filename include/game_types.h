@@ -103,6 +103,7 @@ typedef struct gameState {
     int paused;
     int pathSelection;
     PathBehaviour pathState;
+    int mobsInUI;
 } GameState;
 
 #endif
