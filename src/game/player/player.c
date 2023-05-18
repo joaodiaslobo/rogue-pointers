@@ -121,30 +121,40 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         gameState->gameOver = 1;
     }
 
-    int aux = 1;
-    // Se o jogador encountrou a chave abre a porta da sala com o baú
+    // Se o jogador encountrou a chave guarda no inventário
     if(map[newPos.y][newPos.x].object == 11){
         gameState->player.position.x = newPos.x;
         gameState->player.position.y = newPos.y;
-        for(int i = 1; i < r; i++) {  
-		    for(int j = 1; j < c; j++) {
-                if(map[i][j].object == 10) {
-                    map[i][j].object = 0;
-                    aux = 0;
+
+        Item key = globalItems[15];
+        add_item(&gameState->player.inventory, &key);
+        map[newPos.y][newPos.x].object = 0; //apaga a chave do mapa
+        pthread_t thread1; // Cria uma thread para reproduzir o som da chave a ser apanhada
+        Sound *fich1 = malloc(sizeof(Sound));
+        fich1->filename = "assets/sound/pick_key.wav";
+        fich1->time_ms = 1000;
+        fich1->loop = 0;
+        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Erro ao criar a thread\n");
+    }
+
+    // Se o jogador encontrou a porta e tem uma chave, a porta abre e ouve-se o som
+    if(map[newPos.y][newPos.x].object == 10){
+        int key_qty = 0;
+        key_qty = get_item_quantity_by_type(&gameState->player.inventory,ACCESS);
+        if(key_qty == 1){
+            for(int i = 1; i < r; i++) {  
+		        for(int j = 1; j < c; j++) {
+                    if(map[i][j].object == 10) map[i][j].object = 0;
                 }
             }
-        }         
-        if (aux == 0){
             pthread_t thread1; // Cria uma thread para reproduzir o som da porta a abrir
             Sound *fich1 = malloc(sizeof(Sound));
             fich1->filename = "assets/sound/door_opening.wav";
             fich1->time_ms = 1000;
             fich1->loop = 0;
-            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  {
-                printw("Erro ao criar a thread\n");
-                return;
-            }
+            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Erro ao criar a thread\n");
         }
+        delete_item_at_position(&gameState->player.inventory,15);
     }
     // Som para o jogador a nadar na água
     if(map[newPos.y][newPos.x].object == 7){

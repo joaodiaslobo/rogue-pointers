@@ -55,7 +55,8 @@ typedef enum {
     RANGED_WEAPON = 2,
     BOMB = 3,
     MISCELLANEOUS = 4,
-    SPECIAL = 5
+    SPECIAL = 5,
+    ACCESS = 6
 } ItemType;
 
 typedef struct item {
