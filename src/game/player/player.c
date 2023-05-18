@@ -40,6 +40,9 @@ Player *init_player(char name[15], Vector2D pos){
     Item sword = globalItems[3]; 
     add_item(&player->inventory, &sword);
 
+    Item gun = globalItems[7];
+    add_item(&player->inventory, &gun);
+
     return player;
 }
 
@@ -184,8 +187,20 @@ void draw_light(GameState *gameState, int r, int c, Map **map, Terminal *termina
 int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map){
     int dx = abs(posB.x - posA.x);
     int dy = abs(posB.y - posA.y);
-    int sx = (posA.x < posB.x) ? 1 : -1;
-    int sy = (posA.y < posB.y) ? 1 : -1;
+    int sx, sy;
+
+    if(posA.x < posB.x){
+        sx = 1;
+    } else {
+        sx = -1;
+    }
+
+    if(posA.y < posB.y){
+        sy = 1;
+    } else {
+        sy = -1;
+    }
+
     int err = dx - dy;
      
     Vector2D pos = {posA.x, posA.y};

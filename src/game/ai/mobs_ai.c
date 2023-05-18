@@ -110,8 +110,20 @@ float distance_between_points(Vector2D a, Vector2D b){
 int can_see_location(Vector2D posA, Vector2D posB, int distance, Map** map){
     int dx = abs(posB.x - posA.x);
     int dy = abs(posB.y - posA.y);
-    int sx = (posA.x < posB.x) ? 1 : -1;
-    int sy = (posA.y < posB.y) ? 1 : -1;
+    int sx, sy;
+
+    if(posA.x < posB.x){
+        sx = 1;
+    } else {
+        sx = -1;
+    }
+
+    if(posA.y < posB.y){
+        sy = 1;
+    } else {
+        sy = -1;
+    }
+
     int err = dx - dy;
      
     Vector2D pos = {posA.x, posA.y};

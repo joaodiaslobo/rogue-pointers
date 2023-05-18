@@ -31,12 +31,20 @@ typedef struct map {
     int visited; //0: às escuras, jogador nunca passou por lá, logo nunca foi iluminado | 1: está a ser ou já foi iluminado, neste caso se não estiver o jogador na zona fica a "sombreado"
 } Map;
 
+typedef struct bullet {
+    int damage;
+    Vector2D target;
+    Vector2D position;
+} Bullet;
+
 // Mundo de Mapas
 typedef struct world {
 	Map** map;
     Mob *mobs;
     int mobQuantity;
     int created; // valida se um nível já foi gerado ou não
+    Bullet *bullets;
+    int bulletQuantity;
 } World;
 
 // Items
@@ -105,6 +113,8 @@ typedef struct gameState {
     int pathSelection;
     PathBehaviour pathState;
     int mobsInUI;
+    unsigned long timeSinceLastBulletUpdate;
 } GameState;
+
 
 #endif

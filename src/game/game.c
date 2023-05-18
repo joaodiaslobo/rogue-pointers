@@ -19,6 +19,7 @@
 #include <pthread.h>
 #include "math.h"
 #include "enemy_info.h"
+#include "bullet.h"
 
 int LEVEL = 0;
 
@@ -29,11 +30,12 @@ GameState *init_game_state(){
         exit(EXIT_FAILURE);
     }
 	Vector2D pos = {20,20};
-	char name[15] = "NOME";
+	char name[15] = "NAME";
 	state->player = *init_player(name, pos);
 	state->gameOver = 0;
 	state->paused = 0;
 	state->pathSelection = 0;
+	state->timeSinceLastBulletUpdate = 50000;
 	PathBehaviour pathBehaviour = {pos, NULL, 0, 0, 0};
 	state->pathState = pathBehaviour;
 	state->mobsInUI = 0;
@@ -116,24 +118,36 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			{
 				MEVENT event;
 				if(getmouse(&event) == OK){
-					int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
-					Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
-					if((event.x >= buttonInvPos.x && event.x <= 16 + buttonInvPos.x) && event.y == buttonInvPos.y){
-						state->paused = 1;
-						WINDOW * inventoryWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
-						box(inventoryWindow, 0, 0);
-						clear();
-						refresh();
-						show_inventory(terminal, inventoryWindow, state);
-						wrefresh(inventoryWindow);
-						delwin(inventoryWindow);
-						clear();
-						refresh();
-						state->paused = 0;
-					}
-					else {
-						Vector2D clickPos = {event.x / 2, event.y};
-						apply_mouse_path_selection(state, w[LEVEL].map, clickPos, r, c);
+					if(event.bstate & BUTTON1_CLICKED){
+						int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
+						Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
+						if((event.x >= buttonInvPos.x && event.x <= 16 + buttonInvPos.x) && event.y == buttonInvPos.y){
+							state->paused = 1;
+							WINDOW * inventoryWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
+							box(inventoryWindow, 0, 0); 
+							clear();
+							refresh();
+							show_inventory(terminal, inventoryWindow, state);
+							wrefresh(inventoryWindow);
+							delwin(inventoryWindow);
+							clear();
+							refresh();
+							state->paused = 0;
+						}
+						else {
+							Vector2D clickPos = {event.x / 2, event.y};
+							apply_mouse_path_selection(state, w[LEVEL].map, clickPos, r, c);
+						}
+					} else if(event.bstate & BUTTON3_CLICKED){
+						// Para armas ao longe
+						if(state->player.inventory.items[state->player.selectedSlot].type == RANGED_WEAPON){
+							// Cooldown
+							if(state->player.timeSinceLastAction >= state->player.inventory.items[state->player.selectedSlot].cooldown){
+								Vector2D clickPos = {event.x / 2, event.y};
+								shoot_bullet(state->player.position, clickPos, state->player.inventory.items[state->player.selectedSlot].damage, &w[LEVEL]);
+								state->player.timeSinceLastAction = 0;
+							}
+						}
 					}
 				}
 			}
@@ -211,6 +225,15 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 	} else if(state->player.timeSinceLastAction > 10000000){
 		state->player.timeSinceLastAction = 10000000;
 	}
+
+	if(state->timeSinceLastBulletUpdate < 50000){
+		state->timeSinceLastBulletUpdate += elapsedMicroseconds;
+	} else {
+		for(int i = 0; i < worlds[LEVEL].bulletQuantity; i++){
+			update_bullet(&worlds[LEVEL].bullets[i], worlds[LEVEL].map, i, &worlds[LEVEL], state);
+		}
+		state->timeSinceLastBulletUpdate = 0;
+	}
 	
 	refresh();
 }
@@ -239,6 +262,8 @@ int game(Terminal *terminal) {
 		worlds[i].created = 0;
 		worlds[i].map = (Map**)malloc(nrows * sizeof(Map*));
 		worlds[i].mobs = (Mob*)malloc(i * sizeof(Mob) * 2);
+		worlds[i].bullets = (Bullet *)malloc(sizeof(Bullet));
+		worlds[i].bulletQuantity = 0;
 	    if (worlds[i].map == NULL) {
 		   exit(EXIT_FAILURE);
 	   }
@@ -265,6 +290,7 @@ int game(Terminal *terminal) {
 	worlds[LEVEL].created = 1;
 	gen_grass(worlds[LEVEL].map,nrows,ncols); // no nível 0 é possível existir relva
 	worlds[LEVEL].mobQuantity = 0;
+	worlds[LEVEL].bulletQuantity = 0;
 	print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 
 	//coloca som no jogo
@@ -302,10 +328,11 @@ int game(Terminal *terminal) {
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity, terminal);
 			draw_custom_pixel(gameState->player.position, "<>", 35, 4, terminal);
-			//draw_empty_pixel(gameState->player.position, 4);
 			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
-			//move(st.playerX, st.playerY);
+			for(int i = 0; i < worlds[LEVEL].bulletQuantity; i++){
+				draw_bullet(&worlds[LEVEL].bullets[i]);
+			}
 
 			// Botões (temporário)
 			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
@@ -350,7 +377,17 @@ int game(Terminal *terminal) {
 					} else {
 						mvaddch(0, 0, ACS_PLUS);
 					}
-				} else {
+				} else if(gameState->player.inventory.items[gameState->player.selectedSlot].type == RANGED_WEAPON) {
+					if(gameState->player.timeSinceLastAction < gameState->player.inventory.items[gameState->player.selectedSlot].cooldown){
+						attron(COLOR_PAIR(8));
+						mvaddch(0, 0, ACS_ULCORNER);
+						attroff(COLOR_PAIR(8));
+					} else {
+						mvaddch(0, 0, ACS_ULCORNER);
+					}
+				} 
+				else 
+				{
 					mvaddch(0, 0, ' ');
 				}
 			}
