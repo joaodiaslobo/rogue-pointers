@@ -12,7 +12,7 @@ void gen_lava(Map** a, int r, int c);
 
 void new_room_map(Map** a, int r, int c);
 
-int gen_mobs(Mob *mobs, Map **map, int r, int c, int level);
+int gen_mobs(Mob **mobs, Map **map, int r, int c, int level);
 
 Vector2D get_random_floor_position(Map** map, int r, int c);
 

@@ -32,10 +32,11 @@ void wander_ai(Mob *mob, Player *player, Map** map, int r, int c){
             if(mob->path != NULL){
                 mob->pathStep = steps - 1;
                 mob->chasingPlayer = 1;
+
+                // Reset alvo de patrulha para prevenir movimentos incorretos
+                mob->targetPosition = mob->path[0];
             }
 
-            // Reset alvo de patrulha para prevenir movimentos incorretos
-            mob->targetPosition = mob->path[0];
 
             if(mob->pathStep >= 0){
                 mob->position = mob->path[mob->pathStep];
@@ -50,6 +51,7 @@ void wander_ai(Mob *mob, Player *player, Map** map, int r, int c){
                 mob->pathStep--;
             } else {
                 mob->chasingPlayer = 0;
+                free(mob->path);
             }
 
             apply_damage(mob, player);
@@ -60,8 +62,11 @@ void wander_ai(Mob *mob, Player *player, Map** map, int r, int c){
 void remove_enemy_from_world(World *world, int enemyIndex){
     if(world->mobQuantity > 1){
         world->mobs[enemyIndex] = world->mobs[world->mobQuantity - 1];
+        world->mobs = realloc(world->mobs, sizeof(Mob) * (world->mobQuantity - 1));
+    } else {
+        free(world->mobs);
     }
-
+    
     // Reset mob stats UI
     clean_ui();
 

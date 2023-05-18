@@ -557,25 +557,24 @@ void new_room_map (Map** a, int r, int c){
 	return numChest;
 }*/
 
-int gen_mobs(Mob *mobs, Map **map, int r, int c, int level){
+int gen_mobs(Mob **mobs, Map **map, int r, int c, int level){
 	// Isto pode servir para fazer um modo dificíl mais tarde, subindo o valor
 	int mobSpawnRate = 2;
 	// Só spawna mobs a partir do segundo nível
 	if(level > 0){
 		int numMobs = (random() % (level * mobSpawnRate)) + 1;
-		
+		//mobs = realloc(&mobs, sizeof(Mob) * numMobs);
+		*mobs = malloc(sizeof(Mob) * numMobs);
 		for(int i = 0; i < numMobs; i++){
-			Mob mob;
-			mob.position = get_random_floor_position(map, r, c);
-			mob.targetPosition = mob.position;
-			mob.health = 100;
-			mob.mobBehavior = STUPID;
-			mob.timeSinceLastUpdate = 0;
-			mob.pathStep = 0;
-			mob.path = NULL;
-			mob.chasingPlayer = 0;
-			mob.attackDamage = 5;
-			mobs[i] = mob;
+			(*mobs)[i].position = get_random_floor_position(map, r, c);
+			(*mobs)[i].targetPosition = (*mobs)[i].position;
+			(*mobs)[i].health = 100;
+			(*mobs)[i].mobBehavior = STUPID;
+			(*mobs)[i].timeSinceLastUpdate = 0;
+			(*mobs)[i].pathStep = 0;
+			(*mobs)[i].path = NULL;
+			(*mobs)[i].chasingPlayer = 0;
+			(*mobs)[i].attackDamage = 5;
 		}
 
 		return numMobs;

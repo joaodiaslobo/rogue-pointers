@@ -182,7 +182,7 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 			gen_lava(w[LEVEL].map,r,c);
 			gen_grass(w[LEVEL].map,r,c);
 			gen_water(w[LEVEL].map,r,c);
-			w[LEVEL].mobQuantity = gen_mobs(w[LEVEL].mobs, w[LEVEL].map, r,c, LEVEL);
+			w[LEVEL].mobQuantity = gen_mobs(&w[LEVEL].mobs, w[LEVEL].map, r,c, LEVEL);
 			w[LEVEL].created = 1;
 		}
 		clear();
@@ -260,8 +260,8 @@ int game(Terminal *terminal) {
 	}
     for (int i = 0; i < num_levels; i++) {
 		worlds[i].created = 0;
-		worlds[i].map = (Map**)malloc(nrows * sizeof(Map*));
-		worlds[i].mobs = (Mob*)malloc(i * sizeof(Mob) * 2);
+		worlds[i].map = malloc(nrows * sizeof(Map*));
+		worlds[i].mobQuantity = 0;
 		worlds[i].bullets = (Bullet *)malloc(sizeof(Bullet));
 		worlds[i].bulletQuantity = 0;
 	    if (worlds[i].map == NULL) {

@@ -3,6 +3,7 @@
 #include "bullet.h"
 #include "draw.h"
 #include <stdlib.h>
+#include "mobs_ai.h"
 
 void shoot_bullet(Vector2D pos, Vector2D target, int damage, World *world){
     Bullet bullet;
