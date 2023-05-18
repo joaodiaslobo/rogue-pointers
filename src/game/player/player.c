@@ -21,10 +21,7 @@ Player *init_player(char name[15], Vector2D pos){
         exit(EXIT_FAILURE);
     }
 
-    Inventory inventory;
-    for(int i = 0; i < INVENTORY_SLOTS; i++){
-        inventory.items[i].type = NONE;
-    }
+    Inventory inventory = initialize_inventory();
 
     strcpy(player->name, name);
     player->position = pos;
@@ -37,11 +34,12 @@ Player *init_player(char name[15], Vector2D pos){
     player->timeSinceLastAction = 10000000;
 
     // Espada para testes
-    Item sword = globalItems[3]; 
-    add_item(&player->inventory, &sword);
-
-    Item gun = globalItems[7];
-    add_item(&player->inventory, &gun);
+    //Item sword = globalItems[3]; 
+    //add_item(&player->inventory, &sword);
+    Item firstItem = globalItems[pick_random_item(&player->inventory)]; //para mesmo que não recolha itens consiga lutar no nível seguinte
+    add_item(&player->inventory, &firstItem);
+    //Item gun = globalItems[7];
+    //add_item(&player->inventory, &gun);
 
     return player;
 }
@@ -274,4 +272,21 @@ int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map){
         return 1;
     }
     return 0;
+}
+
+void open_chest(Inventory *inventory){
+
+    int new = pick_random_item(inventory);
+    if(new != -1){
+        Item newItem = globalItems[new];
+        add_item(inventory, &newItem);
+        mvprintw(6,0, "New item(s) unlocked!");
+    }
+}
+
+void new_bomb(Inventory *inventory){
+    Item newBomb = globalItems[10 + (LEVEL / 5)];
+    add_item(inventory, &newBomb);
+    globalItems[10 + (LEVEL / 5)].picked = 1;
+    //choose_item_freq(BOMB, level);
 }

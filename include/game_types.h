@@ -67,6 +67,7 @@ typedef struct item {
     char sprite[200];
     int damage;
     unsigned long cooldown;
+    int picked;
 } Item;
 
 typedef struct itemTable {

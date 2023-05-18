@@ -114,6 +114,15 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 		case 'd':
 			check_for_portal(state, w, r, c, 1);
 			break;
+		case 'o':
+			if(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 9){
+				open_chest(&(state->player.inventory));
+				if(LEVEL % 5 == 0){
+					new_bomb(&(state->player.inventory));
+					mvprintw(5,0, "New bomb unlocked!");
+				}
+			}
+			break;
 		case KEY_MOUSE:
 			{
 				MEVENT event;
@@ -265,7 +274,7 @@ int game(Terminal *terminal) {
 		worlds[i].bulletQuantity = 0;
 	    if (worlds[i].map == NULL) {
 		   exit(EXIT_FAILURE);
-	   }
+	   	}
 	   for (int j = 0; j < nrows; j++) {
 		   worlds[i].map[j] = (Map*)malloc(ncols * sizeof(Map));
 		   if (worlds[i].map[j] == NULL) {

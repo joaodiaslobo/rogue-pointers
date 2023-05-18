@@ -2,6 +2,7 @@
 #define INVENTORY
 
 #include "game_types.h"
+#include "game.h"
 
 void swap_items(Inventory *inventory, int pos1, int pos2);
 
@@ -21,12 +22,12 @@ void add_table_to_inventory(Inventory *inventory, ItemsTable *table);
 
 Inventory initialize_inventory();
 
-int pick_random_item(Inventory *inventory, int picked[], int level);
+int pick_random_item(Inventory *inventory);
 
 int getRandomNumber(int min, int max);
 
-int all_collected(int picked[], int x);
+int all_collected(Item globalItems[], int x);
 
-int choose_item_freq(ItemType type, int level);
+int choose_item_freq(ItemType type);
 
 #endif

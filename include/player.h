@@ -18,4 +18,8 @@ void draw_light(GameState *gameState, int r, int c, Map **map, Terminal *termina
 
 int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map);
 
+void open_chest(Inventory *inventory);
+
+void new_bomb(Inventory *inventory);
+
 #endif
