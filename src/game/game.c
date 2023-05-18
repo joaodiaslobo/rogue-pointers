@@ -328,7 +328,7 @@ int game(Terminal *terminal) {
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity, terminal);
 			draw_custom_pixel(gameState->player.position, "<>", 35, 4, terminal);
-			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
+			//draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
 			for(int i = 0; i < worlds[LEVEL].bulletQuantity; i++){
 				draw_bullet(&worlds[LEVEL].bullets[i]);

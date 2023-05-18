@@ -18,7 +18,9 @@ Item globalItems[] = {
     {"Defensive", BOMB, "Makes noise and damage.", " ", 10, 250000},
     {"The Fireman's Worst Nightmare", BOMB, "Light, heat and fire: the arsonist.", " ", 10, 250000},
     {"Flashbang", BOMB, "Flash and noise, dizziness and confusion.", " ", 10, 250000},
-    {"Nightstick", BOMB, "Enlightening your path for a moment.", " ", 10, 250000}
+    {"Nightstick", BOMB, "Enlightening your path for a moment.", " ", 10, 250000},
+    {"Key", MISCELLANEOUS, "This key will open special rooms\nfull with new items waiting for you!", " ", 10, 250000, 0},
+    {"Rock", MISCELLANEOUS, "Collect a rock, hold a piece of Rogue Pointers' History!", " ", 10, 250000, 0}
 };
 
 /*

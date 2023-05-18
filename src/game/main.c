@@ -3,6 +3,8 @@
 #include "color.h"
 #include "main_menu.h"
 #include "game.h"
+#include <pthread.h>
+#include "sound.h"
 
 int main(){
 
@@ -15,7 +17,7 @@ int main(){
         getch();
         return -1;
     }
-
+     
     // Faz com que o cursor fique invisível durante o jogo
     curs_set(0);
 
@@ -28,6 +30,18 @@ int main(){
 
     // NCurses passa a receber eventos do mouse 
     mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL);
+
+    //Coloca som no jogo
+    SDL_Init(SDL_INIT_AUDIO); //inicializa o áudio da SDL
+	pthread_t thread; // Cria uma thread para reproduzir o som do jogo
+    Sound *fich = malloc(sizeof(Sound));
+    fich->filename = "assets/sound/game.wav";
+    fich->time_ms = 180000;
+	fich->loop = 1;
+    if (pthread_create(&thread, NULL, play_sound_thread, fich) != 0)  {
+        printw("Erro ao criar a thread\n");
+    }
+
 
     // Obtem tamanho do terminal
     Terminal terminal;
