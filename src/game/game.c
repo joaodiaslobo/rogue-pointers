@@ -281,8 +281,6 @@ int game(Terminal *terminal) {
 	srandom(time(NULL));
 
 	intrflush(stdscr, false);
-
-	SDL_Init(SDL_INIT_AUDIO); //inicializa o áudio da SDL
     
     // Gera e imprime o primeiro mapa/nível do mundo
 	gen_map(worlds[LEVEL].map,nrows,ncols);
@@ -291,17 +289,6 @@ int game(Terminal *terminal) {
 	worlds[LEVEL].mobQuantity = 0;
 	worlds[LEVEL].bulletQuantity = 0;
 	print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
-
-	//coloca som no jogo
-	pthread_t thread; // Cria uma thread para reproduzir o som do jogo
-
-    Sound *fich = malloc(sizeof(Sound));
-    fich->filename = "assets/sound/game.wav";
-    fich->time_ms = 180000;
-	fich->loop = 1;
-    if (pthread_create(&thread, NULL, play_sound_thread, fich) != 0)  {
-        printw("Erro ao criar a thread\n");
-    }
 
 	// Inicializa a posição do jogador num lugar válido dentro do mapa
 	while(worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 0 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 4 && worlds[LEVEL].map[gameState->player.position.y][gameState->player.position.x].object != 5) {
@@ -328,7 +315,7 @@ int game(Terminal *terminal) {
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity, terminal);
 			draw_custom_pixel(gameState->player.position, "<>", 35, 4, terminal);
-			//draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
+			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
 			for(int i = 0; i < worlds[LEVEL].bulletQuantity; i++){
 				draw_bullet(&worlds[LEVEL].bullets[i]);

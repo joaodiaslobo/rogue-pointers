@@ -105,20 +105,25 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         gameState->player.position.y = newPos.y;
     }
 
-    // Valida se o jogador pisou a lava e morreu
+    // Valida se o jogador pisou a lava, se tem pedras no inventário continua, caso contrário morre
     if(map[newPos.y][newPos.x].object == 4){
-        gameState->player.position.x = newPos.x;
-        gameState->player.position.y = newPos.y;
-        pthread_t thread1; // Cria uma thread para reproduzir o som do jogador a cair na lava
-        Sound *fich1 = malloc(sizeof(Sound));
-        fich1->filename = "assets/sound/player_burnt.wav";
-        fich1->time_ms = 1000;
-        fich1->loop = 0;
-        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  {
-            printw("Erro ao criar a thread\n");
-            return;
+        int rock = 0;
+        rock = get_item_quantity_by_type(&gameState->player.inventory, WALK);
+        if(rock == 1){ //tranforma lava em caminho
+            map[newPos.y][newPos.x].object = 0;
+            gameState->player.position.x = newPos.x;
+            gameState->player.position.y = newPos.y;    
+        }else{ //morre queimado pela lava
+            gameState->player.position.x = newPos.x;
+            gameState->player.position.y = newPos.y;
+            pthread_t thread1; // Cria uma thread para reproduzir o som do jogador a cair na lava
+            Sound *fich1 = malloc(sizeof(Sound));
+            fich1->filename = "assets/sound/player_burnt.wav";
+            fich1->time_ms = 1000;
+            fich1->loop = 0;
+            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Erro ao criar a thread\n");
+            gameState->gameOver = 1;
         }
-        gameState->gameOver = 1;
     }
 
     // Se o jogador encountrou a chave guarda no inventário
@@ -131,7 +136,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         map[newPos.y][newPos.x].object = 0; //apaga a chave do mapa
         pthread_t thread1; // Cria uma thread para reproduzir o som da chave a ser apanhada
         Sound *fich1 = malloc(sizeof(Sound));
-        fich1->filename = "assets/sound/pick_key.wav";
+        fich1->filename = "assets/sound/pick.wav";
         fich1->time_ms = 1000;
         fich1->loop = 0;
         if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Erro ao criar a thread\n");
@@ -156,6 +161,19 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         }
         delete_item_at_position(&gameState->player.inventory,15);
     }
+
+    // Se o jogador encontrou uma arca guarda pedra no inventário
+    if(map[newPos.y][newPos.x].object == 9){
+        Item stone = globalItems[16];
+        add_item(&gameState->player.inventory, &stone);
+            pthread_t thread1; // Cria uma thread para reproduzir o som de apanhar objeto
+            Sound *fich1 = malloc(sizeof(Sound));
+            fich1->filename = "assets/sound/pick.wav";
+            fich1->time_ms = 1000;
+            fich1->loop = 0;
+            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Erro ao criar a thread\n");
+    }
+
     // Som para o jogador a nadar na água
     if(map[newPos.y][newPos.x].object == 7){
         pthread_t thread1; // Cria uma thread para reproduzir o som do jogador a cair na lava

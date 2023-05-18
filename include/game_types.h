@@ -56,7 +56,8 @@ typedef enum {
     BOMB = 3,
     MISCELLANEOUS = 4,
     SPECIAL = 5,
-    ACCESS = 6
+    ACCESS = 6,
+    WALK = 7
 } ItemType;
 
 typedef struct item {
