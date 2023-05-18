@@ -30,22 +30,19 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *stat
         
         for(int i = 0; i < options; i++){
             if(state->player.inventory.items[i].type == NONE) continue;
-
-            if(i == selection){
-
-                wattron(inventoryWindow, A_BOLD);
-                mvwprintw(inventoryWindow, i+(terminal->yMax / 2 - 3), (terminal->xMax / 2 - 10), "[x] %s", state->player.inventory.items[i].name);
-                wattroff(inventoryWindow, A_BOLD);
-                item_description(terminal, inventoryWindow, state->player.inventory.items[i].description);
-                box(inventoryWindow, 0, 0);
-
-                if(i == 0 || i == 1 || i == 4 || i == 5 || i == 6){ //por enquanto só há imagens para estes itens
-
-                    Vector2D spritePos; spritePos.x = (terminal->xMax / 2 - 30); spritePos.y = (terminal->yMax / 2 - 4);
-                    Image spriteImage = load_image_from_file(state->player.inventory.items[i].sprite);
-                    draw_to_window(inventoryWindow, spriteImage, spritePos);
+                if(i == selection){
+                    wattron(inventoryWindow, A_BOLD);
+                    mvwprintw(inventoryWindow, i+(terminal->yMax / 2 - 3), (terminal->xMax / 2 - 10), "[x] %s", state->player.inventory.items[i].name);
+                    wattroff(inventoryWindow, A_BOLD);
+                    item_description(terminal, inventoryWindow, state->player.inventory.items[i].description);
+                    box(inventoryWindow, 0, 0);
+                    int fileNameSize = strlen(state->player.inventory.items[i].sprite);
+                    if(fileNameSize > 1){
+                        Vector2D spritePos; spritePos.x = (terminal->xMax / 2 - 30); spritePos.y = (terminal->yMax / 2 - 4);
+                        Image spriteImage = load_image_from_file(state->player.inventory.items[i].sprite);
+                        draw_to_window(inventoryWindow, spriteImage, spritePos);
+                    }
                 }
-            }
             else{
                 mvwprintw(inventoryWindow, i+(terminal->yMax / 2 - 3), (terminal->xMax / 2 - 10), "[ ] %s", state->player.inventory.items[i].name);
             }

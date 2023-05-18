@@ -12,14 +12,18 @@ void gen_lava(Map** a, int r, int c);
 
 void new_room_map(Map** a, int r, int c);
 
-int gen_mobs(Mob *mobs, Map **map, int r, int c, int level);
+int gen_mobs(Mob **mobs, Map **map, int r, int c, int level);
 
 Vector2D get_random_floor_position(Map** map, int r, int c);
 
 void gen_map(Map** a, int r, int c);
 
-void draw_mobs(Mob *mobs, int mobQuantity);
+void draw_mobs(Mob *mobs, int mobQuantity, Terminal *terminal);
 
 void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal);
+
+int choose_color(int a, int dif, Vector2D pos);
+
+int create_color_pattern(int a, int dif, Vector2D pos);
 
 #endif

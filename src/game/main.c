@@ -26,7 +26,8 @@ int main(){
 	meta(stdscr, TRUE);
 	keypad(stdscr, TRUE);
 
-    mousemask(BUTTON1_CLICKED, NULL);
+    // NCurses passa a receber eventos do mouse 
+    mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL);
 
     // Obtem tamanho do terminal
     Terminal terminal;

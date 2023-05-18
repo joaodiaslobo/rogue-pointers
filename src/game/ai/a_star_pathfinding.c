@@ -31,6 +31,9 @@ Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c, int r, int
         }
         if (currentNode == endNode) {
             Vector2D *path = malloc((int)ceil(currentNode->localGoal) * sizeof(Vector2D));
+            if(path == NULL){
+                return NULL;
+            }
             Node *node = currentNode;
             int steps = 0;
             for (int i = currentNode->localGoal - 1; i >= 0; i--) {
