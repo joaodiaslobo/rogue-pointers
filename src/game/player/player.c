@@ -106,6 +106,15 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
     if(map[newPos.y][newPos.x].object == 4){
         gameState->player.position.x = newPos.x;
         gameState->player.position.y = newPos.y;
+        pthread_t thread1; // Cria uma thread para reproduzir o som do jogador a cair na lava
+        Sound *fich1 = malloc(sizeof(Sound));
+        fich1->filename = "assets/sound/player_burnt.wav";
+        fich1->time_ms = 1000;
+        fich1->loop = 0;
+        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  {
+            printw("Erro ao criar a thread\n");
+            return;
+        }
         gameState->gameOver = 1;
     }
 
@@ -124,16 +133,26 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         }         
         if (aux == 0){
             pthread_t thread1; // Cria uma thread para reproduzir o som da porta a abrir
-
             Sound *fich1 = malloc(sizeof(Sound));
             fich1->filename = "assets/sound/door_opening.wav";
             fich1->time_ms = 1000;
+            fich1->loop = 0;
             if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  {
                 printw("Erro ao criar a thread\n");
                 return;
             }
         }
     }
+    // Som para o jogador a nadar na água
+    if(map[newPos.y][newPos.x].object == 7){
+        pthread_t thread1; // Cria uma thread para reproduzir o som do jogador a cair na lava
+        Sound *fich1 = malloc(sizeof(Sound));
+        fich1->filename = "assets/sound/water_dive.wav";
+        fich1->time_ms = 1000;
+        fich1->loop = 0;
+        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Erro ao criar a thread\n");
+    }
+
 }
 
 void update_drowning(Map **map, GameState *gameState, unsigned long elapsedMicroseconds){

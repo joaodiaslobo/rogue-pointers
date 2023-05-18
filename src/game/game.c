@@ -20,7 +20,7 @@
 #include "math.h"
 #include "enemy_info.h"
 
-int LEVEL = 0;
+int LEVEL, num_levels = 20;
 
 GameState *init_game_state(){
 	GameState *state = malloc(sizeof(GameState));
@@ -160,9 +160,10 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 		if (dir == -1 && LEVEL > 0) {
 			LEVEL--;
 		}
-		if (dir == 1 && LEVEL < 9) {
+		if (dir == 1 && LEVEL < num_levels - 1) {
 			LEVEL++;
 		}
+		if (LEVEL == num_levels - 1) state->gameOver = 2; // ganhou o jogo 
 		if (w[LEVEL].created == 0) {
 			gen_map(w[LEVEL].map,r,c);
 			gen_lava(w[LEVEL].map,r,c);
@@ -226,11 +227,9 @@ int game(Terminal *terminal) {
     nrows = terminal->yMax;
     
 	// Criação e inicialização do mapa 
-	//NUM_COLUMNS = ncols;
 
 	short buttonGradient[4] = {16,17,18,19};
-
-	int num_levels = 10;
+	LEVEL = 0;
     World* worlds = (World*)malloc(num_levels * sizeof(World));
 	if (worlds == NULL) {
 		exit(EXIT_FAILURE);
@@ -272,7 +271,8 @@ int game(Terminal *terminal) {
 
     Sound *fich = malloc(sizeof(Sound));
     fich->filename = "assets/sound/game.wav";
-    fich->time_ms = 30000;
+    fich->time_ms = 180000;
+	fich->loop = 1;
     if (pthread_create(&thread, NULL, play_sound_thread, fich) != 0)  {
         printw("Erro ao criar a thread\n");
     }
@@ -324,12 +324,11 @@ int game(Terminal *terminal) {
 			progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);
 
 			int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
-
 			Vector2D oxygenBarPos = {0,3};
 			progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
 			if (gameState->gameOver == 1){
 				move(0,150);
-				printw("** PERDEU O JOGO PRIMA c para continuar**");
+				printw("** PERDEU O JOGO Prima c para continuar **");
 				refresh();
 				int c;
 				do {
@@ -338,7 +337,17 @@ int game(Terminal *terminal) {
 				endwin();
 				return(0);
 			}
-
+			if (gameState->gameOver == 2){
+				move(0,150);
+				printw("** GANHOU O JOGO Prima c para continuar **");
+				refresh();
+				int c;
+				do {
+					c = getchar();
+				} while (c != 'c');
+				endwin();
+				return(0);
+			}
 			// Display de item selecionado e cooldown se aplicável
 			if(gameState->player.inventory.items[gameState->player.selectedSlot].type != NONE){
 				mvprintw(0,2, "%s", gameState->player.inventory.items[gameState->player.selectedSlot].name);

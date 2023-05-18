@@ -99,7 +99,7 @@ typedef struct pathBehaviour {
 
 typedef struct gameState {
     Player player;
-    int gameOver; // 1 - perdeu o jogo
+    int gameOver; // 1 - perdeu o jogo |  2 - ganhou o jogo
     int paused;
     int pathSelection;
     PathBehaviour pathState;
