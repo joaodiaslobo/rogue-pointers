@@ -412,7 +412,11 @@ void new_room_map (Map** a, int r, int c){
         int height_room = (random() % 13) + 10; // altura da sala (10 a 22)
         int roomX = (random() % c) + 1; // posição da sala no mapa
         int roomY = (random() % r) + 1;
-        
+		
+		while(roomX <= 9 && roomY <= 9){
+			roomX = (random() % c) + 1; // posição da sala no mapa
+        	roomY = (random() % r) + 1; 
+		}
 		// verifica se a sala fica situada dentro do mapa, senão gera nova sala
 		if((roomX + width_room) < c-1 && (roomY + height_room < r-1)){  
             // coloca paredes na sala
