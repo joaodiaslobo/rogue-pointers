@@ -628,71 +628,91 @@ void gen_map(Map** a, int r, int c) {
 	chest_room(a,r,c);
 }
 
-void draw_mobs(Mob *mobs, int mobQuantity){
-	Image enemy = load_image_from_file("assets/sprites/characters/enemy.sprite");
+void draw_mobs(Mob *mobs, int mobQuantity, Terminal *terminal){
 
 	for(int i = 0; i < mobQuantity; i++){
-		draw_to_screen(enemy, mobs[i].position);
+		draw_custom_pixel(mobs[i].position, "><", 35, 0, terminal);
+
 	}
 }
 
 // Imprime o mapa
 void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) {
-   Image lava = load_image_from_file("assets/sprites/lava.sprite");
-   Image chest = load_image_from_file("assets/sprites/chest.sprite");
-   Image door = load_image_from_file("assets/sprites/door.sprite");
-   int k = 0, r_num = 0;
-   for (int i = 0; i < r; i++){
-      for (int j = 0; j < c; j++){
-		Vector2D pos = {j,i};
-		if(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)){
-			continue;
-		}
-		switch (a[i][j].object){
+	//Image lava = load_image_from_file("assets/sprites/lava.sprite");
+	Image door = load_image_from_file("assets/sprites/door.sprite");
+	//int k = 0, r_num = 0;
+	for(int i = 0; i < r; i++){
+      	for(int j = 0; j < c; j++){
+			Vector2D pos = {j,i};
+			if(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)){
+				continue;
+			}
+			switch (a[i][j].object){
 			case 0: // imprime lugar onde o jogador pode andar
-				draw_empty_pixel(pos, 14);
+				draw_custom_pixel(pos, ". ", 79, 74, terminal);
 				break;
-			case 1: // imprimir a parede 
-				draw_empty_pixel(pos, 15);
+			case 1: // imprimir a parede
+				draw_custom_pixel(pos, "##", 77, choose_color(66, 3, pos), terminal);
 				break;
 			case 2: // imprimir porta para outro nível
-				draw_empty_pixel(pos, 5);
+				draw_custom_pixel(pos, "[]", 84, 83, terminal);
 				break;
-			case 4: // imprimir lava	
-				r_num = random() % 5;
-				k = 103;
-				init_pair(k, COLOR_BLACK, lava.pixels[r_num].color);         
+			case 4: // imprimir lava
+				draw_empty_pixel(pos, choose_color(44, 5, pos));
+				/*r_num = rand() % 6;
+				k = choose_color(44, 5, pos);
+				init_pair(k, COLOR_BLACK, lava.pixels[r_num].color);
 				attron(COLOR_PAIR(k));
 				mvprintw(i, j*2, "  ");
-            	attroff(COLOR_PAIR(k));
+            	attroff(COLOR_PAIR(k));*/
 				break;
 			case 5: // imprimir relva
-				draw_custom_pixel(pos, "''", 27, 14, terminal);
+				if(((choose_color(59, 3, pos) + 5)) % 3 != 2){
+					draw_custom_pixel(pos, "''", 78, choose_color(59, 3, pos), terminal);
+				}
+				else{
+					draw_empty_pixel(pos, choose_color(59, 3, pos));
+				}
 				break;
-			case 6: // imprimir flor 
-				draw_custom_pixel(pos, "**", 13, 14, terminal);
+			case 6: // imprimir flor
+				if(((choose_color(59, 3, pos) + 5)) % 3 != 0){
+					draw_custom_pixel(pos, "**", 13, choose_color(59, 3, pos), terminal);
+				}
+				else{
+					draw_empty_pixel(pos, choose_color(59, 3, pos));
+				}
 				break;
-			case 7: // imprimir água profunda 
-				draw_empty_pixel(pos, 16);
+			case 7: // imprimir água profunda
+				draw_custom_pixel(pos, "~ ", choose_color(51, 2, pos)-1, choose_color(50, 3, pos), terminal);
 				break;
 			case 8: // imprimir água margem
-				draw_empty_pixel(pos, 43);
+				draw_custom_pixel(pos, " .", 35, choose_color(54, 4, pos), terminal);
 				break;
-			case 9: // imprimir baú 
-				draw_to_screen(chest, pos);
+			case 9: // imprimir baú
+				draw_custom_pixel(pos, "??", 82, 80, terminal);
 				break;
 			case 10: // imprimir porta 
 				draw_to_screen(door, pos);
 				break;
 			case 11: // imprimir chave 
-				draw_custom_pixel(pos, "-o", 26, 14, terminal);
+				draw_custom_pixel(pos, "-o", 82, 70, terminal);
 				break;
 			case 12: // imprimir chão da sala enquanto fechada com um cor própria 
-				draw_empty_pixel(pos, 28);
+				draw_empty_pixel(pos, create_color_pattern(63, 2, pos));
 				break;
 			default:
 				break;
-		}	
-      }
+			}	
+   		}
     }
+}
+
+int choose_color(int a, int dif, Vector2D pos){
+	int seed = pos.x * 505 + pos.y * dif;
+	srand(seed);
+	return (a + (rand() % (dif + 1)));
+}
+
+int create_color_pattern(int a, int dif, Vector2D pos){
+	return (a + (((pos.x * pos.y) + (pos.x * dif) + (pos.x + dif)) % (dif + 1)));
 }

@@ -28,6 +28,7 @@ typedef struct mob {
 // Mapa
 typedef struct map {
 	int object;  //0:local onde pode andar|1:parede|2:passagem de nível|3:vazio|4:lava|5:relva|6:flor|7:água|8:margem|9:baú|10:porta|11:chave|12:chão sala fechada
+    int visited; //0: às escuras, jogador nunca passou por lá, logo nunca foi iluminado | 1: está a ser ou já foi iluminado, neste caso se não estiver o jogador na zona fica a "sombreado"
 } Map;
 
 // Mundo de Mapas

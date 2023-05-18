@@ -144,16 +144,38 @@ void update_drowning(Map **map, GameState *gameState, unsigned long elapsedMicro
     }
 }
 
-void draw_light(GameState *gameState, int r, int c, Map **map){
+void draw_light(GameState *gameState, int r, int c, Map **map, Terminal *terminal){
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
     for(int i = 0; i < c; i++){
         for(int j = 0; j < r-1; j++){
             pos.x = i;
             pos.y = j;
-            //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador, e verificação se antes dessa posição, na mesma diagonal, há parede - caso haja, fica às escuras a partir daí na diagonal
+            //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador, e verificação se antes dessa posição, na mesma diagonal, há parede - caso haja, fica às escuras a partir daí na diagonal            
             if(map[j][i].object != 3 && !(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)) && ((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 4096 || !(light_before_walls(pos, gameState->player.position, 64, map)))){
-                draw_to_screen(image, pos);
+                if(map[j][i].visited == 0){
+                    draw_to_screen(image, pos);
+                }
+                else if(map[j][i].visited == 1){
+                    if(map[j][i].object == 1){
+				        draw_custom_pixel(pos, "##", 85, choose_color(71, 2, pos), terminal);
+                    }
+                    else if(map[j][i].object == 4){
+                        draw_empty_pixel(pos, 87);
+                    }
+                    else if(map[j][i].object == 7){
+                        draw_custom_pixel(pos, "~ ", 75, 76, terminal);
+                    }
+                    else if(map[j][i].object == 8){
+                        draw_custom_pixel(pos, " .", 76, 75, terminal);
+                    }
+                    else{
+                        draw_custom_pixel(pos, ". ", 71, 86, terminal);
+                    }
+                }
+            }
+            else if(map[j][i].object != 3){
+                map[j][i].visited = 1;
             }
         }
     }

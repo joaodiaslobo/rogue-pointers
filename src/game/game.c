@@ -249,9 +249,9 @@ int game(Terminal *terminal) {
 		   }
 		   for (int k = 0; k < ncols; k++) {
 			   worlds[i].map[j][k].object = 3; // Inicializando o valor do campo object como 3 (vazio)
+			   worlds[i].map[j][k].visited = 0;
 		   }
 	   }
-
 	}
 
 	srandom(time(NULL));
@@ -300,10 +300,10 @@ int game(Terminal *terminal) {
 			}
 			
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
-			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity);
-			draw_custom_pixel(gameState->player.position, "O!", 10, 4, terminal);
+			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity, terminal);
+			draw_custom_pixel(gameState->player.position, "<>", 35, 4, terminal);
 			//draw_empty_pixel(gameState->player.position, 4);
-			draw_light(gameState, nrows, ncols, worlds[LEVEL].map);
+			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
 			//move(st.playerX, st.playerY);
 
