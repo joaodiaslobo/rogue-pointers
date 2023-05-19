@@ -352,12 +352,6 @@ int game(Terminal *terminal) {
 			Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
 			button(buttonGradient, "Inventory", buttonInvPos);
 
-			Vector2D healthBarPos = {0,1};
-			progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);
-
-			int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
-			Vector2D oxygenBarPos = {0,3};
-			progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
 			if (gameState->gameOver == 1){
 				move(0,150);
 				printw("** PERDEU O JOGO Prima c para continuar **");
@@ -380,24 +374,40 @@ int game(Terminal *terminal) {
 				endwin();
 				return(0);
 			}
+
+			//Display de status do jogador
+
+			Vector2D playerDisplayPos = {0, 0};
+			draw_custom_pixel(playerDisplayPos, "<>", 35, 4, terminal);
+			mvprintw(0, 4, "You");
+
+			Vector2D healthBarPos = {0,1};
+			progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);
+
+			int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
+			Vector2D oxygenBarPos = {0,2};
+			progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
+			
+
 			// Display de item selecionado e cooldown se aplicável
 			if(gameState->player.inventory.items[gameState->player.selectedSlot].type != NONE){
-				mvprintw(0,2, "%s", gameState->player.inventory.items[gameState->player.selectedSlot].name);
+				mvprintw(3,0, "%s", gameState->player.inventory.items[gameState->player.selectedSlot].name);
+				int cooldownIconPosX = strlen(gameState->player.inventory.items[gameState->player.selectedSlot].name) + 1;
 				if(gameState->player.inventory.items[gameState->player.selectedSlot].type == MELEE_WEAPON){
 					if(gameState->player.timeSinceLastAction < gameState->player.inventory.items[gameState->player.selectedSlot].cooldown){
 						attron(COLOR_PAIR(8));
-						mvaddch(0, 0, ACS_PLUS);
+						mvaddch(3, cooldownIconPosX, ACS_PLUS);
 						attroff(COLOR_PAIR(8));
 					} else {
-						mvaddch(0, 0, ACS_PLUS);
+						mvaddch(3, cooldownIconPosX, ACS_PLUS);
 					}
 				} else if(gameState->player.inventory.items[gameState->player.selectedSlot].type == RANGED_WEAPON) {
 					if(gameState->player.timeSinceLastAction < gameState->player.inventory.items[gameState->player.selectedSlot].cooldown){
 						attron(COLOR_PAIR(8));
-						mvaddch(0, 0, ACS_ULCORNER);
+						mvaddch(3, cooldownIconPosX, ACS_ULCORNER);
 						attroff(COLOR_PAIR(8));
 					} else {
-						mvaddch(0, 0, ACS_ULCORNER);
+						mvaddch(3, cooldownIconPosX, ACS_ULCORNER);
 					}
 				} 
 				else 
@@ -407,7 +417,7 @@ int game(Terminal *terminal) {
 			}
 
 			Vector2D enemyInfoPos = { 0, 5 };
-			enemy_info_ui(gameState, &worlds[LEVEL], enemyInfoPos);
+			enemy_info_ui(gameState, &worlds[LEVEL], enemyInfoPos, terminal);
 
 			mvprintw(0, 180, "Level: %d", LEVEL);
 		}
