@@ -424,7 +424,7 @@ int game(Terminal *terminal) {
 				} 
 				else 
 				{
-					mvaddch(0, 0, ' ');
+					mvaddch(3, cooldownIconPosX, ' ');
 				}
 			}
 
