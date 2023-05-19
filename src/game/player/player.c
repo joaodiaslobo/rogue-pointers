@@ -33,11 +33,11 @@ Player *init_player(char name[15], Vector2D pos){
     player->timeSinceDrownStart = 0;
     player->timeSinceLastAction = 10000000;
 
-    Item rock = globalItems[16];
-    add_item(&player->inventory, &rock);
     Item firstItem = globalItems[pick_random_item(&player->inventory)]; //para mesmo que não recolha itens consiga lutar no nível seguinte
     add_item(&player->inventory, &firstItem);
 
+    Item rock = globalItems[16];
+    add_item(&player->inventory, &rock);
 
     return player;
 }
