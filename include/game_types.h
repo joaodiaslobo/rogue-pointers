@@ -3,7 +3,7 @@
 
 #include "engine_types.h"
 
-#define INVENTORY_SLOTS 15
+#define INVENTORY_SLOTS 25
 
 // Mobs
 
@@ -45,6 +45,7 @@ typedef struct world {
     int created; // valida se um nível já foi gerado ou não
     Bullet *bullets;
     int bulletQuantity;
+    int collectedChestItems;
 } World;
 
 // Items
@@ -56,7 +57,7 @@ typedef enum {
     BOMB = 3,
     MISCELLANEOUS = 4,
     SPECIAL = 5,
-    ACCESS = 6,
+    KEY = 6,
     WALK = 7
 } ItemType;
 

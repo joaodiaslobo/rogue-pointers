@@ -42,6 +42,9 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *stat
                         Image spriteImage = load_image_from_file(state->player.inventory.items[i].sprite);
                         draw_to_window(inventoryWindow, spriteImage, spritePos);
                     }
+                    if(state->player.inventory.items[i].type == MISCELLANEOUS || state->player.inventory.items[i].type == BOMB){
+                        mvwprintw(inventoryWindow, (terminal->yMax / 2 + 20), (terminal->xMax / 2 + 37), "Quantity: %d", state->player.inventory.items[i].picked);
+                    }
                 }
             else{
                 mvwprintw(inventoryWindow, i+(terminal->yMax / 2 - 3), (terminal->xMax / 2 - 10), "[ ] %s", state->player.inventory.items[i].name);
@@ -92,7 +95,7 @@ void item_description(Terminal *terminal, WINDOW *window, char description[]){
     int r = (terminal->yMax / 2 + 15);
     int c = (terminal->xMax / 2 + 37);
 
-    if(strlen(description) < 100){
+    if(strlen(description) < 50){
         r += 2;
         c += 14;
         mvwprintw(window, r, c, "%s", description);

@@ -115,12 +115,13 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			check_for_portal(state, w, r, c, 1);
 			break;
 		case 'o':
-			if(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 9){
+			if(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 9 && w[LEVEL].collectedChestItems == 0){
 				open_chest(&(state->player.inventory));
 				if(LEVEL % 5 == 0){
 					new_bomb(&(state->player.inventory));
-					mvprintw(5,0, "New bomb unlocked!");
+					mvprintw(10, 0, "New bomb unlocked!");
 				}
+				w[LEVEL].collectedChestItems = 1;
 			}
 			break;
 		case KEY_MOUSE:
@@ -284,6 +285,7 @@ int game(Terminal *terminal) {
 		exit(EXIT_FAILURE);
 	}
     for (int i = 0; i < num_levels; i++) {
+		worlds[i].collectedChestItems = 0;
 		worlds[i].created = 0;
 		worlds[i].map = malloc(nrows * sizeof(Map*));
 		worlds[i].mobQuantity = 0;

@@ -29,10 +29,28 @@ void delete_item_at_position(Inventory *inventory, int pos){
     inventory->items[pos] = init_empty_item();
 }
 
+void delete_key(Inventory *inventory){
+    for(int i = 0; i < INVENTORY_SLOTS; i++){
+        if(inventory->items[i].type == KEY){
+            inventory->items[i] = init_empty_item();
+        }
+    }
+}
+
 int get_item_quantity(Inventory *inventory){
     int quantity = 0;
     for(int i = 0; i < INVENTORY_SLOTS; i++){
         if(inventory->items[i].type != NONE){
+            quantity++;
+        }
+    }
+    return quantity;
+}
+
+int get_key_quantity(Inventory *inventory){
+    int quantity = 0;
+    for(int i = 0; i < INVENTORY_SLOTS; i++){
+        if(inventory->items[i].type == KEY){
             quantity++;
         }
     }
@@ -105,14 +123,7 @@ int all_collected(Item globalItems[], int x){
 
 int choose_item_freq(ItemType type){
     if(type == BOMB){
-        return ((LEVEL % 4) + 1);
+        return ((LEVEL % 6) + 1);
     }
-    else if(type == MISCELLANEOUS){
-        return ((LEVEL % 5) + 1);
-    }
-    else{
-        return ((LEVEL % 2) + 1);
-    }
-
     return 0;
 }
