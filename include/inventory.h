@@ -12,7 +12,11 @@ void add_item_to_position(Inventory *inventory, Item *item, int pos);
 
 void delete_item_at_position(Inventory *inventory, int pos);
 
+void delete_key(Inventory *inventory);
+
 int get_item_quantity(Inventory *inventory);
+
+int get_key_quantity(Inventory *inventory);
 
 int get_item_quantity_by_type(Inventory *inventory, ItemType type);
 

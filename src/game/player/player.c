@@ -33,13 +33,11 @@ Player *init_player(char name[15], Vector2D pos){
     player->timeSinceDrownStart = 0;
     player->timeSinceLastAction = 10000000;
 
-    // Espada para testes
-    //Item sword = globalItems[3]; 
-    //add_item(&player->inventory, &sword);
+    Item rock = globalItems[16];
+    add_item(&player->inventory, &rock);
     Item firstItem = globalItems[pick_random_item(&player->inventory)]; //para mesmo que não recolha itens consiga lutar no nível seguinte
     add_item(&player->inventory, &firstItem);
-    //Item gun = globalItems[7];
-    //add_item(&player->inventory, &gun);
+
 
     return player;
 }
@@ -143,7 +141,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
     // Se o jogador encontrou a porta e tem uma chave, a porta abre e ouve-se o som
     if(map[newPos.y][newPos.x].object == 10){
         int key_qty = 0;
-        key_qty = get_item_quantity_by_type(&gameState->player.inventory,ACCESS);
+        key_qty = get_key_quantity(&gameState->player.inventory);
         if(key_qty == 1){
             for(int i = 1; i < r; i++) {  
 		        for(int j = 1; j < c; j++) {
@@ -157,13 +155,12 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
             fich1->loop = 0;
             if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Erro ao criar a thread\n");
         }
-        delete_item_at_position(&gameState->player.inventory,15);
+        delete_key(&gameState->player.inventory);
     }
 
     // Se o jogador encontrou uma arca guarda pedra no inventário
     if(map[newPos.y][newPos.x].object == 9){
-        Item stone = globalItems[16];
-        add_item(&gameState->player.inventory, &stone);
+        gameState->player.inventory.items[0].picked += 15;
             pthread_t thread1; // Cria uma thread para reproduzir o som de apanhar objeto
             Sound *fich1 = malloc(sizeof(Sound));
             fich1->filename = "assets/sound/pick.wav";
@@ -280,13 +277,12 @@ void open_chest(Inventory *inventory){
     if(new != -1){
         Item newItem = globalItems[new];
         add_item(inventory, &newItem);
-        mvprintw(6,0, "New item(s) unlocked!");
+        mvprintw(11,0, "New item(s) unlocked!");
     }
 }
 
 void new_bomb(Inventory *inventory){
     Item newBomb = globalItems[10 + (LEVEL / 5)];
     add_item(inventory, &newBomb);
-    globalItems[10 + (LEVEL / 5)].picked = 1;
-    //choose_item_freq(BOMB, level);
+    globalItems[10 + (LEVEL / 5)].picked = 1 + choose_item_freq(BOMB);
 }
