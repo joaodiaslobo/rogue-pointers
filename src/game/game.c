@@ -194,9 +194,8 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 		}
 		if (dir == 1 && LEVEL < num_levels - 1) {
 			LEVEL++;
-		}
-		if (LEVEL == num_levels) state->gameOver = 2; // ganhou o jogo 
-		else if (w[LEVEL].created == 0) {
+		} 
+		if (w[LEVEL].created == 0) {
 			gen_map(w[LEVEL].map,r,c);
 			gen_lava(w[LEVEL].map,r,c);
 			gen_grass(w[LEVEL].map,r,c);
@@ -209,6 +208,9 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 			state->player.position.x = (random() % c);
 			state->player.position.y = (random() % r);
 
+		}
+		if (LEVEL == num_levels - 1) {
+			state->gameOver = 2; // ganhou o jogo
 		}
 	} 
 }
@@ -343,7 +345,7 @@ int game(Terminal *terminal) {
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity, terminal);
 			draw_custom_pixel(gameState->player.position, "<>", 35, 4, terminal);
-			//draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
+			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
 			for(int i = 0; i < worlds[LEVEL].bulletQuantity; i++){
 				draw_bullet(&worlds[LEVEL].bullets[i], terminal);
@@ -363,8 +365,8 @@ int game(Terminal *terminal) {
 			button(buttonGradient, "Inventory", buttonInvPos);
 
 			if (gameState->gameOver == 1){
-				move(0,150);
-				printw("** PERDEU O JOGO Prima c para continuar **");
+				move(0,160);
+				printw("** GAME LOST Press c to continue **");
 				refresh();
 				int c;
 				do {
@@ -374,8 +376,8 @@ int game(Terminal *terminal) {
 				return(0);
 			}
 			if (gameState->gameOver == 2){
-				move(0,150);
-				printw("** GANHOU O JOGO Prima c para continuar **");
+				move(0,160);
+				printw("** WON THE GAME Press c to continue **");
 				refresh();
 				int c;
 				do {

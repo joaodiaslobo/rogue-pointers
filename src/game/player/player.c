@@ -117,7 +117,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
             fich1->filename = "assets/sound/player_burnt.wav";
             fich1->time_ms = 1000;
             fich1->loop = 0;
-            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Erro ao criar a thread\n");
+            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Error creating thread\n");
             gameState->gameOver = 1;
         }
     }
@@ -135,7 +135,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         fich1->filename = "assets/sound/pick.wav";
         fich1->time_ms = 1000;
         fich1->loop = 0;
-        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Erro ao criar a thread\n");
+        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Error creating thread\n");
     }
 
     // Se o jogador encontrou a porta e tem uma chave, a porta abre e ouve-se o som
@@ -153,7 +153,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
             fich1->filename = "assets/sound/door_opening.wav";
             fich1->time_ms = 1000;
             fich1->loop = 0;
-            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Erro ao criar a thread\n");
+            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Error creating thread\n");
         }
         delete_key(&gameState->player.inventory);
     }
@@ -166,7 +166,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
             fich1->filename = "assets/sound/pick.wav";
             fich1->time_ms = 1000;
             fich1->loop = 0;
-            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Erro ao criar a thread\n");
+            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Error creating thread\n");
     }
 
     // Som para o jogador a nadar na água
@@ -176,7 +176,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         fich1->filename = "assets/sound/water_dive.wav";
         fich1->time_ms = 1500;
         fich1->loop = 0;
-        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Erro ao criar a thread\n");
+        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Error creating thread\n");
     }
 
 }
