@@ -7,6 +7,7 @@
 #include "mobs_ai.h"
 #include "a_star_pathfinding.h"
 #include "enemy_info.h"
+#include "bullet.h"
 
 void update_timer(Mob *mob, unsigned long elapsedMicroseconds){
     mob->timeSinceLastUpdate += elapsedMicroseconds;
@@ -55,6 +56,25 @@ void wander_ai(Mob *mob, Player *player, Map** map, int r, int c){
             }
 
             apply_damage(mob, player);
+        }
+    }
+}
+
+void tactical_ai(Mob *mob, Player *player, Map** map, World *world){
+    if(mob->timeSinceLastUpdate > 1000000 ||(mob->chasingPlayer && mob->timeSinceLastUpdate > 250000)){
+        mob->timeSinceLastUpdate = 0;
+        if(!can_see_location(mob->position, player->position, 13, map) && !mob->chasingPlayer){
+            // Não vê player e não está em perseguição (modo de patrulha)
+            if(mob->position.x == mob->targetPosition.x && mob->position.y == mob->targetPosition.y){
+                // Quando já chegou à posição de patrulha que queria
+                mob->targetPosition = pick_random_patrol_position(mob->position, map);
+            } else {
+                // Ainda não chegou à posição de patrulha? Move-se para a próxima "casa"
+                mob->position = get_next_patrol_path_position(mob->position, mob->targetPosition);
+            }
+        } else {
+            // Se estiver a ver o jogador dispara
+            shoot_bullet(mob->position, player->position, mob->attackDamage, world);
         }
     }
 }

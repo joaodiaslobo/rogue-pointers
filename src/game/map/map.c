@@ -563,12 +563,21 @@ void new_room_map (Map** a, int r, int c){
 
 int gen_mobs(Mob **mobs, Map **map, int r, int c, int level){
 	// Isto pode servir para fazer um modo dificíl mais tarde, subindo o valor
-	int mobSpawnRate = 2;
+	int mobSpawnRate = 1;
 	// Só spawna mobs a partir do segundo nível
 	if(level > 0){
 		int numMobs = (random() % (level * mobSpawnRate)) + 1;
-		//mobs = realloc(&mobs, sizeof(Mob) * numMobs);
-		*mobs = malloc(sizeof(Mob) * numMobs);
+
+		int numIntelligentMobs = 0;
+		// Mobs inteligentes
+		if(level > 2) {
+			numIntelligentMobs = (random() % (level * mobSpawnRate));
+		}
+
+		*mobs = malloc(sizeof(Mob) * (numMobs + numIntelligentMobs));
+		
+		// Spawn de mobs brutos
+
 		for(int i = 0; i < numMobs; i++){
 			(*mobs)[i].position = get_random_floor_position(map, r, c);
 			(*mobs)[i].targetPosition = (*mobs)[i].position;
@@ -581,7 +590,21 @@ int gen_mobs(Mob **mobs, Map **map, int r, int c, int level){
 			(*mobs)[i].attackDamage = 5;
 		}
 
-		return numMobs;
+		// Spawn de mobs inteligentes
+
+		for(int i = 0; i < numIntelligentMobs; i++){
+			(*mobs)[numMobs + i].position = get_random_floor_position(map, r, c);
+			(*mobs)[numMobs + i].targetPosition = (*mobs)[numMobs + i].position;
+			(*mobs)[numMobs + i].health = 50; // (mais fácil de matar que os brutos)
+			(*mobs)[numMobs + i].mobBehavior = INTELLIGENT;
+			(*mobs)[numMobs + i].timeSinceLastUpdate = 0;
+			(*mobs)[numMobs + i].pathStep = 0;
+			(*mobs)[numMobs + i].path = NULL;
+			(*mobs)[numMobs + i].chasingPlayer = 0;
+			(*mobs)[numMobs + i].attackDamage = 18;
+		}
+
+		return numMobs + numIntelligentMobs;
 	}
 
 	return 0;
@@ -632,9 +655,19 @@ void gen_map(Map** a, int r, int c) {
 }
 
 void draw_mobs(Mob *mobs, int mobQuantity, Terminal *terminal){
-
 	for(int i = 0; i < mobQuantity; i++){
-		draw_custom_pixel(mobs[i].position, "><", 35, 0, terminal);
+		// Mob skins (depende do tipo de mob)
+		switch (mobs[i].mobBehavior)
+		{
+		case STUPID:
+			draw_custom_pixel(mobs[i].position, "><", 35, 0, terminal);
+			break;
+		case INTELLIGENT:
+			draw_custom_pixel(mobs[i].position, "><", 35, 59, terminal);
+			break;
+		default:
+			break;
+		}
 
 	}
 }

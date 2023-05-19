@@ -7,6 +7,8 @@ void update_timer(Mob *mob, unsigned long elapsedMiliseconds);
 
 void wander_ai(Mob *mob, Player *player, Map** map, int r, int c);
 
+void tactical_ai(Mob *mob, Player *player, Map** map, World *world);
+
 void apply_damage(Mob *mob, Player *player);
 
 Vector2D get_next_patrol_path_position(Vector2D pos, Vector2D target);

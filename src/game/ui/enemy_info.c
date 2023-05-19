@@ -1,17 +1,32 @@
 #include "enemy_info.h"
 #include "game_types.h"
+#include "engine_types.h"
 #include "mobs_ai.h"
 #include "components.h"
 #include "draw.h"
 
-void enemy_info_ui(GameState *state, World *world, Vector2D pos){
+void enemy_info_ui(GameState *state, World *world, Vector2D pos, Terminal *terminal){
     int newAmountMobsUI = 0;
     for(int i = 0; i < world->mobQuantity; i++){
         // Mostra apenas inimigos próximos
-        if(distance_between_points(state->player.position, world->mobs[i].position) < 5){
-            mvprintw(pos.y + newAmountMobsUI * 3, pos.x, "Mindless Zombie");
+        if((distance_between_points(state->player.position, world->mobs[i].position) < 10) && (can_see_location(state->player.position, world->mobs[i].position, 10, world->map))){
             Vector2D healthPos = { pos.x , pos.y + newAmountMobsUI * 3 + 1};
-            progress_bar(world->mobs[i].health, 100, 20, 20, 21, "Health", healthPos);
+            Vector2D mobDisplayPos = { pos.x , pos.y + newAmountMobsUI * 3};
+            switch (world->mobs[i].mobBehavior)
+            {
+            case STUPID:
+                mvprintw(pos.y + newAmountMobsUI * 3, pos.x + 4, "Mindless Zombie");
+                progress_bar(world->mobs[i].health, 100, 20, 20, 21, "Health", healthPos);
+                draw_custom_pixel(mobDisplayPos, "><", 35, 0, terminal);
+                break;
+            case INTELLIGENT:
+                mvprintw(pos.y + newAmountMobsUI * 3, pos.x + 4, "Tactical Zombie");
+                progress_bar(world->mobs[i].health, 50, 20, 20, 21, "Health", healthPos);
+			    draw_custom_pixel(mobDisplayPos, "><", 35, 59, terminal);
+                break;
+            default:
+                break;
+            }
             newAmountMobsUI++;
         }
     }
