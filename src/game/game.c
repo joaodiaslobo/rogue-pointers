@@ -174,7 +174,7 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			} 
 			break;
 		case 32: // Suspende o jogo
-			move(1,150);
+			move(0,80);
             printw("Jogo em pausa. Pressione 'space' para continuar");
 			refresh();
         	while (getch() != 32) {	

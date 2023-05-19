@@ -9,6 +9,7 @@
 #include "engine_types.h"
 #include "stdlib.h"
 #include "player_pathfinding.h"
+#include <time.h>
 
 // Necessário para as funções que geram o mapa
 
@@ -196,7 +197,7 @@ int valid_map(Map** a, int r, int c) {
 	} 
 	//if (visit != NULL)  free(visit);
 	//if (walk != NULL)  free(walk);
-	if (k >= count) return 0; // 0 - mapa valido | 1 - Mapa inválido
+	if (k >= count-2) return 0; // 0 - mapa valido | 1 - Mapa inválido
 	else return 1;
 }
 
@@ -405,14 +406,15 @@ void gen_lava(Map** a, int r, int c) {
 }
 
 void new_room_map (Map** a, int r, int c){
-    int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
-    int k = 0; 
+    srand(time(NULL)); // define a semente baseada no tempo atual
+	int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
+    int k = 0;
+
     while (k < random_rooms) {
         int width_room = (random() % 13) + 14; // largura da sala (14 a 26)
         int height_room = (random() % 13) + 10; // altura da sala (10 a 22)
         int roomX = (random() % c) + 1; // posição da sala no mapa
-        int roomY = (random() % r) + 1;
-		
+        int roomY = (random() % r) + 1;		
 		while(roomX <= 9 && roomY <= 9){
 			roomX = (random() % c) + 1; // posição da sala no mapa
         	roomY = (random() % r) + 1; 
