@@ -327,7 +327,7 @@ int game(Terminal *terminal) {
 			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
 			for(int i = 0; i < worlds[LEVEL].bulletQuantity; i++){
-				draw_bullet(&worlds[LEVEL].bullets[i]);
+				draw_bullet(&worlds[LEVEL].bullets[i], terminal);
 			}
 
 			// Botões (temporário)

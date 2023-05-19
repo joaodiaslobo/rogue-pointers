@@ -90,6 +90,13 @@ void destroy_bullet(World *world, int bulletIndex){
     world->bulletQuantity--;
 }
 
-void draw_bullet(Bullet *bullet){
-    draw_empty_pixel(bullet->position, 1);
+void draw_bullet(Bullet *bullet, Terminal *terminal){
+    int dx = abs(bullet->position.x - bullet->target.x);
+    int dy = abs(bullet->position.y - bullet->target.y);
+
+    if(dy > dx){
+        draw_custom_pixel(bullet->position, "||", 77, 74, terminal);
+    } else {
+        draw_custom_pixel(bullet->position, "==", 77, 74, terminal);
+    }
 }

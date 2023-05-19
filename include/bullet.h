@@ -10,6 +10,6 @@ void update_bullet(Bullet *bullet, Map **map, int bulletIndex, World *world, Gam
 
 void destroy_bullet(World *world, int bulletIndex);
 
-void draw_bullet(Bullet *bullet);
+void draw_bullet(Bullet *bullet, Terminal *terminal);
 
 #endif

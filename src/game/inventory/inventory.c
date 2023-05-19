@@ -86,6 +86,8 @@ int pick_random_item(Inventory *inventory){
             pick_random_item(inventory);
         }
     }
+
+    return 0;
 }
 
 int getRandomNumber(int min, int max){
