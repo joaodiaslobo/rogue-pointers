@@ -106,7 +106,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
     // Valida se o jogador pisou a lava, se tem pedras no inventário continua, caso contrário morre
     if(map[newPos.y][newPos.x].object == 4){
         int rock = 0;
-        rock = get_item_quantity_by_type(&gameState->player.inventory, WALK);
+        rock = get_item_quantity_by_type(&gameState->player.inventory, MISCELLANEOUS);
         if(rock == 1){ //tranforma lava em caminho
             map[newPos.y][newPos.x].object = 0;
             gameState->player.position.x = newPos.x;
@@ -177,7 +177,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         pthread_t thread1; // Cria uma thread para reproduzir o som do jogador a cair na lava
         Sound *fich1 = malloc(sizeof(Sound));
         fich1->filename = "assets/sound/water_dive.wav";
-        fich1->time_ms = 1000;
+        fich1->time_ms = 1500;
         fich1->loop = 0;
         if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Erro ao criar a thread\n");
     }

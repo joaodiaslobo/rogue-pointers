@@ -36,7 +36,7 @@ int main(){
 	pthread_t thread; // Cria uma thread para reproduzir o som do jogo
     Sound *fich = malloc(sizeof(Sound));
     fich->filename = "assets/sound/game.wav";
-    fich->time_ms = 180000;
+    fich->time_ms = 168000;
 	fich->loop = 1;
     if (pthread_create(&thread, NULL, play_sound_thread, fich) != 0)  {
         printw("Erro ao criar a thread\n");

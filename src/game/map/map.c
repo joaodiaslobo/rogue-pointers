@@ -384,7 +384,7 @@ void gen_lava(Map** a, int r, int c) {
 					    if (conditions[ind] == 0) conditions[ind] = 4;
 						ind = (random() % 3);
 					    if (conditions[ind] == 0) conditions[ind] = 4;
-					} else if (LEVEL >= 7 && LEVEL <= 9) {
+					} else if (LEVEL >= 7 && LEVEL <= num_levels-1) {
 						ind = (random() % 3);
 					    if (conditions[ind] == 0) conditions[ind] = 4;
 						ind = (random() % 3);

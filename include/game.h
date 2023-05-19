@@ -6,7 +6,7 @@
 #include "player.h"
 #include "sys/time.h"
 
-extern int LEVEL;
+extern int LEVEL, num_levels;
     
 GameState *init_game_state();
 

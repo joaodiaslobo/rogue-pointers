@@ -173,6 +173,14 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 				state->pathState.pathPos = state->player.position;
 			} 
 			break;
+		case 32: // Suspende o jogo
+			move(1,150);
+            printw("Jogo em pausa. Pressione 'space' para continuar");
+			refresh();
+        	while (getch() != 32) {	
+        	}
+			clear();
+			break;
 		default:
 			break;
 	}
@@ -186,8 +194,8 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 		if (dir == 1 && LEVEL < num_levels - 1) {
 			LEVEL++;
 		}
-		if (LEVEL == num_levels - 1) state->gameOver = 2; // ganhou o jogo 
-		if (w[LEVEL].created == 0) {
+		if (LEVEL == num_levels) state->gameOver = 2; // ganhou o jogo 
+		else if (w[LEVEL].created == 0) {
 			gen_map(w[LEVEL].map,r,c);
 			gen_lava(w[LEVEL].map,r,c);
 			gen_grass(w[LEVEL].map,r,c);
@@ -324,7 +332,7 @@ int game(Terminal *terminal) {
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity, terminal);
 			draw_custom_pixel(gameState->player.position, "<>", 35, 4, terminal);
-			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
+			//draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
 			for(int i = 0; i < worlds[LEVEL].bulletQuantity; i++){
 				draw_bullet(&worlds[LEVEL].bullets[i], terminal);
@@ -371,6 +379,7 @@ int game(Terminal *terminal) {
 				endwin();
 				return(0);
 			}
+			
 			// Display de item selecionado e cooldown se aplicável
 			if(gameState->player.inventory.items[gameState->player.selectedSlot].type != NONE){
 				mvprintw(0,2, "%s", gameState->player.inventory.items[gameState->player.selectedSlot].name);
