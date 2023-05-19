@@ -208,7 +208,16 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 	execute_input(state, worlds, r, c, terminal);
 	
 	for(int i = 0; i < worlds[LEVEL].mobQuantity; i++){
-		wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map, r, c);
+		switch (worlds[LEVEL].mobs[i].mobBehavior)
+		{
+		case STUPID:
+			wander_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map, r, c);
+			break;
+		case INTELLIGENT:
+			tactical_ai(&worlds[LEVEL].mobs[i], &state->player, worlds[LEVEL].map, &worlds[LEVEL]);
+		default:
+			break;
+		}
 	}
 
 	struct timeval endTime;

@@ -9,9 +9,20 @@ void enemy_info_ui(GameState *state, World *world, Vector2D pos){
     for(int i = 0; i < world->mobQuantity; i++){
         // Mostra apenas inimigos próximos
         if(distance_between_points(state->player.position, world->mobs[i].position) < 5){
-            mvprintw(pos.y + newAmountMobsUI * 3, pos.x, "Mindless Zombie");
             Vector2D healthPos = { pos.x , pos.y + newAmountMobsUI * 3 + 1};
-            progress_bar(world->mobs[i].health, 100, 20, 20, 21, "Health", healthPos);
+            switch (world->mobs[i].mobBehavior)
+            {
+            case STUPID:
+                mvprintw(pos.y + newAmountMobsUI * 3, pos.x, "Mindless Zombie");
+                progress_bar(world->mobs[i].health, 100, 20, 20, 21, "Health", healthPos);
+                break;
+            case INTELLIGENT:
+                mvprintw(pos.y + newAmountMobsUI * 3, pos.x, "Tactical Zombie");
+                progress_bar(world->mobs[i].health, 50, 20, 20, 21, "Health", healthPos);
+                break;
+            default:
+                break;
+            }
             newAmountMobsUI++;
         }
     }
