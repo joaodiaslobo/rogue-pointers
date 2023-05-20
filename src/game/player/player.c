@@ -104,11 +104,13 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
     // Valida se o jogador pisou a lava, se tem pedras no inventário continua, caso contrário morre
     if(map[newPos.y][newPos.x].object == 4){
         int rock = 0;
-        rock = get_item_quantity_by_type(&gameState->player.inventory, MISCELLANEOUS);
-        if(rock == 1){ //tranforma lava em caminho
+        rock = gameState->player.inventory.items[1].picked;
+        if(rock >= 1){ //tranforma lava em caminho
             map[newPos.y][newPos.x].object = 0;
             gameState->player.position.x = newPos.x;
-            gameState->player.position.y = newPos.y;    
+            gameState->player.position.y = newPos.y;
+            gameState->player.inventory.items[1].picked -= 1;
+
         }else{ //morre queimado pela lava
             gameState->player.position.x = newPos.x;
             gameState->player.position.y = newPos.y;
