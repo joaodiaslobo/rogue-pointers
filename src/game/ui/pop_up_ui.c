@@ -197,3 +197,87 @@ int game_over_pop_up(char text[], int width, int screenYMax, int screenXMax, Ter
 
     return !option;
 }
+
+int pause_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal){
+
+    int key = 0, option = 0;
+    int necessaryLines = count_newlines(text) + 1 + 4 + 1;
+    int posY = (screenYMax - necessaryLines) / 2;
+    int posX = (screenXMax - width) / 2;
+
+    WINDOW * pauseWindow = newwin(necessaryLines, width, posY, posX);
+    box(pauseWindow, 0, 0);
+    refresh();
+    wrefresh(pauseWindow);
+    keypad(pauseWindow, true);
+
+    mvwprintw(pauseWindow, 1, 2, "%s", text);
+
+    while(key != 10){
+        if(!option){
+            wattron(pauseWindow, A_BOLD);
+            mvwprintw(pauseWindow, necessaryLines - 2, 2, "CONTINUE");
+            wattroff(pauseWindow, A_BOLD);
+            mvwprintw(pauseWindow, necessaryLines - 2, width - 9, "RESTART");
+        } else {
+            wattron(pauseWindow, A_BOLD);
+            mvwprintw(pauseWindow, necessaryLines - 2, width - 9, "RESTART");
+            wattroff(pauseWindow, A_BOLD);
+            mvwprintw(pauseWindow, necessaryLines - 2, 2, "CONTINUE");
+        }
+
+        key = wgetch(pauseWindow);
+        switch (key)
+        {
+            case KEY_RIGHT:
+                if(option){
+                    option--;
+                } else {
+                    option++;
+                }
+                break;
+            case KEY_LEFT:
+                if(option){
+                    option--;
+                } else {
+                    option++;
+                }
+                break;
+            case 10:
+                if(option){
+                    wclear(pauseWindow);
+                    wrefresh(pauseWindow);
+                    delwin(pauseWindow);
+                    endwin();
+
+                    clear();
+                    refresh();
+                    int selection = main_menu(terminal);
+
+                    while(selection == 0 || selection == 3){
+                        switch (selection){
+                        case 0:
+                            game(terminal);
+                            clear();
+                            break;
+                        default:
+                            break; 
+                        }
+                    selection = main_menu(terminal);
+                    }
+
+                    init_game_state();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    wclear(pauseWindow);
+    wrefresh(pauseWindow);
+    delwin(pauseWindow);
+    endwin();
+
+    return !option;
+}

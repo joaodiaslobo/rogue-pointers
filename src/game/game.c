@@ -176,12 +176,7 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			} 
 			break;
 		case 32: // Suspende o jogo
-			move(0,80);
-            printw("Paused game. Press 'Space' to continue");
-			refresh();
-        	while (getch() != 32) {	
-        	}
-			clear();
+			pause_pop_up("GAME PAUSED :)", 45, terminal->yMax, terminal->xMax, terminal);
 			break;
 		default:
 			break;
