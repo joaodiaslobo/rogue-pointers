@@ -195,9 +195,7 @@ int valid_map(Map** a, int r, int c) {
 		visit = remove_elem (visit, i+1);
 		i--;
 	} 
-	//if (visit != NULL)  free(visit);
-	//if (walk != NULL)  free(walk);
-	if (k >= count-2) return 0; // 0 - mapa valido | 1 - Mapa inválido
+	if (k >= count) return 0; // 0 - mapa valido | 1 - Mapa inválido
 	else return 1;
 }
 
@@ -347,7 +345,7 @@ void gen_grass(Map** a, int r, int c) {
 
 void gen_lava(Map** a, int r, int c) {
 	// decidir se aparece lava em um nível
-	int x = 0, y = 0, lava = 0, ind;
+	int x = 0, y = 0, lava = 1, ind;
 	int prob_lava = 10 * LEVEL;
     int random_num = rand() % 100;
     if (random_num <= prob_lava && LEVEL != 0) {
@@ -643,13 +641,18 @@ Vector2D get_random_floor_position(Map** map, int r, int c){
 
 // Gera o mapa
 void gen_map(Map** a, int r, int c) {
-    new_room_map(a,r,c);
+    int count = 0;
+	new_room_map(a,r,c);
 	while (valid_map(a,r,c) == 1) {
-		for (int j = 0; j < r; j++) {
-		   for (int k = 0; k < c; k++) {
-				a[j][k].object = 3; // Inicializando o valor do campo object como 3 (vazio)
-		   }
-	   	}
+		if (count > 8) { // faz refresh do mapa para evitar situações em que é impossível gerar um mapa valido
+			for (int j = 0; j < r; j++) {
+				for (int k = 0; k < c; k++) {
+					a[j][k].object = 3; // Inicializando o valor do campo object como 3 (vazio)
+			   	}
+	   		}
+		count = 0;
+		}
+		count++;
 		new_room_map(a,r,c);
 	}
     new_level_map(a,r,c);
