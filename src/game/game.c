@@ -20,6 +20,7 @@
 #include "math.h"
 #include "enemy_info.h"
 #include "bullet.h"
+#include "pop_up_ui.h"
 
 int LEVEL, num_levels = 20;
 
@@ -121,7 +122,7 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 					new_bomb(&(state->player.inventory));
 				}
 				w[LEVEL].collectedChestItems = 1;
-				if(new_items_pop_up("New item(s) unlocked!", 35, terminal->yMax, terminal->xMax));
+				new_items_pop_up("New item(s) unlocked!", 35, terminal->yMax, terminal->xMax);
 			}
 			break;
 		case KEY_MOUSE:
@@ -376,14 +377,7 @@ int game(Terminal *terminal) {
 				return(0);
 			}
 			if (gameState->gameOver == 2){
-				move(0,80);
-				printw("** WON THE GAME Press c to continue **");
-				refresh();
-				int c;
-				do {
-					c = getchar();
-				} while (c != 'c');
-				endwin();
+				winner_pop_up("CONGRATS, YOU WON!", 50, terminal->yMax, terminal->xMax, terminal);
 				return(0);
 			}
 
