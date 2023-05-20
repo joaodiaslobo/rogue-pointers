@@ -128,3 +128,72 @@ int winner_pop_up(char text[], int width, int screenYMax, int screenXMax, Termin
     
     return !option;
 }
+
+int game_over_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal){
+
+    int key = 0, option = 0;
+    int necessaryLines = count_newlines(text) + 1 + 4 + 1;
+    int posY = (screenYMax - necessaryLines) / 2;
+    int posX = (screenXMax - width) / 2;
+
+    WINDOW * gameOverWindow = newwin(necessaryLines, width, posY, posX);
+    box(gameOverWindow, 0, 0);
+    refresh();
+    wrefresh(gameOverWindow);
+    keypad(gameOverWindow, true);
+
+    mvwprintw(gameOverWindow, 1, 2, "%s", text);
+
+    while(key != 10){
+        
+        wattron(gameOverWindow, A_BOLD);
+        mvwprintw(gameOverWindow, necessaryLines - 2, width - 12, "TRY AGAIN!");
+        wattroff(gameOverWindow, A_BOLD);
+
+        key = wgetch(gameOverWindow);
+        switch (key)
+        {
+            case KEY_UP:
+                if(option){
+                    option--;
+                } else {
+                    option++;
+                }
+                break;
+            case KEY_DOWN:
+                if(option){
+                    option--;
+                } else {
+                    option++;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    wclear(gameOverWindow);
+    wrefresh(gameOverWindow);
+    delwin(gameOverWindow);
+    endwin();
+
+    clear();
+    refresh();
+    int selection = main_menu(terminal);
+
+    while(selection == 0 || selection == 3){
+        switch (selection){
+        case 0:
+            game(terminal);
+            clear();
+            break;
+        default:
+            break; 
+        }
+    selection = main_menu(terminal);
+    }
+
+    init_game_state();
+
+    return !option;
+}

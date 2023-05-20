@@ -366,14 +366,7 @@ int game(Terminal *terminal) {
 			button(buttonGradient, "Inventory", buttonInvPos);
 
 			if (gameState->gameOver == 1){
-				move(0,80);
-				printw("** GAME LOST Press c to continue **");
-				refresh();
-				int c;
-				do {
-					c = getchar();
-				} while (c != 'c');
-				endwin();
+				game_over_pop_up("GAME OVER :(", 45, terminal->yMax, terminal->xMax, terminal);
 				return(0);
 			}
 			if (gameState->gameOver == 2){

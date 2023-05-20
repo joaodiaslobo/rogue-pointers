@@ -11,4 +11,6 @@ int new_items_pop_up(char text[], int width, int screenYMax, int screenXMax);
 
 int winner_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal);
 
+int game_over_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal);
+
 #endif
