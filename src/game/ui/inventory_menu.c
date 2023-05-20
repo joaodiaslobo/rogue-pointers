@@ -9,6 +9,9 @@
 #include "inventory.h"
 #include "image.h"
 #include "draw.h"
+#include "sound.h"
+#include <pthread.h>
+#include <string.h>
 
 void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *state){
     Image image = load_image_from_file("assets/sprites/inventory/title.sprite");
@@ -70,6 +73,29 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *stat
                 break;
             case 10:
                 state->player.selectedSlot = selection;
+                if(state->player.inventory.items[selection].type == MELEE_WEAPON){
+                    if(strcmp(state->player.inventory.items[selection].name, "Lightsaber") == 0){
+                        pthread_t thread1;
+                        Sound *sound = malloc(sizeof(Sound));
+                        sound->filename = "assets/sound/select_lightsaber.wav";
+                        sound->time_ms = 2222;
+                        sound->loop = 0;
+                        if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
+                    }
+                    pthread_t thread1;
+                    Sound *sound = malloc(sizeof(Sound));
+                    sound->filename = "assets/sound/sword_wield.wav";
+                    sound->time_ms = 1636;
+                    sound->loop = 0;
+                    if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
+                } else {
+                    pthread_t thread1;
+                    Sound *sound = malloc(sizeof(Sound));
+                    sound->filename = "assets/sound/select_item.wav";
+                    sound->time_ms = 1636;
+                    sound->loop = 0;
+                    if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
+                }
                 break;
             default:
                 break;

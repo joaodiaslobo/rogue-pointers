@@ -58,6 +58,13 @@ void perform_action(GameState *gameState, World* world){
                 }
 
                 gameState->player.timeSinceLastAction = 0;
+
+                pthread_t thread1;
+                Sound *sound = malloc(sizeof(Sound));
+                sound->filename = "assets/sound/melee_attack.wav";
+                sound->time_ms = 560;
+                sound->loop = 0;
+                if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
             }
             break;
         default:

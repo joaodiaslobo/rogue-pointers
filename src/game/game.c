@@ -351,7 +351,7 @@ int game(Terminal *terminal) {
 				draw_bullet(&worlds[LEVEL].bullets[i], terminal);
 			}
 
-			// Botões (temporário)
+			// Botões
 			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
 			Vector2D buttonExplorePos = {buttonToolbarX,terminal->yMax-1};
 			button(buttonGradient, "Explore", buttonExplorePos);
