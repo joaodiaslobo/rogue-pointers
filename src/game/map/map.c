@@ -10,6 +10,7 @@
 #include "stdlib.h"
 #include "player_pathfinding.h"
 #include <time.h>
+#include <signal.h>
 
 // Necessário para as funções que geram o mapa
 
@@ -201,13 +202,13 @@ int valid_map(Map** a, int r, int c) {
 
 
 void gen_water(Map** a, int r, int c) {
-	// decidir se aparece água em um nível
-	int x = 0, y = 0, water = 0, ind, n = 2, prob_water = 0;
+	srand(time(NULL)); // define a semente baseada no tempo atual
+	int x = 0, y = 0, water, ind, n = 3, prob_water = 0;
 	if (LEVEL != 0) prob_water = (1/LEVEL)*100;
     while (n > 0) {
 		water = 0;
 		int random_num = rand() % 100;
-   		if (prob_water <= random_num) {
+   		if (prob_water <= random_num && LEVEL != 0) { // decidir se aparece água em um nível
 			water = 1;
 		}
 		if (water == 1) {
@@ -222,32 +223,29 @@ void gen_water(Map** a, int r, int c) {
 			if(a[y-1][x].object == 0) a[y-1][x].object = 7;
 			for(int i = 1; i < r-1; i++) {    
 	    		for(int j = 1; j < c-1; j++) {
-						if (a[i][j].object == 7) {
+					if (a[i][j].object == 7) {
 						int conditions[] = {a[i][j+1].object, a[i][j-1].object, a[i+1][j].object, a[i-1][j].object};
 						// dependendo da profundidade do nível é gerada menos água
-						if (LEVEL >= 8 && LEVEL < 9){
-					 		ind = (random() % 3);
-					  	    if (conditions[ind] == 0) conditions[ind] = 7;	
-						} else if (LEVEL >= 6 && LEVEL < 8){
-							ind = (random() % 3);
+						if (LEVEL >= 0.75*num_levels && LEVEL < num_levels-1){
+							ind = (random() % 4);
 					  	    if (conditions[ind] == 0) conditions[ind] = 7;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					 		if (conditions[ind] == 0) conditions[ind] = 7;
-						} else if (LEVEL >= 3 && LEVEL < 5){
-							ind = (random() % 3);
+						} else if (LEVEL >= 0.5*num_levels && LEVEL < 0.75*num_levels){
+							ind = (random() % 4);
 					   		if (conditions[ind] == 0) conditions[ind] = 7;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 7;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 7;
-						} else if (LEVEL >= 0 && LEVEL <= 2) {
-							ind = (random() % 3);
+						} else if (LEVEL >= 1 && LEVEL <= 0.5*num_levels) {
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 7;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 7;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 7;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 7;
 						}
 						if (conditions[0] == 7) a[i][j+1].object = 7;
@@ -296,29 +294,26 @@ void gen_grass(Map** a, int r, int c) {
 						if (a[i][j].object == 5) {
 						int conditions[] = {a[i][j+1].object, a[i][j-1].object, a[i+1][j].object, a[i-1][j].object};
 						// dependendo da profundidade do nível é gerada menos relva
-						if (LEVEL >= 8 && LEVEL < 9){
-					 		ind = (random() % 3);
-					  	    if (conditions[ind] == 0) conditions[ind] = 5;	
-						} else if (LEVEL >= 6 && LEVEL < 8){
-							ind = (random() % 3);
+						if (LEVEL >= 0.75*num_levels && LEVEL < num_levels-1){
+							ind = (random() % 4);
 					  	    if (conditions[ind] == 0) conditions[ind] = 5;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					 		if (conditions[ind] == 0) conditions[ind] = 5;
-						} else if (LEVEL >= 3 && LEVEL < 5){
-							ind = (random() % 3);
+						} else if (LEVEL >= 0.5*num_levels && LEVEL < 0.75*num_levels){
+							ind = (random() % 4);
 					   		if (conditions[ind] == 0) conditions[ind] = 5;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 5;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 5;
-						} else if (LEVEL >= 0 && LEVEL <= 2) {
-							ind = (random() % 3);
+						} else if (LEVEL >= 0 && LEVEL <= 0.5*num_levels) {
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 5;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 5;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 5;
-							ind = (random() % 3);
+							ind = (random() % 4);
 					    	if (conditions[ind] == 0) conditions[ind] = 5;
 						}
 						if (conditions[0] == 5) a[i][j+1].object = 5;
@@ -344,62 +339,60 @@ void gen_grass(Map** a, int r, int c) {
 
 
 void gen_lava(Map** a, int r, int c) {
-	// decidir se aparece lava em um nível
-	int x = 0, y = 0, lava = 1, ind;
+	srand(time(NULL)); // define a semente baseada no tempo atual
+	int x = 0, y = 0, lava = 0, ind, n = 2;
 	int prob_lava = 10 * LEVEL;
     int random_num = rand() % 100;
-    if (random_num <= prob_lava && LEVEL != 0) {
-		lava = 1;
-	}
-	// gerar a lava
-	if (lava == 1) {
-		while(a[y][x].object != 0) {
-			x = (random() % c);
-        	y = (random() % r);
+	while(n > 0) {
+    	if (random_num <= prob_lava && LEVEL >= 2) { // decidir se aparece lava em um nível
+			lava = 1;
 		}
-		a[y][x].object = 4;
-		if(a[y][x+1].object == 0) a[y][x+1].object = 4;
-		if(a[y][x-1].object == 0) a[y][x-1].object = 4;
-		if(a[y+1][x].object == 0) a[y+1][x].object = 4;
-		if(a[y-1][x].object == 0) a[y-1][x].object = 4;
-
-		for(int i = 1; i < r-1; i++) {    
-	    	for(int j = 1; j < c-1; j++) {
-				if (a[i][j].object == 4) {
-					int conditions[] = {a[i][j+1].object, a[i][j-1].object, a[i+1][j].object, a[i-1][j].object};
-					// dependendo da profundidade do nível é gerada mais lava
-					if (LEVEL >= 1 && LEVEL < 3){
-					    ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;	
-					} else if (LEVEL >= 3 && LEVEL < 5){
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
-					} else if (LEVEL >= 5 && LEVEL < 7){
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
-					} else if (LEVEL >= 7 && LEVEL <= num_levels-1) {
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
-						ind = (random() % 3);
-					    if (conditions[ind] == 0) conditions[ind] = 4;
+		if (lava == 1) { // gerar a lava
+			while(a[y][x].object != 0) {
+				x = (random() % c);
+        		y = (random() % r);
+			}
+			a[y][x].object = 4;
+			if(a[y][x+1].object == 0) a[y][x+1].object = 4;
+			if(a[y][x-1].object == 0) a[y][x-1].object = 4;
+			if(a[y+1][x].object == 0) a[y+1][x].object = 4;
+			if(a[y-1][x].object == 0) a[y-1][x].object = 4;
+			for(int i = 1; i < r-1; i++) {    	
+	    		for(int j = 1; j < c-1; j++) {
+					if (a[i][j].object == 4) {
+						int conditions[] = {a[i][j+1].object, a[i][j-1].object, a[i+1][j].object, a[i-1][j].object};
+						// dependendo da profundidade do nível é gerada mais lava
+						if (LEVEL >= 2 && LEVEL < 0.25*num_levels){
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+						} else if (LEVEL >= 0.25*num_levels && LEVEL < 0.5*num_levels){
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+						} else if (LEVEL >= 0.5*num_levels && LEVEL <= num_levels-1) {
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+							ind = (random() % 4);
+						    if (conditions[ind] == 0) conditions[ind] = 4;
+						}
+						if (conditions[0] == 4) a[i][j+1].object = 4;
+						if (conditions[1] == 4) a[i][j-1].object = 4;
+						if (conditions[2] == 4) a[i+1][j].object = 4;
+						if (conditions[3] == 4) a[i-1][j].object = 4;
 					}
-					if (conditions[0] == 4) a[i][j+1].object = 4;
-					if (conditions[1] == 4) a[i][j-1].object = 4;
-					if (conditions[2] == 4) a[i+1][j].object = 4;
-					if (conditions[3] == 4) a[i-1][j].object = 4;
 				}
 			}
 		}
+		n--;
 	}
 }
 

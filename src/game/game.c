@@ -365,7 +365,7 @@ int game(Terminal *terminal) {
 			button(buttonGradient, "Inventory", buttonInvPos);
 
 			if (gameState->gameOver == 1){
-				move(0,160);
+				move(0,80);
 				printw("** GAME LOST Press c to continue **");
 				refresh();
 				int c;
@@ -376,7 +376,7 @@ int game(Terminal *terminal) {
 				return(0);
 			}
 			if (gameState->gameOver == 2){
-				move(0,160);
+				move(0,80);
 				printw("** WON THE GAME Press c to continue **");
 				refresh();
 				int c;
