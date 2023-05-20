@@ -119,9 +119,9 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 				open_chest(&(state->player.inventory));
 				if(LEVEL % 5 == 0){
 					new_bomb(&(state->player.inventory));
-					mvprintw(10, 0, "New bomb unlocked!");
 				}
 				w[LEVEL].collectedChestItems = 1;
+				if(new_items_pop_up("New item(s) unlocked!", 35, terminal->yMax, terminal->xMax));
 			}
 			break;
 		case KEY_MOUSE:

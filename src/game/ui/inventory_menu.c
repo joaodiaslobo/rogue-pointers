@@ -42,7 +42,7 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *stat
                         Image spriteImage = load_image_from_file(state->player.inventory.items[i].sprite);
                         draw_to_window(inventoryWindow, spriteImage, spritePos);
                     }
-                    if(state->player.inventory.items[i].type == MISCELLANEOUS || state->player.inventory.items[i].type == BOMB){
+                    if(state->player.inventory.items[i].type == MISCELLANEOUS){ // || state->player.inventory.items[i].type == BOMB (por enquanto vou tirar de aparecer até vermos como vão funcionar as bombas)
                         mvwprintw(inventoryWindow, (terminal->yMax / 2 + 20), (terminal->xMax / 2 + 37), "Quantity: %d", state->player.inventory.items[i].picked);
                     }
                 }
