@@ -160,7 +160,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
 
     // Se o jogador encontrou uma arca guarda pedra no inventário
     if(map[newPos.y][newPos.x].object == 9){
-        gameState->player.inventory.items[0].picked += 15;
+            gameState->player.inventory.items[1].picked += 15;
             pthread_t thread1; // Cria uma thread para reproduzir o som de apanhar objeto
             Sound *fich1 = malloc(sizeof(Sound));
             fich1->filename = "assets/sound/pick.wav";
@@ -277,7 +277,6 @@ void open_chest(Inventory *inventory){
     if(new != -1){
         Item newItem = globalItems[new];
         add_item(inventory, &newItem);
-        mvprintw(11,0, "New item(s) unlocked!");
     }
 }
 
