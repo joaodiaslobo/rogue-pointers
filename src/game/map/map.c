@@ -81,7 +81,7 @@ void chest_room(Map** a, int r, int c) {
 				if(num_doors == 2 && l1 == l4 && l2 == l3){
 					for(int k = v1.y + 1; k < v1.y + l1; k++) { //muda a cor do chão da sala fechada  
 						for(int l = v1.x + 1 ; l < v1.x + l2; l++) {
-							a[k][l].object = 12;
+							if (a[k][l].object != 2) a[k][l].object = 12; // garante que se a passagem de nível estiver dentro da sala não é removida
 						}
 					}
 					a[v1.y+1][v1.x+1].object = 9; // posiciona o baú perto do canto superior esquerdo
