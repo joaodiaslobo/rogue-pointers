@@ -361,9 +361,6 @@ int game(Terminal *terminal) {
 			button(buttonGradient, "Inventory", buttonInvPos);
 
 			if (gameState->gameOver == 1){
-				move(0,80);
-				printw("** GAME LOST Press c to continue **");
-				refresh();
 				for (int i = 0; i < num_levels; i++) {
  				    free(worlds[i].bullets);
 			        for (int j = 0; j < nrows; j++) {
@@ -372,34 +369,18 @@ int game(Terminal *terminal) {
     				free(worlds[i].map);
 				}
 				free(worlds); 
-				int c;
-				do {
-					c = getchar();
-				} while (c != 'c');
-				endwin();
-				return(0);
-			}
-			if (gameState->gameOver == 2){
-				move(0,80);
-				printw("** WON THE GAME Press c to continue **");
-				refresh();
-				for (int i = 0; i < num_levels; i++) {
- 				    free(worlds[i].bullets);
-			        for (int j = 0; j < nrows; j++) {
-        				free(worlds[i].map[j]);
-    				}
-    				free(worlds[i].map);
-				}
-				free(worlds); 
-				int c;
-				do {
-					c = getchar();
-				} while (c != 'c');
-				endwin();
 				game_over_pop_up("GAME OVER :(", 45, terminal->yMax, terminal->xMax, terminal);
 				return(0);
 			}
 			if (gameState->gameOver == 2){
+				for (int i = 0; i < num_levels; i++) {
+ 				    free(worlds[i].bullets);
+			        for (int j = 0; j < nrows; j++) {
+        				free(worlds[i].map[j]);
+    				}
+    				free(worlds[i].map);
+				}
+				free(worlds);
 				winner_pop_up("CONGRATS, YOU WON!", 50, terminal->yMax, terminal->xMax, terminal);
 				return(0);
 			}
