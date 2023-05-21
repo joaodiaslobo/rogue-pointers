@@ -10,7 +10,6 @@
 #include "stdlib.h"
 #include "player_pathfinding.h"
 #include <time.h>
-#include <signal.h>
 
 // Necessário para as funções que geram o mapa
 
@@ -107,8 +106,7 @@ void chest_room(Map** a, int r, int c) {
 int elem(Vector2D e, Vector2D *v, int N) {
     int i, ans = 0;
     for(i = 0; i < N && !ans; i++)
-        if(e.x == v[i].x && e.y == v[i].y)
-            ans = 1;
+        if(e.x == v[i].x && e.y == v[i].y) ans = 1;
     return ans;
 }
 
@@ -142,7 +140,7 @@ int valid_map(Map** a, int r, int c) {
 		}
 	}
 	i = 0;
-	Vector2D* visit = malloc(count * sizeof(Vector2D));
+	Vector2D* visit = malloc(2*count * sizeof(Vector2D));
 	if (visit == NULL) {
 		exit(EXIT_FAILURE);
 	}
@@ -150,6 +148,10 @@ int valid_map(Map** a, int r, int c) {
 	if (walk == NULL) {
 		exit(EXIT_FAILURE);
 	}
+	for (int i = 0; i < count; i++) {
+        walk[i].x = 0;
+        walk[i].y = 0;
+    }
 	visit[i].x = fst.x;
 	visit[i].y = fst.y;
 	while (i != -1) { 
@@ -202,7 +204,7 @@ int valid_map(Map** a, int r, int c) {
 
 
 void gen_water(Map** a, int r, int c) {
-	srand(time(NULL)); // define a semente baseada no tempo atual
+	//srand(time(NULL)); // define a semente baseada no tempo atual
 	int x = 0, y = 0, water, ind, n = 3, prob_water = 0;
 	if (LEVEL != 0) prob_water = (1/LEVEL)*100;
     while (n > 0) {
@@ -339,7 +341,7 @@ void gen_grass(Map** a, int r, int c) {
 
 
 void gen_lava(Map** a, int r, int c) {
-	srand(time(NULL)); // define a semente baseada no tempo atual
+	//srand(time(NULL)); // define a semente baseada no tempo atual
 	int x = 0, y = 0, lava = 0, ind, n = 2;
 	int prob_lava = 10 * LEVEL;
     int random_num = rand() % 100;
@@ -397,7 +399,7 @@ void gen_lava(Map** a, int r, int c) {
 }
 
 void new_room_map (Map** a, int r, int c){
-    srand(time(NULL)); // define a semente baseada no tempo atual
+	srand(time(NULL)); // define a semente baseada no tempo atual
 	int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
     int k = 0;
 

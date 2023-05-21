@@ -204,7 +204,7 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 			w[LEVEL].created = 1;
 		}
 		clear();
-		while (w[LEVEL].map[state->player.position.y][state->player.position.x].object != 0 && (!(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2 && (LEVEL == 0 || LEVEL == 9)))) {
+		while (w[LEVEL].map[state->player.position.y][state->player.position.x].object != 0 && (!(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2 && (LEVEL == 0 || LEVEL == num_levels-1)))) {
 			state->player.position.x = (random() % c);
 			state->player.position.y = (random() % r);
 
@@ -368,6 +368,14 @@ int game(Terminal *terminal) {
 				move(0,80);
 				printw("** GAME LOST Press c to continue **");
 				refresh();
+				for (int i = 0; i < num_levels; i++) {
+ 				    free(worlds[i].bullets);
+			        for (int j = 0; j < nrows; j++) {
+        				free(worlds[i].map[j]);
+    				}
+    				free(worlds[i].map);
+				}
+				free(worlds); 
 				int c;
 				do {
 					c = getchar();
@@ -379,6 +387,14 @@ int game(Terminal *terminal) {
 				move(0,80);
 				printw("** WON THE GAME Press c to continue **");
 				refresh();
+				for (int i = 0; i < num_levels; i++) {
+ 				    free(worlds[i].bullets);
+			        for (int j = 0; j < nrows; j++) {
+        				free(worlds[i].map[j]);
+    				}
+    				free(worlds[i].map);
+				}
+				free(worlds); 
 				int c;
 				do {
 					c = getchar();

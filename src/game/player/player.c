@@ -102,6 +102,16 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
             break;
     }
 
+    // Som para o jogador a entrar na água
+    if(map[gameState->player.position.y][gameState->player.position.x].object != 7 && map[newPos.y][newPos.x].object == 7){
+        pthread_t thread1;
+        Sound *sound = malloc(sizeof(Sound));
+        sound->filename = "assets/sound/water_dive.wav";
+        sound->time_ms = 1500;
+        sound->loop = 0;
+        if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
+    }
+
     // Valida a posição do jogador no mapa, se este move para uma parede, porta ou para fora do mapa não pode avançar
     if(!(map[newPos.y][newPos.x].object == 1 ||  map[newPos.y][newPos.x].object == 10 || map[newPos.y][newPos.x].object == 3 || newPos.x < 0 || newPos.y < 0 || newPos.y >= r || newPos.x >= c)){
         gameState->player.position.x = newPos.x;
@@ -122,11 +132,11 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
             gameState->player.position.x = newPos.x;
             gameState->player.position.y = newPos.y;
             pthread_t thread1; // Cria uma thread para reproduzir o som do jogador a cair na lava
-            Sound *fich1 = malloc(sizeof(Sound));
-            fich1->filename = "assets/sound/player_burnt.wav";
-            fich1->time_ms = 1000;
-            fich1->loop = 0;
-            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Error creating thread\n");
+            Sound *sound = malloc(sizeof(Sound));
+            sound->filename = "assets/sound/player_burnt.wav";
+            sound->time_ms = 1000;
+            sound->loop = 0;
+            if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
             gameState->gameOver = 1;
         }
     }
@@ -140,11 +150,11 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         add_item(&gameState->player.inventory, &key);
         map[newPos.y][newPos.x].object = 0; //apaga a chave do mapa
         pthread_t thread1; // Cria uma thread para reproduzir o som da chave a ser apanhada
-        Sound *fich1 = malloc(sizeof(Sound));
-        fich1->filename = "assets/sound/pick.wav";
-        fich1->time_ms = 1000;
-        fich1->loop = 0;
-        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Error creating thread\n");
+        Sound *sound = malloc(sizeof(Sound));
+        sound->filename = "assets/sound/pick.wav";
+        sound->time_ms = 1000;
+        sound->loop = 0;
+        if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
     }
 
     // Se o jogador encontrou a porta e tem uma chave, a porta abre e ouve-se o som
@@ -158,11 +168,11 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
                 }
             }
             pthread_t thread1; // Cria uma thread para reproduzir o som da porta a abrir
-            Sound *fich1 = malloc(sizeof(Sound));
-            fich1->filename = "assets/sound/door_opening.wav";
-            fich1->time_ms = 1000;
-            fich1->loop = 0;
-            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Error creating thread\n");
+            Sound *sound = malloc(sizeof(Sound));
+            sound->filename = "assets/sound/door_opening.wav";
+            sound->time_ms = 1000;
+            sound->loop = 0;
+            if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0) printw("Error creating thread\n");
         }
         delete_key(&gameState->player.inventory);
     }
@@ -171,21 +181,11 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
     if(map[newPos.y][newPos.x].object == 9){
             gameState->player.inventory.items[1].picked += 15;
             pthread_t thread1; // Cria uma thread para reproduzir o som de apanhar objeto
-            Sound *fich1 = malloc(sizeof(Sound));
-            fich1->filename = "assets/sound/pick.wav";
-            fich1->time_ms = 1000;
-            fich1->loop = 0;
-            if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0) printw("Error creating thread\n");
-    }
-
-    // Som para o jogador a nadar na água
-    if(map[newPos.y][newPos.x].object == 7){
-        pthread_t thread1; // Cria uma thread para reproduzir o som do jogador a cair na lava
-        Sound *fich1 = malloc(sizeof(Sound));
-        fich1->filename = "assets/sound/water_dive.wav";
-        fich1->time_ms = 1500;
-        fich1->loop = 0;
-        if (pthread_create(&thread1, NULL, play_sound_thread, fich1) != 0)  printw("Error creating thread\n");
+            Sound *sound = malloc(sizeof(Sound));
+            sound->filename = "assets/sound/pick.wav";
+            sound->time_ms = 1000;
+            sound->loop = 0;
+            if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0) printw("Error creating thread\n");
     }
 
 }
