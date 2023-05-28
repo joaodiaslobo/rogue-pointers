@@ -3,7 +3,7 @@
 
 #include <ncurses.h>
 
-#define MAX_IMAGE_PIXELS 500
+#define MAX_IMAGE_PIXELS 600
 
 
 // Controlo do terminal

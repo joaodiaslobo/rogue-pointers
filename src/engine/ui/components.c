@@ -24,11 +24,11 @@ int menu_select(int options, char *texts[], int width, int y, int x){
     {
         for(int i = 0; i < options; i++){
             if(i == selection){
-                wattron(selectWindow, A_REVERSE);
-                mvwprintw(selectWindow, i+2, 1, "[x] %s", texts[i]);
-                wattroff(selectWindow, A_REVERSE);
+                wattron(selectWindow, A_BOLD);
+                mvwprintw(selectWindow, i+2, 4, "[x] %s", texts[i]);
+                wattroff(selectWindow, A_BOLD);
             } else {
-                mvwprintw(selectWindow, i+2, 1, "[ ] %s", texts[i]);
+                mvwprintw(selectWindow, i+2, 4, "[ ] %s", texts[i]);
             }
             wrefresh(selectWindow);
         }
@@ -82,15 +82,15 @@ int modal_confim(char text[], int width, int screenYMax, int screenXMax){
 
     while(key != 10){
         if(!option){
-            wattron(modalWindow, A_REVERSE);
-            mvwprintw(modalWindow, necessaryLines - 2, 2, "SIM");
-            wattroff(modalWindow, A_REVERSE);
-            mvwprintw(modalWindow, necessaryLines - 2, width - 5, "NAO");
+            wattron(modalWindow, A_BOLD);
+            mvwprintw(modalWindow, necessaryLines - 2, 2, "YES");
+            wattroff(modalWindow, A_BOLD);
+            mvwprintw(modalWindow, necessaryLines - 2, width - 4, "NO");
         } else {
-            wattron(modalWindow, A_REVERSE);
-            mvwprintw(modalWindow, necessaryLines - 2, width - 5, "NAO");
-            wattroff(modalWindow, A_REVERSE);
-            mvwprintw(modalWindow, necessaryLines - 2, 2, "SIM");
+            wattron(modalWindow, A_BOLD);
+            mvwprintw(modalWindow, necessaryLines - 2, width - 4, "NO");
+            wattroff(modalWindow, A_BOLD);
+            mvwprintw(modalWindow, necessaryLines - 2, 2, "YES");
         }
 
         key = wgetch(modalWindow);

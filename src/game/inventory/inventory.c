@@ -109,7 +109,7 @@ int pick_random_item(Inventory *inventory){
 }
 
 int get_random_number(int min, int max){
-    return min + rand() % (max - min + 1);
+    return min + (rand() % (max - min + 1));
 }
 
 int all_collected(Item globalItems[], int x){

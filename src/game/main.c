@@ -42,7 +42,6 @@ int main(){
         printw("Erro ao criar a thread\n");
     }
 
-
     // Obtem tamanho do terminal
     Terminal terminal;
     getmaxyx(stdscr, terminal.yMax, terminal.xMax);
@@ -57,7 +56,7 @@ int main(){
     }
 
     int selection = main_menu(&terminal);
-    while(selection == 0 || selection == 3){ // permite que o jogador volte ao menu principal, caso perca
+    while(selection == 0 || selection == 4){ // permite que o jogador volte ao menu principal, caso perca
         switch (selection){
 	    case 0:
 		    game(&terminal);

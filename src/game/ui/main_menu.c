@@ -1,33 +1,32 @@
 #include <ncurses.h>
-#include "components.h"
 #include "engine_types.h"
+#include "main_menu.h"
+#include "draw.h"
+#include "color.h"
+#include "image.h"
+#include "sys/time.h"
 
-// Menu principal (temporário)
+// Menu principal
 int main_menu(Terminal *terminal){
     int selection = -1;
     while(selection == -1){
 
         // Título
+        Image image = load_image_from_file("assets/sprites/main_menu/title.sprite");
+        
+        Vector2D pos;
+        pos.x = ((terminal->xMax - 62*2)/4);
+        pos.y = ((terminal->yMax - 8)/2) - 15;
 
-        attron(A_BOLD);
-        mvprintw(terminal->yMax / 2, terminal->xMax / 2 - 6, "PROJETO DE LI2");
-        attroff(A_BOLD);
-
-        attron(A_DIM);
-        mvprintw(terminal->yMax / 2 + 1, terminal->xMax / 2 - 7, "(menu temporario)");
-        attroff(A_DIM);
-
-        attron(A_BOLD);
-        mvprintw(terminal->yMax - 1, 5, "LINHAS: %d, COLUNAS: %d", terminal->yMax , terminal->xMax);
-        attroff(A_BOLD);
+        draw_to_window(terminal->mainWindow, image, pos);     
 
         // Input de seleção
-        char *options[] = { "JOGAR", "OPCOES", "SAIR", "DEBUG"};
-        selection = menu_select(4, options, terminal->xMax - 12, terminal->yMax - 9, 5);
+        char *options[] = {"PLAY", "OPTIONS", "ABOUT", "QUIT"};
+        selection = main_menu_update(4, options, terminal->xMax - 12, terminal->yMax - 9, 5, terminal);
         
-        if(selection == 2){
+        if(selection == 3){
             // Confirmação no caso de saída
-            if(modal_confim("Tem a certeza que quer sair?", 35, terminal->yMax, terminal->xMax)){
+            if(modal_confim("Are you sure you want to quit the game?", 45, terminal->yMax, terminal->xMax)){
                 return selection;
             }
             selection = -1;
@@ -35,4 +34,109 @@ int main_menu(Terminal *terminal){
     }
 
     return selection;
+}
+
+int main_menu_update(int options, char *texts[], int width, int y, int x, Terminal *terminal){
+    int selection = 0, key = 0;
+    int lines  = options + 4;
+
+    WINDOW * selectWindow = newwin(lines, width, y, x);
+    box(selectWindow, 0, 0);
+    refresh();
+    wrefresh(selectWindow);
+    keypad(selectWindow, true);
+
+    struct timeval currentTime;
+    gettimeofday(&currentTime, NULL);
+    unsigned long timeSinceLastFrame = 0;
+
+    int direction = 0;
+    int frame = 0;
+
+    Vector2D pos;
+    pos.x = ((terminal->xMax - 62*2)/4);
+    pos.y = ((terminal->yMax - 8)/2) - 15;
+
+    nodelay(selectWindow, TRUE);
+
+    while (key != 10)
+    {
+        struct timeval now;
+        gettimeofday(&now, NULL);
+
+        unsigned long elapsedMicroseconds = (now.tv_sec - currentTime.tv_sec) * 1000000 + (now.tv_usec - currentTime.tv_usec);
+        gettimeofday(&currentTime, NULL);
+
+        timeSinceLastFrame += elapsedMicroseconds;
+
+        if(timeSinceLastFrame >= 100000){
+            timeSinceLastFrame = 0;
+            if(direction){
+                if(frame == 9){
+                    direction = !direction;
+                    frame--;
+                }
+                else{
+                    frame++;
+                }
+            }
+            else{
+                if(frame == 0){
+                    direction = !direction;
+                    frame++;
+                }
+                else{
+                    frame--;
+                }
+            }
+            create_sparkles_animation(pos, frame, terminal);
+        }
+
+        for(int i = 0; i < options; i++){
+            if(i == selection){
+                wattron(selectWindow, A_BOLD);
+                mvwprintw(selectWindow, i+2, 4, "[x] %s", texts[i]);
+                wattroff(selectWindow, A_BOLD);
+            } else {
+                mvwprintw(selectWindow, i+2, 4, "[ ] %s", texts[i]);
+            }
+            wrefresh(selectWindow);
+        }
+
+        move(0, 0);
+
+        key = wgetch(selectWindow);
+        switch (key)
+        {
+            case KEY_UP:
+                if(selection > 0){
+                    selection--;
+                } else {
+                    selection = options - 1;
+                }
+                break;
+            case KEY_DOWN:
+                if(selection < options - 1){
+                    selection++;
+                } else {
+                    selection = 0;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    wclear(selectWindow);
+    wrefresh(selectWindow);
+    delwin(selectWindow);
+    return selection;
+}
+
+void create_sparkles_animation(Vector2D pos, int frame, Terminal *terminal){
+    char location[50];
+    sprintf(location, "assets/sprites/main_menu/sparkles/%d.sprite", frame);
+    Image frameImage = load_image_from_file(location);
+    draw_to_window(terminal->mainWindow, frameImage, pos);
+    wrefresh(terminal->mainWindow);
 }
