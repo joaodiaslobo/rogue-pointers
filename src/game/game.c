@@ -18,6 +18,7 @@
 #include "player_pathfinding.h"
 #include <pthread.h>
 #include "math.h"
+#include "player_info.h"
 #include "enemy_info.h"
 #include "bullet.h"
 #include "pop_up_ui.h"
@@ -177,7 +178,7 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			} 
 			break;
 		case 32: // Suspende o jogo
-			pause_pop_up("GAME PAUSED :)", 45, terminal->yMax, terminal->xMax, terminal);
+			pause_pop_up("GAME PAUSED", 45, terminal->yMax, terminal->xMax, terminal);
 			break;
 		default:
 			break;
@@ -397,46 +398,7 @@ int game(Terminal *terminal) {
 				return(0);
 			}
 
-			//Display de status do jogador
-
-			Vector2D playerDisplayPos = {0, 0};
-			draw_custom_pixel(playerDisplayPos, "<>", 35, 4, terminal);
-			mvprintw(0, 4, "You");
-
-			Vector2D healthBarPos = {0,1};
-			progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);
-
-			int timeToDrownSecs = 10 - floor(gameState->player.timeSinceDrownStart * 0.000001);
-			Vector2D oxygenBarPos = {0,2};
-			progress_bar(timeToDrownSecs, 10, 20, 22, 23, "Oxygen", oxygenBarPos);
-			
-
-			// Display de item selecionado e cooldown se aplicável
-			if(gameState->player.inventory.items[gameState->player.selectedSlot].type != NONE){
-				mvprintw(3,0, "%s", gameState->player.inventory.items[gameState->player.selectedSlot].name);
-				int cooldownIconPosX = strlen(gameState->player.inventory.items[gameState->player.selectedSlot].name) + 1;
-				if(gameState->player.inventory.items[gameState->player.selectedSlot].type == MELEE_WEAPON){
-					if(gameState->player.timeSinceLastAction < gameState->player.inventory.items[gameState->player.selectedSlot].cooldown){
-						attron(COLOR_PAIR(8));
-						mvaddch(3, cooldownIconPosX, ACS_PLUS);
-						attroff(COLOR_PAIR(8));
-					} else {
-						mvaddch(3, cooldownIconPosX, ACS_PLUS);
-					}
-				} else if(gameState->player.inventory.items[gameState->player.selectedSlot].type == RANGED_WEAPON) {
-					if(gameState->player.timeSinceLastAction < gameState->player.inventory.items[gameState->player.selectedSlot].cooldown){
-						attron(COLOR_PAIR(8));
-						mvaddch(3, cooldownIconPosX, ACS_ULCORNER);
-						attroff(COLOR_PAIR(8));
-					} else {
-						mvaddch(3, cooldownIconPosX, ACS_ULCORNER);
-					}
-				} 
-				else 
-				{
-					mvaddch(3, cooldownIconPosX, ' ');
-				}
-			}
+			player_info_ui(gameState, terminal);
 
 			Vector2D enemyInfoPos = { 0, 5 };
 			enemy_info_ui(gameState, &worlds[LEVEL], enemyInfoPos, terminal);
