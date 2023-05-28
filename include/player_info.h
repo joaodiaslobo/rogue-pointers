@@ -4,6 +4,6 @@
 #include "engine_types.h"
 #include "game_types.h"
 
-void player_info_ui(GameState *gameState, Terminal *terminal);
+void player_info_ui(GameState *gameState, Terminal *terminal, int level);
 
 #endif

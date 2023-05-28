@@ -398,12 +398,10 @@ int game(Terminal *terminal) {
 				return(0);
 			}
 
-			player_info_ui(gameState, terminal);
+			player_info_ui(gameState, terminal, LEVEL);
 
 			Vector2D enemyInfoPos = { 0, 5 };
 			enemy_info_ui(gameState, &worlds[LEVEL], enemyInfoPos, terminal);
-
-			mvprintw(0, 180, "Level: %d", LEVEL);
 		}
 
 		update(gameState, worlds, nrows, ncols, currentTime, terminal);

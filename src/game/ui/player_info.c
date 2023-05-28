@@ -6,7 +6,7 @@
 #include "draw.h"
 #include "components.h"
 
-void player_info_ui(GameState *gameState, Terminal *terminal){
+void player_info_ui(GameState *gameState, Terminal *terminal, int level){
     //Display de status do jogador
     Vector2D playerDisplayPos = {0, 0};
     draw_custom_pixel(playerDisplayPos, "<>", 35, 4, terminal);
@@ -48,4 +48,6 @@ void player_info_ui(GameState *gameState, Terminal *terminal){
     } else {
         mvprintw(3,0, "                              ");
     }
+
+    mvprintw(terminal->yMax - 1, 0, "Depth: %d", level);
 }
