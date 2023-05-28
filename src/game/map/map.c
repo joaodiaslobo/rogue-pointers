@@ -114,7 +114,7 @@ Vector2D* remove_elem(Vector2D* old, int old_size) {
     if (old == 0 || old_size <= 1) { // verifica se o array_antigo tem pelo menos um elemento
 	    return old;
     }
-    Vector2D* new= (Vector2D*) malloc((old_size-1)*sizeof(Vector2D));
+    Vector2D* new = (Vector2D*) malloc((old_size-1)*sizeof(Vector2D));
     for (int i = 1; i < old_size; i++) { // copia os elementos do vetor_antigo a partir do segundo elemento para o vetor_novo
         new[i - 1] = old[i];
     }
@@ -675,7 +675,6 @@ void draw_mobs(Mob *mobs, int mobQuantity, Terminal *terminal){
 // Imprime o mapa
 void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) {
 	//Image lava = load_image_from_file("assets/sprites/lava.sprite");
-	Image door = load_image_from_file("assets/sprites/door.sprite");
 	//int k = 0, r_num = 0;
 	for(int i = 0; i < r; i++){
       	for(int j = 0; j < c; j++){
@@ -728,7 +727,7 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
 				draw_custom_pixel(pos, "??", 82, 80, terminal);
 				break;
 			case 10: // imprimir porta 
-				draw_to_screen(door, pos);
+				draw_empty_pixel(pos, 81);
 				break;
 			case 11: // imprimir chave 
 				draw_custom_pixel(pos, "-o", 82, 70, terminal);

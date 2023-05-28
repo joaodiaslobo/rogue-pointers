@@ -28,7 +28,9 @@ Inventory initialize_inventory();
 
 int pick_random_item(Inventory *inventory);
 
-int getRandomNumber(int min, int max);
+int get_item_position(Inventory *inventory, ItemType type);
+
+int get_random_number(int min, int max);
 
 int all_collected(Item globalItems[], int x);
 

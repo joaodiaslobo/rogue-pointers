@@ -4,8 +4,7 @@
 #include "engine_types.h"
 #include <math.h>
 
-int show_items(Inventory *inventory){
-    
+int show_items(Inventory *inventory){  
     int x = 0;
 
     for(int i = 1; i <= 10; i++){

@@ -37,6 +37,14 @@ typedef struct bullet {
     Vector2D position;
 } Bullet;
 
+typedef struct bomb {
+    int damage;
+    Vector2D position;
+    long timeUntilExplosion;
+    int radius;
+    int explosionFrame;
+} Bomb;
+
 // Mundo de Mapas
 typedef struct world {
 	Map** map;
@@ -46,6 +54,8 @@ typedef struct world {
     Bullet *bullets;
     int bulletQuantity;
     int collectedChestItems;
+    Bomb *bombs;
+    int bombQuantity;
 } World;
 
 // Items

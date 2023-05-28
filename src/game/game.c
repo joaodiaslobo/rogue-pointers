@@ -21,6 +21,7 @@
 #include "enemy_info.h"
 #include "bullet.h"
 #include "pop_up_ui.h"
+#include "bomb.h"
 
 int LEVEL, num_levels = 20;
 
@@ -241,6 +242,10 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 
 	update_drowning(worlds[LEVEL].map, state, elapsedMicroseconds);
 
+	if(worlds[LEVEL].bombQuantity > 0){
+		update_bombs_timer(&worlds[LEVEL], elapsedMicroseconds, state);
+	}
+
 	if(state->player.timeSinceDrownStart > 10000000 || state->player.health <= 0){
 		state->player.health = 0;
 		state->gameOver = 1;
@@ -287,8 +292,11 @@ int game(Terminal *terminal) {
 		worlds[i].created = 0;
 		worlds[i].map = malloc(nrows * sizeof(Map*));
 		worlds[i].mobQuantity = 0;
-		worlds[i].bullets = (Bullet *)malloc(sizeof(Bullet));
-		worlds[i].bulletQuantity = 0;
+		worlds[i].bullets = malloc(sizeof(Bullet));
+        worlds[i].bulletQuantity = 0;
+        worlds[i].bombs = malloc(sizeof(Bomb));
+		worlds[i].bombs[0].timeUntilExplosion = 1;
+        worlds[i].bombQuantity = 0;
 	    if (worlds[i].map == NULL) {
 		   exit(EXIT_FAILURE);
 	   	}
@@ -341,11 +349,15 @@ int game(Terminal *terminal) {
 			print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);
 			draw_mobs(worlds[LEVEL].mobs, worlds[LEVEL].mobQuantity, terminal);
 			draw_custom_pixel(gameState->player.position, "<>", 35, 4, terminal);
-			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
 			for(int i = 0; i < worlds[LEVEL].bulletQuantity; i++){
 				draw_bullet(&worlds[LEVEL].bullets[i], terminal);
 			}
+
+			for(int i = 0; i < worlds[LEVEL].bombQuantity; i++){
+				draw_bomb(&worlds[LEVEL].bombs[i], terminal);
+			}
+			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
 
 			// Botões
 			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);

@@ -13,6 +13,7 @@
 #include "mobs_ai.h"
 #include "player_pathfinding.h"
 #include <ncurses.h>
+#include "bomb.h"
 
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
@@ -33,7 +34,7 @@ Player *init_player(char name[15], Vector2D pos){
     player->timeSinceDrownStart = 0;
     player->timeSinceLastAction = 10000000;
 
-    Item firstItem = globalItems[pick_random_item(&player->inventory)]; //para mesmo que não recolha itens consiga lutar no nível seguinte
+    Item firstItem = globalItems[pick_random_item(&player->inventory)]; // Para mesmo que não recolha itens consiga lutar no nível seguinte
     add_item(&player->inventory, &firstItem);
 
     Item rock = globalItems[16];
@@ -65,6 +66,14 @@ void perform_action(GameState *gameState, World* world){
                 sound->time_ms = 560;
                 sound->loop = 0;
                 if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
+            }
+            break;
+        case BOMB:
+            place_bomb(gameState->player.position, gameState->player.inventory.items[gameState->player.selectedSlot].damage, 10, world, gameState->player.inventory.items[gameState->player.selectedSlot].cooldown);
+            // Remove a bomba
+            int pos = get_item_position(&gameState->player.inventory, BOMB);
+            if(pos != -1){
+                delete_item_at_position(&gameState->player.inventory, pos);
             }
             break;
         default:

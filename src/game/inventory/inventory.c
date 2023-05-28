@@ -95,7 +95,7 @@ int pick_random_item(Inventory *inventory){
         return -1;
     }
     else{
-        int randomNumber = getRandomNumber(0, 9);
+        int randomNumber = get_random_number(0, 9);
         if(globalItems[randomNumber].picked == 0){
             globalItems[randomNumber].picked = 1;
             return randomNumber;
@@ -108,7 +108,7 @@ int pick_random_item(Inventory *inventory){
     return 0;
 }
 
-int getRandomNumber(int min, int max){
+int get_random_number(int min, int max){
     return min + rand() % (max - min + 1);
 }
 
@@ -119,6 +119,17 @@ int all_collected(Item globalItems[], int x){
         }
     }
     return 1;
+}
+
+int get_item_position(Inventory *inventory, ItemType type){
+    int pos = -1;
+    for(int i = 0; i < INVENTORY_SLOTS; i++){
+        if(inventory->items[i].type == type){
+            pos = i;
+        }
+    }
+
+    return pos;
 }
 
 int choose_item_freq(ItemType type){

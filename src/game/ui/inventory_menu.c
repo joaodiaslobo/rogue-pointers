@@ -11,7 +11,6 @@
 #include "draw.h"
 #include "sound.h"
 #include <pthread.h>
-#include <string.h>
 
 void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *state){
     Image image = load_image_from_file("assets/sprites/inventory/title.sprite");
