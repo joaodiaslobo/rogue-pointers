@@ -101,7 +101,7 @@ int pick_random_item(Inventory *inventory){
             return randomNumber;
         }
         else{
-            pick_random_item(inventory);
+            return pick_random_item(inventory);
         }
     }
 
