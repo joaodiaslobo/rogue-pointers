@@ -14,7 +14,7 @@ Item globalItems[] = {
     {"God Glock", RANGED_WEAPON, "God Glock is a pistol of exceptional power\nand divine precision.\nSome even say that the weapon is divinely blessed,\nguided by a higher power that ensures\nits bullets always find their mark.", " ", 10, 1000000, 0},
     {"Shy Sniper", RANGED_WEAPON, "A weapon that demands both precision and secrecy,\nwith mystical properties that makes it almost undetectable.\nWith Shy Sniper in your hand,\nyou will be a master of the art of stealth,\na true warrior who strikes from the shadows\nand disappears without a trace.", " ", 10, 250000, 0},
     {"Arabella", RANGED_WEAPON, "Arabella is a pistol of elegance and power,\na weapon that combines beauty with deadly efficiency.\nWith a classic, vintage design and exquisite details,\nthis pistol is a true work of art.\nStreaking hearts with a single shot will never be so intense.", " ", 10, 250000, 0},
-    {"TNT", BOMB, "Makes noise and damage.", " ", 10, 5000000, 0},
+    {"TNT", BOMB, "Makes noise and damage.", "assets/sprites/inventory/items/tnt.sprite", 10, 5000000, 0},
     {"Blind Gas", BOMB, "Turns off the light.", " ", 10, 5000000, 0},
     {"The Fireman's Worst Nightmare", BOMB, "Light, heat and fire: the arsonist.", " ", 10, 250000, 0},
     {"Flashbang", BOMB, "Flash and noise, dizziness and confusion.", " ", 10, 250000, 0},
