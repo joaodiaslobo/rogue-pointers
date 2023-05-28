@@ -1,10 +1,9 @@
 CFLAGS=-Wall -Wextra -pedantic -O2 -Iinclude
 LIBS=-lm -lcurses -lSDL2
 
-TARGET=game
+TARGET=jogo
 
 SRC = src
-BIN = bin
 
 SDL := $(shell dpkg -s libsdl2-dev && echo "SDL installed" || sudo apt-get -y install libsdl2-dev && echo "SDL installed") 
 
@@ -14,17 +13,17 @@ OBJECTS = $(patsubst $(SRC)/%.c, $(SRC)/%.o, $(SOURCES))
 all: compile clean
 
 compile: $(OBJECTS)
-	-rm $(BIN)/$(TARGET)
-	$(CC) -o $(BIN)/$(TARGET) $^ $(LIBS)
+	-rm -f $(TARGET)
+	$(CC) -o $(TARGET) $^ $(LIBS)
 
 $(SRC)/%.o: $(SRC)/%.c
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 run:
 	make compile
-	./$(BIN)/$(TARGET)
+	./$(TARGET)
 
 clean:
-	-rm $(OBJECTS)
+	-rm -f $(OBJECTS)
 
 .PHONY :  all compile clean run
