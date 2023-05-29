@@ -167,8 +167,9 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 				MEVENT event;
 				if(getmouse(&event) == OK){
 					if(event.bstate & BUTTON1_CLICKED){
-						int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
-						Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
+						int buttonToolbarX = (terminal->xMax / 2) - (44 / 2);
+						Vector2D buttonPausePos = {buttonToolbarX+10+4+15+4,terminal->yMax-1};
+						Vector2D buttonInvPos = {buttonToolbarX+10+4,terminal->yMax-1};
 						if((event.x >= buttonInvPos.x && event.x <= 16 + buttonInvPos.x) && event.y == buttonInvPos.y){
 							state->paused = 1;
 							WINDOW * inventoryWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
@@ -181,6 +182,8 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 							clear();
 							refresh();
 							state->paused = 0;
+						} else if((event.x >= buttonPausePos.x && event.x <= 11 + buttonPausePos.x) && event.y == buttonPausePos.y){
+							pause_pop_up("GAME PAUSED", 45, terminal->yMax, terminal->xMax, terminal);
 						}
 						else {
 							Vector2D clickPos = {event.x / 2, event.y};
@@ -420,17 +423,13 @@ int game(Terminal *terminal, char *playerName) {
 			}
 
 			// Botões
-			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
-			Vector2D buttonExplorePos = {buttonToolbarX,terminal->yMax-1};
-			button(buttonGradient, "Explore", buttonExplorePos);
-			Vector2D buttonRestPos = {buttonToolbarX+13+4,terminal->yMax-1};
-			button(buttonGradient, "Rest", buttonRestPos);
-			Vector2D buttonSearchPos = {buttonToolbarX+13+4+14,terminal->yMax-1};
-			button(buttonGradient, "Search", buttonSearchPos);
-			Vector2D buttonMenuPos = {buttonToolbarX+12+4+13+4+14,terminal->yMax-1};
-			button(buttonGradient, "Menu", buttonMenuPos);
-			Vector2D buttonInvPos = {buttonToolbarX+14+12+4+13+4+14,terminal->yMax-1};
+			int buttonToolbarX = (terminal->xMax / 2) - (44 / 2);
+			Vector2D buttonHelpPos = {buttonToolbarX,terminal->yMax-1};
+			button(buttonGradient, "Help", buttonHelpPos);
+			Vector2D buttonInvPos = {buttonToolbarX+10+4,terminal->yMax-1};
 			button(buttonGradient, "Inventory", buttonInvPos);
+			Vector2D buttonPausePos = {buttonToolbarX+10+4+15+4,terminal->yMax-1};
+			button(buttonGradient, "Pause", buttonPausePos);
 
 			if (gameState->gameOver == 1){
 				for (int i = 0; i < num_levels; i++) {
