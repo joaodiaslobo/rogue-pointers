@@ -194,7 +194,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
         gameState->player.position.x = newPos.x;
         gameState->player.position.y = newPos.y;
 
-        Item key = globalItems[15];
+        Item key = globalItems[13];
         add_item(&gameState->player.inventory, &key);
         map[newPos.y][newPos.x].object = 0; // apaga a chave do mapa
         pthread_t thread1; // Cria uma thread para reproduzir o som da chave a ser apanhada

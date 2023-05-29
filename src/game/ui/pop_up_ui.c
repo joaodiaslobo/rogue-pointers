@@ -362,7 +362,7 @@ void help_pop_up(Terminal *terminal){
             wattron(helpWindow, A_BOLD);
             mvwprintw(helpWindow, 15, 2, "PLAYER PATHFINDING:");
             wattroff(helpWindow, A_BOLD);
-            mvwprintw(helpWindow, 15, 22, "[MOUSE LEFT CLICK] or M arrow keys [<] [/\\] [\\/] [>] then [ENTER]");
+            mvwprintw(helpWindow, 15, 22, "[MOUSE LEFT CLICK] or [M] arrow keys [<] [/\\] [\\/] [>] then [M]");
 
             wattron(helpWindow, A_BOLD);
             mvwprintw(helpWindow, 17, 2, "SHOOT BULLETS:");
