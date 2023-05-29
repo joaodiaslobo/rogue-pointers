@@ -56,6 +56,8 @@ typedef struct world {
     int collectedChestItems;
     Bomb *bombs;
     int bombQuantity;
+    Vector2D *beaconLocations;
+    int beacons;
 } World;
 
 // Items

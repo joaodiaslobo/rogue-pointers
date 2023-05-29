@@ -14,6 +14,7 @@
 #include "player_pathfinding.h"
 #include <ncurses.h>
 #include "bomb.h"
+#include "beacon.h"
 
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
@@ -76,6 +77,15 @@ void perform_action(GameState *gameState, World* world){
                 delete_item_at_position(&gameState->player.inventory, pos);
             }
             break;
+        case SPECIAL:
+            if(strcmp(gameState->player.inventory.items[gameState->player.selectedSlot].name, "Portable beacon") == 0){
+                place_beacon(gameState->player.position, world);
+                // Remove o beacon
+                int pos = get_item_position(&gameState->player.inventory, SPECIAL);
+                if(pos != -1){
+                    delete_item_at_position(&gameState->player.inventory, pos);
+                }
+            }
         default:
             break;
     }
@@ -207,7 +217,7 @@ void update_drowning(Map **map, GameState *gameState, unsigned long elapsedMicro
     }
 }
 
-void draw_light(GameState *gameState, int r, int c, Map **map, Terminal *terminal){
+void draw_light(GameState *gameState, int r, int c, Map **map, World *world, Terminal *terminal){
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
     for(int i = 0; i < c; i++){
@@ -215,7 +225,7 @@ void draw_light(GameState *gameState, int r, int c, Map **map, Terminal *termina
             pos.x = i;
             pos.y = j;
             //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador, e verificação se antes dessa posição, na mesma diagonal, há parede - caso haja, fica às escuras a partir daí na diagonal            
-            if(map[j][i].object != 3 && !(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)) && ((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 4096 || !(light_before_walls(pos, gameState->player.position, 64, map)))){
+            if((map[j][i].object != 3 && !(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)) && ((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 4096 || !(light_before_walls(pos, gameState->player.position, 64, map)))) && !in_beacon_radius(pos, world)){
                 if(map[j][i].visited == 0){
                     draw_to_screen(image, pos);
                 }
@@ -242,6 +252,17 @@ void draw_light(GameState *gameState, int r, int c, Map **map, Terminal *termina
             }
         }
     }
+}
+
+int in_beacon_radius(Vector2D pos, World *world){
+    for(int i = 0; i < world->beacons; i++){
+        int dx = abs(pos.x - world->beaconLocations[i].x);
+        int dy = abs(pos.y - world->beaconLocations[i].y);
+        if(sqrt(dx * dx + dy * dy) <= 10){
+            return 1;
+        }
+    }
+    return 0;
 }
 
 int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map){
@@ -290,7 +311,6 @@ int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map){
 }
 
 void open_chest(Inventory *inventory){
-
     int new = pick_random_item(inventory);
     if(new != -1){
         Item newItem = globalItems[new];

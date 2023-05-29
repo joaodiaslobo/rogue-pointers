@@ -23,6 +23,7 @@
 #include "bullet.h"
 #include "pop_up_ui.h"
 #include "bomb.h"
+#include "beacon.h"
 
 int LEVEL, num_levels = 20;
 
@@ -122,6 +123,10 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 				open_chest(&(state->player.inventory));
 				if(LEVEL % 5 == 0){
 					new_bomb(&(state->player.inventory));
+				} else if (LEVEL % 2 == 1){
+					// De 2 em 2 niveis o jogador recebe um beacon
+					Item beacon = globalItems[14];
+					add_item(&(state->player.inventory), &beacon);
 				}
 				w[LEVEL].collectedChestItems = 1;
 				new_items_pop_up("New item(s) unlocked!", 35, terminal->yMax, terminal->xMax);
@@ -300,6 +305,8 @@ int game(Terminal *terminal, char *playerName) {
         worlds[i].bombs = malloc(sizeof(Bomb));
 		worlds[i].bombs[0].timeUntilExplosion = 1;
         worlds[i].bombQuantity = 0;
+		worlds[i].beaconLocations = malloc(sizeof(Vector2D));
+		worlds[i].beacons = 0;
 	    if (worlds[i].map == NULL) {
 		   exit(EXIT_FAILURE);
 	   	}
@@ -360,7 +367,12 @@ int game(Terminal *terminal, char *playerName) {
 			for(int i = 0; i < worlds[LEVEL].bombQuantity; i++){
 				draw_bomb(&worlds[LEVEL].bombs[i], terminal);
 			}
-			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, terminal);
+
+			for(int i = 0; i < worlds[LEVEL].beacons; i++){
+				draw_beacon(worlds[LEVEL].beaconLocations[i], terminal);
+			}
+
+			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, &worlds[LEVEL], terminal);
 
 			// Botões
 			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);
