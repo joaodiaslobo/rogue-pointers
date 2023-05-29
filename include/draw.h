@@ -11,4 +11,6 @@ void draw_custom_pixel(Vector2D position, char shapes[3], short primaryColor, sh
 
 void draw_empty_pixel(Vector2D position, short color);
 
+void draw_custom_pixel_to_window(Vector2D position, char shapes[3], short primaryColor, short secondaryColor, Terminal *terminal, WINDOW *window);
+
 #endif

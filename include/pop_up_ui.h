@@ -13,6 +13,8 @@ int winner_pop_up(char text[], int width, int screenYMax, int screenXMax, Termin
 
 int game_over_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal);
 
+void help_pop_up(Terminal *terminal);
+
 int pause_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal);
 
 #endif

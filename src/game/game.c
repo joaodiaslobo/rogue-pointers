@@ -170,6 +170,7 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 						int buttonToolbarX = (terminal->xMax / 2) - (44 / 2);
 						Vector2D buttonPausePos = {buttonToolbarX+10+4+15+4,terminal->yMax-1};
 						Vector2D buttonInvPos = {buttonToolbarX+10+4,terminal->yMax-1};
+						Vector2D buttonHelpPos = {buttonToolbarX,terminal->yMax-1};
 						if((event.x >= buttonInvPos.x && event.x <= 16 + buttonInvPos.x) && event.y == buttonInvPos.y){
 							state->paused = 1;
 							WINDOW * inventoryWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
@@ -184,6 +185,8 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 							state->paused = 0;
 						} else if((event.x >= buttonPausePos.x && event.x <= 11 + buttonPausePos.x) && event.y == buttonPausePos.y){
 							pause_pop_up("GAME PAUSED", 45, terminal->yMax, terminal->xMax, terminal);
+						} else if((event.x >= buttonHelpPos.x && event.x <= 10 + buttonHelpPos.x) && event.y == buttonHelpPos.y){
+							help_pop_up(terminal);
 						}
 						else {
 							Vector2D clickPos = {event.x / 2, event.y};
