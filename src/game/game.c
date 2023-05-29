@@ -135,10 +135,15 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 				open_chest(&(state->player.inventory));
 				if(LEVEL % 5 == 0){
 					new_bomb(&(state->player.inventory));
-				} else if (LEVEL % 2 == 1){
+				}
+				if (LEVEL % 2 == 1){
 					// De 2 em 2 niveis o jogador recebe um beacon
-					Item beacon = globalItems[14];
+					Item beacon = globalItems[12];
 					add_item(&(state->player.inventory), &beacon);
+				}
+				if(LEVEL % 11 == 0){
+					Item glowstick = globalItems[11];
+					add_item(&(state->player.inventory), &glowstick);
 				}
 				w[LEVEL].collectedChestItems = 1;
 				new_items_pop_up("New item(s) unlocked!", 35, terminal->yMax, terminal->xMax);

@@ -39,7 +39,7 @@ Player *init_player(char name[15], Vector2D pos){
     Item firstItem = globalItems[pick_random_item(&player->inventory)]; // Para mesmo que não recolha itens consiga lutar no nível seguinte
     add_item(&player->inventory, &firstItem);
 
-    Item rock = globalItems[16];
+    Item rock = globalItems[13];
     add_item(&player->inventory, &rock);
 
     return player;
@@ -79,7 +79,7 @@ void perform_action(GameState *gameState, World* world){
             }
             break;
         case SPECIAL:
-            if(strcmp(gameState->player.inventory.items[gameState->player.selectedSlot].name, "Portable beacon") == 0){
+            if(strcmp(gameState->player.inventory.items[gameState->player.selectedSlot].name, "Portable Beacon") == 0){
                 place_beacon(gameState->player.position, world);
                 // Remove o beacon
                 int pos = get_item_position(&gameState->player.inventory, SPECIAL);
@@ -225,8 +225,12 @@ void draw_light(GameState *gameState, int r, int c, Map **map, World *world, Ter
         for(int j = 0; j < r-1; j++){
             pos.x = i;
             pos.y = j;
+            int radius = 4096;
+            if(using_glowstick(gameState)){
+                radius = 1024;
+            }
             //equação de um círculo -> (x-a)² + (y-b)² <= raio², sendo (a,b) a posição do jogador, e verificação se antes dessa posição, na mesma diagonal, há parede - caso haja, fica às escuras a partir daí na diagonal            
-            if((map[j][i].object != 3 && !(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)) && ((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > 4096 || !(light_before_walls(pos, gameState->player.position, 64, map)))) && !in_beacon_radius(pos, world)){
+            if((map[j][i].object != 3 && !(gameState->pathSelection == 1 && is_cell_path_part(gameState, pos)) && ((i - (gameState->player.position.x))*(i - (gameState->player.position.x)) + ((j - (gameState->player.position.y))*(j - (gameState->player.position.y))) > radius || (!using_glowstick(gameState) && !(light_before_walls(pos, gameState->player.position, 64, map))))) && !in_beacon_radius(pos, world)){
                 if(map[j][i].visited == 0){
                     draw_to_screen(image, pos);
                 }
@@ -252,6 +256,15 @@ void draw_light(GameState *gameState, int r, int c, Map **map, World *world, Ter
                 map[j][i].visited = 1;
             }
         }
+    }
+}
+
+int using_glowstick(GameState *gameState){
+    if(strcmp(gameState->player.inventory.items[gameState->player.selectedSlot].name, "Glowstick") == 0){
+        return 1;
+    }
+    else{
+        return 0;
     }
 }
 
@@ -320,7 +333,7 @@ void open_chest(Inventory *inventory){
 }
 
 void new_bomb(Inventory *inventory){
-    Item newBomb = globalItems[10 + (LEVEL / 5)];
+    Item newBomb = globalItems[10];
     add_item(inventory, &newBomb);
-    globalItems[10 + (LEVEL / 5)].picked = 1 + choose_item_freq(BOMB);
+    globalItems[10].picked = 1 + choose_item_freq(BOMB);
 }

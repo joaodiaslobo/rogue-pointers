@@ -18,6 +18,8 @@ void draw_light(GameState *gameState, int r, int c, Map **map, World *world, Ter
 
 int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map);
 
+int using_glowstick(GameState *gameState);
+
 int in_beacon_radius(Vector2D pos, World *world);
 
 void open_chest(Inventory *inventory);
