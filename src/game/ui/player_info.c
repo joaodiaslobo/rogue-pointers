@@ -10,7 +10,7 @@ void player_info_ui(GameState *gameState, Terminal *terminal, int level){
     //Display de status do jogador
     Vector2D playerDisplayPos = {0, 0};
     draw_custom_pixel(playerDisplayPos, "<>", 35, 4, terminal);
-    mvprintw(0, 4, "You");
+    mvprintw(0, 4, "%s (You)", gameState->player.name);
 
     Vector2D healthBarPos = {0,1};
     progress_bar(gameState->player.health, 100, 20, 20, 21, "Health", healthBarPos);

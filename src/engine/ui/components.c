@@ -65,7 +65,6 @@ int menu_select(int options, char *texts[], int width, int y, int x){
 
 // Função geradora de uma caixa de confimação, recebe o texto da caixa, a sua largura, a altura da tela do terminal e a largura da tela do terminal
 int modal_confim(char text[], int width, int screenYMax, int screenXMax){
-
     int key = 0, option = 0;
     int necessaryLines = count_newlines(text) + 1 + 4;
     int posY = (screenYMax - necessaryLines) / 2;
@@ -177,4 +176,46 @@ void progress_bar(int value, int max, int width, short primaryColor, short secon
             attroff(COLOR_PAIR(secondaryColor+8));
         }
     }
+}
+
+void text_input_box(Vector2D pos, int width, int inputSize, char *text, char *input){
+    WINDOW * inputWindow = newwin(5, width, pos.y, pos.x);
+    box(inputWindow, 0, 0);
+    refresh();
+    wrefresh(inputWindow);
+
+    mvwprintw(inputWindow, 1, 2, "%s", text);
+    mvwaddch(inputWindow, 3, 1, '>');
+
+    int cursor = 0;
+    int ch;
+
+    wmove(inputWindow, 3, 3);
+    curs_set(1);
+
+    while ((ch = wgetch(inputWindow)) != '\n' && cursor < inputSize - 1) {
+        if (ch == KEY_BACKSPACE || ch == 127) {
+            if (cursor > 0) {
+                cursor--;
+                input[cursor] = ' ';
+                mvwprintw(inputWindow, 3, 3, "%s", input);
+                input[cursor] = '\0';
+                wmove(inputWindow, 3, 3 + cursor);
+                wrefresh(inputWindow);
+            }
+        } else {
+            input[cursor] = ch;
+            input[cursor + 1] = '\0';
+            mvwprintw(inputWindow, 3, 3, "%s", input);
+            cursor++;
+            wmove(inputWindow, 3, 3 + cursor);
+            wrefresh(inputWindow);
+        }
+    }
+
+    curs_set(0);
+
+    wclear(inputWindow);
+    wrefresh(inputWindow);
+    delwin(inputWindow);
 }

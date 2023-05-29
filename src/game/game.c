@@ -271,9 +271,11 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 }
 
 
-int game(Terminal *terminal) {
+int game(Terminal *terminal, char *playerName) {
 	clear();
 	GameState *gameState = init_game_state();
+
+	strcpy(gameState->player.name, playerName);
 
 	int ncols, nrows;
     ncols = terminal->xMax;

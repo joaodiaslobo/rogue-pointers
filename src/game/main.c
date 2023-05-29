@@ -5,9 +5,9 @@
 #include "game.h"
 #include <pthread.h>
 #include "sound.h"
+#include "components.h"
 
 int main(){
-
     // Setup do ncurses
     WINDOW *window = initscr();
 
@@ -59,13 +59,20 @@ int main(){
     while(selection == 0 || selection == 4){ // permite que o jogador volte ao menu principal, caso perca
         switch (selection){
 	    case 0:
-		    game(&terminal);
-            clear();
+            {
+                Vector2D inputPos = {terminal.xMax / 2 - 15, terminal.yMax / 2};
+                char *playerName = malloc(sizeof(char) * 16);
+                text_input_box(inputPos, 30, 15, "Insert your name:", playerName);
+                clear();
+                refresh();
+                game(&terminal, playerName);
+                clear();
+            }
 		    break;
         default:
             break; 
         }
-    selection = main_menu(&terminal);
+        selection = main_menu(&terminal);
     }
 
     // Finaliza o ncurses

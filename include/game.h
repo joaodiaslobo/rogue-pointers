@@ -16,6 +16,6 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir);
 
 void update(GameState *state, World *worlds, int r, int c, struct timeval currentTime, Terminal *terminal);
 
-int game(Terminal *terminal);
+int game(Terminal *terminal, char *playerName);
 
 #endif

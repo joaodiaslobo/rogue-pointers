@@ -5,6 +5,8 @@
 #include "engine_types.h"
 #include "game.h"
 #include "main_menu.h"
+#include <stdlib.h>
+#include "components.h"
 
 int new_items_pop_up(char text[], int width, int screenYMax, int screenXMax){
 
@@ -115,8 +117,15 @@ int winner_pop_up(char text[], int width, int screenYMax, int screenXMax, Termin
     while(selection == 0 || selection == 3){
         switch (selection){
 	    case 0:
-		    game(terminal);
-            clear();
+            {
+                Vector2D inputPos = {terminal->xMax / 2 - 15, terminal->yMax / 2};
+                char *playerName = malloc(sizeof(char) * 16);
+                text_input_box(inputPos, 30, 15, "Insert your name:", playerName);
+                clear();
+                refresh();
+                game(terminal, playerName);
+                clear();
+            }
 		    break;
         default:
             break; 
@@ -184,8 +193,15 @@ int game_over_pop_up(char text[], int width, int screenYMax, int screenXMax, Ter
     while(selection == 0 || selection == 3){
         switch (selection){
         case 0:
-            game(terminal);
-            clear();
+            {
+                Vector2D inputPos = {terminal->xMax / 2 - 15, terminal->yMax / 2};
+                char *playerName = malloc(sizeof(char) * 16);
+                text_input_box(inputPos, 30, 15, "Insert your name:", playerName);
+                clear();
+                refresh();
+                game(terminal, playerName);
+                clear();
+            }
             break;
         default:
             break; 
@@ -257,15 +273,21 @@ int pause_pop_up(char text[], int width, int screenYMax, int screenXMax, Termina
                     while(selection == 0 || selection == 3){
                         switch (selection){
                         case 0:
-                            game(terminal);
-                            clear();
+                            {
+                                Vector2D inputPos = {terminal->xMax / 2 - 15, terminal->yMax / 2};
+                                char *playerName = malloc(sizeof(char) * 16);
+                                text_input_box(inputPos, 30, 15, "Insert your name:", playerName);
+                                clear();
+                                refresh();
+                                game(terminal, playerName);
+                                clear();
+                            }
                             break;
                         default:
                             break; 
                         }
                     selection = main_menu(terminal);
                     }
-
                     init_game_state();
                 }
                 break;
