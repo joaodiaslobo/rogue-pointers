@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "components.h"
 #include "draw.h"
+#include "about_menu.h"
 
 int new_items_pop_up(char text[], int width, int screenYMax, int screenXMax){
 
@@ -115,9 +116,9 @@ int winner_pop_up(char text[], int width, int screenYMax, int screenXMax, Termin
     refresh();
     int selection = main_menu(terminal);
 
-    while(selection == 0 || selection == 3){
+    while(selection == 0 || selection == 1 || selection == 3){
         switch (selection){
-	    case 0:
+        case 0:
             {
                 Vector2D inputPos = {terminal->xMax / 2 - 15, terminal->yMax / 2};
                 char *playerName = malloc(sizeof(char) * 16);
@@ -127,14 +128,28 @@ int winner_pop_up(char text[], int width, int screenYMax, int screenXMax, Termin
                 game(terminal, playerName);
                 clear();
             }
-		    break;
+            break;
+        case 1:
+            {   
+                WINDOW * aboutWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
+                box(aboutWindow, 0, 0); 
+                clear();
+                refresh();
+                show_about_menu(terminal, aboutWindow);
+                wrefresh(aboutWindow);
+                delwin(aboutWindow);
+                clear();
+                refresh();
+            }
+            break;
         default:
             break; 
         }
-    selection = main_menu(terminal);
+        selection = main_menu(terminal);
     }
-
-    init_game_state();
+    endwin();
+    exit(0);
+    return -1;
     
     return !option;
 }
@@ -191,7 +206,7 @@ int game_over_pop_up(char text[], int width, int screenYMax, int screenXMax, Ter
     refresh();
     int selection = main_menu(terminal);
 
-    while(selection == 0 || selection == 3){
+    while(selection == 0 || selection == 1 || selection == 3){
         switch (selection){
         case 0:
             {
@@ -204,13 +219,26 @@ int game_over_pop_up(char text[], int width, int screenYMax, int screenXMax, Ter
                 clear();
             }
             break;
+        case 1:
+            {   
+                WINDOW * aboutWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
+                box(aboutWindow, 0, 0); 
+                clear();
+                refresh();
+                show_about_menu(terminal, aboutWindow);
+                wrefresh(aboutWindow);
+                delwin(aboutWindow);
+                clear();
+                refresh();
+            }
+            break;
         default:
             break; 
         }
-    selection = main_menu(terminal);
+        selection = main_menu(terminal);
     }
-
-    init_game_state();
+    endwin();
+    exit(0);
 
     return !option;
 }
@@ -427,7 +455,7 @@ int pause_pop_up(char text[], int width, int screenYMax, int screenXMax, Termina
                     refresh();
                     int selection = main_menu(terminal);
 
-                    while(selection == 0 || selection == 3){
+                    while(selection == 0 || selection == 1 || selection == 3){
                         switch (selection){
                         case 0:
                             {
@@ -440,12 +468,27 @@ int pause_pop_up(char text[], int width, int screenYMax, int screenXMax, Termina
                                 clear();
                             }
                             break;
+                        case 1:
+                            {   
+                                WINDOW * aboutWindow = newwin(terminal->yMax, terminal->xMax, 0, 0);
+                                box(aboutWindow, 0, 0); 
+                                clear();
+                                refresh();
+                                show_about_menu(terminal, aboutWindow);
+                                wrefresh(aboutWindow);
+                                delwin(aboutWindow);
+                                clear();
+                                refresh();
+                            }
+                            break;
                         default:
                             break; 
                         }
-                    selection = main_menu(terminal);
+                        selection = main_menu(terminal);
                     }
-                    init_game_state();
+                    endwin();
+                    exit(0);
+                    return -1;
                 }
                 break;
             default:
