@@ -669,6 +669,13 @@ void new_level_map (Map** a, int r, int c){
 	}
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Obtém uma posição válida no mapa para colocar entidades/objetos.
+
+*/
 Vector2D get_random_floor_position(Map** map, int r, int c){
 	int available = 0;
 	Vector2D pos;
@@ -765,12 +772,6 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
 				break;
 			case 4: // imprime lava
 				draw_empty_pixel(pos, choose_color(44, 5, pos));
-				/*r_num = rand() % 6;
-				k = choose_color(44, 5, pos);
-				init_pair(k, COLOR_BLACK, lava.pixels[r_num].color);
-				attron(COLOR_PAIR(k));
-				mvprintw(i, j*2, "  ");
-            	attroff(COLOR_PAIR(k));*/
 				break;
 			case 5: // imprime relva
 				if(((choose_color(59, 3, pos) + 5)) % 3 != 2){
@@ -813,12 +814,26 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
     }
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Sorteia uma cor dentro dum conjunto de várias cores de forma a que certos tipos de terreno (relva, água, lava) tenham várias cores
+
+*/
 int choose_color(int a, int dif, Vector2D pos){
 	int seed = pos.x * 505 + pos.y * dif;
 	srand(seed);
 	return (a + (rand() % (dif + 1)));
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Nas salas secretas, para obter o padrão do chão, foi necessário implementar uma função que o criasse.
+
+*/
 int create_color_pattern(int a, int dif, Vector2D pos){
 	return (a + (((pos.x * pos.y) + (pos.x * dif) + (pos.x + dif)) % (dif + 1)));
 }

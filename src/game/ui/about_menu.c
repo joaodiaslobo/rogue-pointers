@@ -14,7 +14,6 @@
 * Menu about do jogo.
 
 */
-
 void show_about_menu(Terminal *terminal,  WINDOW *window){
     int key = 0;
     while(key != 10){

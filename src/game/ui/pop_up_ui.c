@@ -10,6 +10,13 @@
 #include "draw.h"
 #include "about_menu.h"
 
+/*
+
+* a104439 - Rita Camacho
+
+* Menu pop up de anúncio de novos itens.
+
+*/
 int new_items_pop_up(char text[], int width, int screenYMax, int screenXMax){
 
     int key = 0, option = 0;
@@ -64,6 +71,13 @@ int new_items_pop_up(char text[], int width, int screenYMax, int screenXMax){
     return !option;
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Menu pop up de anúncio de vencedor.
+
+*/
 int winner_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal){
 
     int key = 0, option = 0;
@@ -154,6 +168,13 @@ int winner_pop_up(char text[], int width, int screenYMax, int screenXMax, Termin
     return !option;
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Menu pop up de game over.
+
+*/
 int game_over_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal){
 
     int key = 0, option = 0;
@@ -399,6 +420,13 @@ void help_pop_up(Terminal *terminal){
     refresh();
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Menu pop up de pausa.
+
+*/
 int pause_pop_up(char text[], int width, int screenYMax, int screenXMax, Terminal *terminal){
 
     int key = 0, option = 0;

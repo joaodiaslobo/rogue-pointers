@@ -4,6 +4,13 @@
 #include "engine_types.h"
 #include <math.h>
 
+/*
+
+* a104439 - Rita Camacho
+
+* Print dos nomes dos itens do inventário.
+
+*/
 int show_items(Inventory *inventory){  
     int x = 0;
 

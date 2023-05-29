@@ -43,6 +43,13 @@ int main_menu(Terminal *terminal){
     return selection;
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Menu principal do jogo.
+
+*/
 int main_menu_update(int options, char *texts[], int width, int y, int x, Terminal *terminal){
     int selection = 0, key = 0;
     int lines  = options + 4;
@@ -140,6 +147,13 @@ int main_menu_update(int options, char *texts[], int width, int y, int x, Termin
     return selection;
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Cria animação do menu principal.
+
+*/
 void create_sparkles_animation(Vector2D pos, int frame, Terminal *terminal){
     char location[50];
     sprintf(location, "assets/sprites/main_menu/sparkles/%d.sprite", frame);

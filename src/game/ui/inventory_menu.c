@@ -12,6 +12,13 @@
 #include "sound.h"
 #include <pthread.h>
 
+/*
+
+* a104439 - Rita Camacho
+
+* Mostra o inventário.
+
+*/
 void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *state){
     Image image = load_image_from_file("assets/sprites/inventory/title.sprite");
     Vector2D pos;
@@ -103,6 +110,13 @@ void show_inventory(Terminal *terminal, WINDOW *inventoryWindow, GameState *stat
     //keypad(inventoryWindow, false);
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Limpa item sprite.
+
+*/
 void clear_item(Terminal *terminal, WINDOW *window){
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
@@ -116,6 +130,13 @@ void clear_item(Terminal *terminal, WINDOW *window){
     }
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Mostra descrição do item.
+
+*/
 void item_description(Terminal *terminal, WINDOW *window, char description[]){
     int r = (terminal->yMax / 2 + 15);
     int c = (terminal->xMax / 2 + 37);

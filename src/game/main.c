@@ -10,7 +10,7 @@
 
 /*
 
-* a104179, a104356 - Sara Lopes, João Lobo
+* a104179, a104356, a104439 - Sara Lopes, João Lobo, Rita Camacho
 
 * Entrypoint da aplicação. Inicia o ncurses e SDL2.
 

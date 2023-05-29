@@ -125,7 +125,7 @@ void apply_damage_to_enemy(int enemyIndex, World *world, int damage){
 
 /*
 
-* a104179, a104356 - Sara Lopes, João Lobo
+* a104179, a104356, a104439 - Sara Lopes, João Lobo, Rita Camacho
 
 * Aplica movimento do jogador numa dada direção.
 
@@ -253,6 +253,13 @@ void update_drowning(Map **map, GameState *gameState, unsigned long elapsedMicro
     }
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Desenha a luz.
+
+*/
 void draw_light(GameState *gameState, int r, int c, Map **map, World *world, Terminal *terminal){
     Vector2D pos;
     Image image = load_image_from_file("assets/sprites/shadow.sprite");
@@ -294,6 +301,13 @@ void draw_light(GameState *gameState, int r, int c, Map **map, World *world, Ter
     }
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Verifica se o jogador está a segurar ou não um Glowstick
+
+*/
 int using_glowstick(GameState *gameState){
     if(strcmp(gameState->player.inventory.items[gameState->player.selectedSlot].name, "Glowstick") == 0){
         return 1;
@@ -321,6 +335,13 @@ int in_beacon_radius(Vector2D pos, World *world){
     return 0;
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Elimina a iluminação a partir duma parede, verificando se uma dada célula está escondida por esta.
+
+*/
 int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map){
     int dx = abs(posB.x - posA.x);
     int dy = abs(posB.y - posA.y);
@@ -366,6 +387,13 @@ int light_before_walls(Vector2D posA, Vector2D posB, int distance, Map** map){
     return 0;
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Abre baús, sorteia item e adiciona-o ao inventário.
+
+*/
 void open_chest(Inventory *inventory){
     int new = pick_random_item(inventory);
     if(new != -1){
@@ -374,6 +402,13 @@ void open_chest(Inventory *inventory){
     }
 }
 
+/*
+
+* a104439 - Rita Camacho
+
+* Nova bomba adicionada ao inventário do jogador.
+
+*/
 void new_bomb(Inventory *inventory){
     Item newBomb = globalItems[10];
     add_item(inventory, &newBomb);

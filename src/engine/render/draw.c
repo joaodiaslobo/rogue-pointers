@@ -22,7 +22,7 @@ int draw_to_screen(Image image, Vector2D position){
 
 /*
 
-* a104356 - João Lobo
+* a104356, a104439 - João Lobo, Rita Camacho
 
 * Desenha uma imagem numa janela ncurses numa dada posição.
 
