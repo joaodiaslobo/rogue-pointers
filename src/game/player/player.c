@@ -16,6 +16,13 @@
 #include "bomb.h"
 #include "beacon.h"
 
+/*
+
+* a104356 - João Lobo
+
+* Cria o jogador com as suas características iniciais (recebe o seu nome como argumento).
+
+*/
 Player *init_player(char name[15], Vector2D pos){
     Player *player = malloc(sizeof(Player));
     if (player == NULL) {
@@ -45,6 +52,13 @@ Player *init_player(char name[15], Vector2D pos){
     return player;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Executa uma ação consoante o item que está a segurar.
+
+*/
 void perform_action(GameState *gameState, World* world){
     int actionType = gameState->player.inventory.items[gameState->player.selectedSlot].type; 
 
@@ -92,6 +106,13 @@ void perform_action(GameState *gameState, World* world){
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Aplica dano do jogador a um mob.
+
+*/
 void apply_damage_to_enemy(int enemyIndex, World *world, int damage){
     Mob *mob = &(world->mobs[enemyIndex]);
 
@@ -102,6 +123,13 @@ void apply_damage_to_enemy(int enemyIndex, World *world, int damage){
     }
 }
 
+/*
+
+* a104179, a104356 - Sara Lopes, João Lobo
+
+* Aplica movimento do jogador numa dada direção.
+
+*/
 void apply_movement(GameState *gameState, Direction facing, Map** map, int r, int c){
     Vector2D newPos = {gameState->player.position.x, gameState->player.position.y};
     switch (facing)
@@ -210,6 +238,13 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
 
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Atualiza temporizador de afogamento caso o jogador esteja na água.
+
+*/
 void update_drowning(Map **map, GameState *gameState, unsigned long elapsedMicroseconds){
     if(map[gameState->player.position.y][gameState->player.position.x].object == 7){
         gameState->player.timeSinceDrownStart += elapsedMicroseconds;
@@ -268,6 +303,13 @@ int using_glowstick(GameState *gameState){
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Verifica se uma dada célula se encontra no raio de um beacon (usado para definir as sombras).
+
+*/
 int in_beacon_radius(Vector2D pos, World *world){
     for(int i = 0; i < world->beacons; i++){
         int dx = abs(pos.x - world->beaconLocations[i].x);

@@ -7,7 +7,13 @@
 #include "sys/time.h"
 #include "components.h"
 
-// Menu principal
+/*
+
+* a104439, a104356 - Rita Camacho, João Lobo
+
+* Menu principal do jogo.
+
+*/
 int main_menu(Terminal *terminal){
     int selection = -1;
     while(selection == -1){

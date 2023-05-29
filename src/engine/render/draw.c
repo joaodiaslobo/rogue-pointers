@@ -2,7 +2,13 @@
 #include <ncurses.h>
 #include "engine_types.h"
 
-// Desenha uma imagem na tela do terminal
+/*
+
+* a104356 - João Lobo
+
+* Desenha uma imagem na tela do terminal numa dada posição.
+
+*/
 int draw_to_screen(Image image, Vector2D position){
     for(int i = 0; i < image.size; i++){
         int x = image.pixels[i].position.x * 2 + position.x * 2;
@@ -14,6 +20,13 @@ int draw_to_screen(Image image, Vector2D position){
     return 0;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha uma imagem numa janela ncurses numa dada posição.
+
+*/
 int draw_to_window(WINDOW *window, Image image, Vector2D position){
     for(int i = 0; i < image.size; i++){
         int x = image.pixels[i].position.x * 2 + position.x * 2;
@@ -25,12 +38,26 @@ int draw_to_window(WINDOW *window, Image image, Vector2D position){
     return 0;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha um pixel colorido numa dada posição.
+
+*/
 void draw_empty_pixel(Vector2D position, short color){
     attron(COLOR_PAIR(color + 8));
     mvprintw(position.y, position.x * 2, "  ");
     attroff(COLOR_PAIR(color + 8));
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha um pixel colorido com caracteres especiais numa dada posição.
+
+*/
 void draw_custom_pixel(Vector2D position, char shapes[3], short primaryColor, short secondaryColor, Terminal *terminal){
     // Verifica se já foi criado um par igual para poupar espaço
     short index = -1;

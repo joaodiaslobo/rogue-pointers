@@ -535,27 +535,13 @@ void new_room_map (Map** a, int r, int c){
     }
 }
 
-/*int gen_loot_chests(Chest *chest, Map **map, int r, int c, int level){
-	
-	if(level >= 1){
-		
-		int numChest = (random() % (level * 4)) + 1;
-		
-		for(int i = 0; i < numChest; i++){
+/*
 
-			chest[i].position = get_random_floor_position(map, r, c);
-			
-			for(int j = 0; j < 4; j++){
-				chest[i].item[j].name = "";
-				chest[i].item[j].type = ;
-				chest[i].item[j].description = "";
-			}
-		}
-	}
-	
-	return numChest;
-}*/
+* a104356 - João Lobo
 
+* Gera diferentes tipos mobs em posições válidas de forma aleatória consoante o nível do mapa.
+
+*/
 int gen_mobs(Mob **mobs, Map **map, int r, int c, int level){
 	// Isto pode servir para fazer um modo dificíl mais tarde, subindo o valor
 	int mobSpawnRate = 1;
@@ -654,6 +640,13 @@ void gen_map(Map** a, int r, int c) {
 	chest_room(a,r,c);
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha os mobs no mapa consoante o seu tipo.
+
+*/
 void draw_mobs(Mob *mobs, int mobQuantity, Terminal *terminal){
 	for(int i = 0; i < mobQuantity; i++){
 		// Mob skins (depende do tipo de mob)

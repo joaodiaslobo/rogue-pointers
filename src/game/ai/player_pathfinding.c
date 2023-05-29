@@ -4,6 +4,13 @@
 #include "a_star_pathfinding.h"
 #include "draw.h"
 
+/*
+
+* a104356 - João Lobo
+
+* Move o "cursor" que traceja o caminho do pathfinding do jogador.
+
+*/
 void apply_path_change(GameState *gameState, Direction facing, Map** map, int r, int c){
     if(gameState->pathState.moving){
         return;
@@ -41,6 +48,13 @@ void apply_path_change(GameState *gameState, Direction facing, Map** map, int r,
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Cálcula um caminho do jogador até à posição onde o mouse clicou.
+
+*/
 void apply_mouse_path_selection(GameState *gameState, Map **map, Vector2D clickPos, int r, int c){
     gameState->pathSelection = 1;
     gameState->pathState.pathPos = gameState->player.position;
@@ -58,6 +72,13 @@ void apply_mouse_path_selection(GameState *gameState, Map **map, Vector2D clickP
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha o caminho do pathfinding do jogador.
+
+*/
 void draw_path(GameState *gameState){
     if(gameState->pathState.pathStep == 0 || gameState->pathState.path == NULL){
         return;
@@ -74,6 +95,13 @@ void draw_path(GameState *gameState){
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Verifica se uma coordenada faz parte do caminho do jogador (usado para evitar bugs visuais de flickering com as sombras).
+
+*/
 int is_cell_path_part(GameState *gameState, Vector2D pos){
     if(gameState->pathState.pathStep == 0 || gameState->pathState.path == NULL){
         return 0;
@@ -88,6 +116,13 @@ int is_cell_path_part(GameState *gameState, Vector2D pos){
     return 0;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Atualiza a posição do jogador para a próxima no caminho do pathfinding tendo em conta o tempo que passou desde o último movimento.
+
+*/
 void update_player_path(GameState *gameState, unsigned long elapsedMicroseconds){
     gameState->pathState.timeSinceLastUpdate += elapsedMicroseconds;
     if(gameState->pathState.timeSinceLastUpdate > 250000){

@@ -28,6 +28,13 @@
 
 int LEVEL, num_levels = 20;
 
+/*
+
+* a104356 - João Lobo
+
+* Cria o estado inicial do jogo.
+
+*/
 GameState *init_game_state(){
 	GameState *state = malloc(sizeof(GameState));
 	if (state == NULL) {
@@ -47,7 +54,13 @@ GameState *init_game_state(){
 	return state;
 }
 
+/*
 
+* a104179, a104439, a104356 - Sara Lopes, Rita Camacho, João Lobo
+
+* Recebe inputs do utilizador e executa acções correspondentes (se existirem).
+
+*/
 void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal){
 	int key = getch();
     
@@ -235,6 +248,13 @@ void check_for_portal(GameState *state, World *w, int r, int c, int dir){
 	} 
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Atualiza todas as entidades e elementos do mapa consoante o tempo passado desde o último frame.
+
+*/
 void update(GameState *state, World *worlds, int r, int c, struct timeval currentTime, Terminal *terminal) {
 	execute_input(state, worlds, r, c, terminal);
 	
@@ -292,7 +312,13 @@ void update(GameState *state, World *worlds, int r, int c, struct timeval curren
 	refresh();
 }
 
+/*
 
+* a104179, a104439, a104356 - Sara Lopes, Rita Camacho, João Lobo
+
+* Loop principal do programa, responsável por desenhar e atualizar o jogo.
+
+*/
 int game(Terminal *terminal, char *playerName) {
 	clear();
 	GameState *gameState = init_game_state();

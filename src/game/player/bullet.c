@@ -5,6 +5,13 @@
 #include <stdlib.h>
 #include "mobs_ai.h"
 
+/*
+
+* a104356 - João Lobo
+
+* Adiciona uma bala ao mapa.
+
+*/
 void shoot_bullet(Vector2D pos, Vector2D target, int damage, World *world){
     Bullet bullet;
     bullet.damage = damage;
@@ -16,6 +23,13 @@ void shoot_bullet(Vector2D pos, Vector2D target, int damage, World *world){
     world->bulletQuantity++;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Atualiza a posição da bala no mapa, diminuindo sempre a sua distância ao alvo.
+
+*/
 void update_bullet(Bullet *bullet, Map **map, int bulletIndex, World *world, GameState *state){
     int dx = abs(bullet->position.x - bullet->target.x);
     int dy = abs(bullet->position.y - bullet->target.y);
@@ -82,6 +96,13 @@ void update_bullet(Bullet *bullet, Map **map, int bulletIndex, World *world, Gam
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Remove bala do mapa e limpa a memória alocada.
+
+*/
 void destroy_bullet(World *world, int bulletIndex){
     if(world->bulletQuantity > 1){
         world->bullets[bulletIndex] = world->bullets[world->bulletQuantity - 1];
@@ -90,6 +111,13 @@ void destroy_bullet(World *world, int bulletIndex){
     world->bulletQuantity--;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha bala consoante a sua direção.
+
+*/
 void draw_bullet(Bullet *bullet, Terminal *terminal){
     int dx = abs(bullet->position.x - bullet->target.x);
     int dy = abs(bullet->position.y - bullet->target.y);

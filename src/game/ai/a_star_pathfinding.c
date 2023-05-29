@@ -10,10 +10,14 @@
 #include  <ncurses.h>
 #include <string.h>
 
-/* Isto é uma implementação do Algoritmo A* em C
-   Algoritmo utilizado na movimentação dos mobs e pathfinding do jogador.
-*/
+/*
 
+* a104356 - João Lobo
+
+*   Implementação do algoritmo A* em C utilizado na movimentação dos mobs e pathfinding do jogador.
+    Retorna NULL se nenhum caminho for encontrado ou ocorrer um erro na alocação de memória.
+    Explicação da função em pseudocódigo aqui: https://en.wikipedia.org/wiki/A*_search_algorithm#Pseudocode
+*/
 Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c, int r, int *nSteps) {
     NodeStack openSet = { malloc(c * r * sizeof(Node *)), 0 };
     NodeStack closedSet = { malloc(c * r * sizeof(Node *)), 0 };
@@ -71,6 +75,13 @@ Vector2D *find_path(Node *nodes, Vector2D start, Vector2D end, int c, int r, int
     return path;
 }
 
+/*
+
+* a104356 - João Lobo
+
+*   Encontra o melhor nodo seguinte consoante a sua heurística.
+
+*/
 Node *find_best_node(NodeStack *openSet, NodeStack *closedSet, Vector2D end) {
     int i, bestIndex = 0;
     float lowestScore = INFINITY;
@@ -98,16 +109,37 @@ Node *find_best_node(NodeStack *openSet, NodeStack *closedSet, Vector2D end) {
     return bestNode;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Atualiza o "dono" de um nodo e recalcula os seu valor global e interno.
+
+*/
 void update_node(Node *node, Node *parent, Vector2D end) {
     node->parent = parent;
     node->globalGoal = parent->globalGoal + heuristic(node->pos, end);
     node->localGoal = parent->localGoal + 1.0f;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Cálculo da heurística (neste algoritmo calcula a distância entre dois nodos).
+
+*/
 float heuristic(Vector2D a, Vector2D b) {
     return sqrtf(powf(b.x - a.x, 2.0f) + powf(b.y - a.y, 2.0f));
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Transforma um mapa do jogo numa array bidimensional de nodos a ser usada pelo algoritmo A*.
+
+*/
 Node *map_to_node_system(Map **map, int r, int c){
     Node *nodes = malloc(sizeof(Node) * r * c);
 

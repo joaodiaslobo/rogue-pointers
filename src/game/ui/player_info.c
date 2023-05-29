@@ -6,6 +6,13 @@
 #include "draw.h"
 #include "components.h"
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha o HUD de informação do jogador (nome, vida oxigênio, profundidade, etc..)
+
+*/
 void player_info_ui(GameState *gameState, Terminal *terminal, int level){
     //Display de status do jogador
     Vector2D playerDisplayPos = {0, 0};

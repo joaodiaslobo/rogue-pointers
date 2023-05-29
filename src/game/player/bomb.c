@@ -10,6 +10,13 @@
 #include <pthread.h>
 #include "player.h"
 
+/*
+
+* a104356 - João Lobo
+
+* Causa uma explosão numa dada área, onde o dano aplicado varia consoante a distância das entidades à posição da explosão.
+
+*/
 void explode_at_pos(Vector2D pos, int damage, World *world, GameState *state, int radius){
     // Aplicar dano a mobs
     for(int i = 0; i < world->mobQuantity; i++){
@@ -37,6 +44,13 @@ void explode_at_pos(Vector2D pos, int damage, World *world, GameState *state, in
     if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
 }   
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha um frame da animação de explosão.
+
+*/
 void play_explosion_animation(Vector2D pos, int frame){
     frame = 3 - frame; 
     char location[100];
@@ -47,6 +61,13 @@ void play_explosion_animation(Vector2D pos, int frame){
     draw_to_screen(frameImage, pos);
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Elimina uma bomba do mundo e limpa a memória correspondente.
+
+*/
 void destroy_bomb(World *world, int bombIndex){
     if(world->bombQuantity > 1){
         world->bombs[bombIndex] = world->bombs[world->bombQuantity - 1];
@@ -55,6 +76,13 @@ void destroy_bomb(World *world, int bombIndex){
     world->bombQuantity--;
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Atualiza o temporizador das bombas do mapa e decide o comportamento da bomba (se deve explodir, desenhar as animações, desparecer, etc..).
+
+*/
 void update_bombs_timer(World *world, unsigned long elapsedMicroseconds, GameState *state){
     for(int i = 0; i < world->bombQuantity; i++){
         if(world->bombs[i].explosionFrame == -1){
@@ -87,6 +115,13 @@ void update_bombs_timer(World *world, unsigned long elapsedMicroseconds, GameSta
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Adiciona uma bomba ao mapa. Recebe como argumentos as características da bomba.
+
+*/
 void place_bomb(Vector2D pos, int damage, int radius, World *world, unsigned long time){
     Bomb bomb;
     bomb.damage = damage;
@@ -110,6 +145,13 @@ void place_bomb(Vector2D pos, int damage, int radius, World *world, unsigned lon
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha bomba ou frame de explosão (consoante o estado da bomba).
+
+*/
 void draw_bomb(Bomb *bomb, Terminal *terminal){
     if(bomb->explosionFrame == -1){
         draw_custom_pixel(bomb->position, "||", 44, 0, terminal);

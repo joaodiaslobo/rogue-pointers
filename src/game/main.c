@@ -7,6 +7,13 @@
 #include "sound.h"
 #include "components.h"
 
+/*
+
+* a104179, a104356 - Sara Lopes, João Lobo
+
+* Entrypoint da aplicação. Inicia o ncurses e SDL2.
+
+*/
 int main(){
     // Setup do ncurses
     WINDOW *window = initscr();

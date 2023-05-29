@@ -3,6 +3,13 @@
 #include "global_items.h"
 #include <string.h>
 
+/*
+
+* a104356 - João Lobo
+
+* Recebe um comando da consola de desenvolvedor e executa a ação correspondente (se existir).
+
+*/
 void execute_command(char *input, GameState *state){
     char command[20];
     int n;

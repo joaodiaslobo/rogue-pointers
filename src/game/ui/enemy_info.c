@@ -5,6 +5,13 @@
 #include "components.h"
 #include "draw.h"
 
+/*
+
+* a104356 - João Lobo
+
+* Desenha painéis com informação dos mobs caso estes estejam perto do jogador.
+
+*/
 void enemy_info_ui(GameState *state, World *world, Vector2D pos, Terminal *terminal){
     int newAmountMobsUI = 0;
     for(int i = 0; i < world->mobQuantity; i++){
@@ -37,6 +44,13 @@ void enemy_info_ui(GameState *state, World *world, Vector2D pos, Terminal *termi
     }
 }
 
+/*
+
+* a104356 - João Lobo
+
+* Limpa painéis de informação dos mobs.
+
+*/
 void clean_ui(){
     for(int x = 0; x < 10; x++){
         for(int y = 4; y < 100; y++){
