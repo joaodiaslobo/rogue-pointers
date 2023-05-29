@@ -28,10 +28,10 @@ int main_menu(Terminal *terminal){
         draw_to_window(terminal->mainWindow, image, pos);     
 
         // Input de seleção
-        char *options[] = {"PLAY", "OPTIONS", "ABOUT", "QUIT"};
-        selection = main_menu_update(4, options, terminal->xMax - 12, terminal->yMax - 9, 5, terminal);
+        char *options[] = {"PLAY", "ABOUT", "QUIT"};
+        selection = main_menu_update(3, options, terminal->xMax - 12, terminal->yMax - 9, 5, terminal);
         
-        if(selection == 3){
+        if(selection == 2){
             // Confirmação no caso de saída
             if(modal_confim("Are you sure you want to quit the game?", 45, terminal->yMax, terminal->xMax)){
                 return selection;

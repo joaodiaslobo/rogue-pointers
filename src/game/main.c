@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include "sound.h"
 #include "components.h"
+#include "about_menu.h"
 
 /*
 
@@ -63,7 +64,7 @@ int main(){
     }
 
     int selection = main_menu(&terminal);
-    while(selection == 0 || selection == 4){ // permite que o jogador volte ao menu principal, caso perca
+    while(selection == 0 || selection == 1 || selection == 3){ // permite que o jogador volte ao menu principal, caso perca
         switch (selection){
 	    case 0:
             {
@@ -76,6 +77,19 @@ int main(){
                 clear();
             }
 		    break;
+        case 1:
+            {   
+                WINDOW * aboutWindow = newwin(terminal.yMax, terminal.xMax, 0, 0);
+                box(aboutWindow, 0, 0); 
+                clear();
+                refresh();
+                show_about_menu(&terminal, aboutWindow);
+                wrefresh(aboutWindow);
+                delwin(aboutWindow);
+                clear();
+                refresh();
+            }
+            break;
         default:
             break; 
         }
