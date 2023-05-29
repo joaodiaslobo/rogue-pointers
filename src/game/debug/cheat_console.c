@@ -10,7 +10,7 @@
 * Recebe um comando da consola de desenvolvedor e executa a ação correspondente (se existir).
 
 */
-void execute_command(char *input, GameState *state){
+void execute_command(char *input, GameState *state, Map **map){
     char command[20];
     int n;
     if (sscanf(input, "%19s %d", command, &n) == 2) {
@@ -24,5 +24,7 @@ void execute_command(char *input, GameState *state){
         state->player.fullBright = !state->player.fullBright;
     } else if(strcmp(input, "die") == 0){
         state->player.health = 0;
+    } else if(strcmp(input, "spawn_portal") == 0){
+        map[state->player.position.y][state->player.position.x].object = 2;
     }
 }   

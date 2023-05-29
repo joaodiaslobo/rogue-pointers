@@ -139,7 +139,7 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 				text_input_box(inputPos, 45, 39, "Run command:", input);
 				clear();
 				refresh();
-				execute_command(input, state);
+				execute_command(input, state, w[LEVEL].map);
 				free(input);
 			}
 			break;

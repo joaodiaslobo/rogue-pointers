@@ -4,6 +4,6 @@
 #include "game_types.h"
 #include "engine_types.h"
 
-void execute_command(char *input, GameState *state);
+void execute_command(char *input, GameState *state, Map **map);
 
 #endif
