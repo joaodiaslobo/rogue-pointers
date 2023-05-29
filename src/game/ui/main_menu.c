@@ -5,8 +5,6 @@
 #include "color.h"
 #include "image.h"
 #include "sys/time.h"
-#include <pthread.h>
-#include "sound.h"
 
 // Menu principal
 int main_menu(Terminal *terminal){
@@ -116,7 +114,6 @@ int main_menu_update(int options, char *texts[], int width, int y, int x, Termin
                 } else {
                     selection = options - 1;
                 }
-                play_move_sound();
                 break;
             case KEY_DOWN:
                 if(selection < options - 1){
@@ -124,7 +121,6 @@ int main_menu_update(int options, char *texts[], int width, int y, int x, Termin
                 } else {
                     selection = 0;
                 }
-                play_move_sound();
                 break;
             default:
                 break;
@@ -135,15 +131,6 @@ int main_menu_update(int options, char *texts[], int width, int y, int x, Termin
     wrefresh(selectWindow);
     delwin(selectWindow);
     return selection;
-}
-
-void play_move_sound(){
-    pthread_t thread1;
-    Sound *sound = malloc(sizeof(Sound));
-    sound->filename = "assets/sound/change_selection.wav";
-    sound->time_ms = 1000;
-    sound->loop = 0;
-    if (pthread_create(&thread1, NULL, play_sound_thread, sound) != 0)  printw("Error creating thread\n");
 }
 
 void create_sparkles_animation(Vector2D pos, int frame, Terminal *terminal){
