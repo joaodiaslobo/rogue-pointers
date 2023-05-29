@@ -5,6 +5,7 @@
 #include "color.h"
 #include "image.h"
 #include "sys/time.h"
+#include "components.h"
 
 // Menu principal
 int main_menu(Terminal *terminal){
