@@ -16,7 +16,7 @@ Item globalItems[] = {
     {"Arabella", RANGED_WEAPON, "Arabella is a pistol of elegance and power,\na weapon that combines beauty with deadly efficiency.\nWith a classic, vintage design and exquisite details,\nthis pistol is a true work of art.\nStreaking hearts with a single shot will never be so intense.", "assets/sprites/inventory/items/arabella.sprite", 10, 250000, 0},
     {"TNT", BOMB, "Makes noise and damage.", "assets/sprites/inventory/items/tnt.sprite", 10, 5000000, 0},
     {"Glowstick", SPECIAL, "Enlightening your path.", "assets/sprites/inventory/items/glowstick.sprite", 10, 250000, 0},
-    {"Portable Beacon", SPECIAL, "Light wherever you want it.", " ", 10, 250000, 0},
+    {"Portable Beacon", SPECIAL, "Light wherever you want it.", "assets/sprites/inventory/items/portable_beacon.sprite", 10, 250000, 0},
     {"Key", KEY, "This key will open special rooms\nfull with new items waiting for you!", "assets/sprites/inventory/items/key.sprite", 10, 250000, 0},
     {"Rock", MISCELLANEOUS, "Collect a rock,\nhold a piece of Rogue Pointers' History!", "assets/sprites/inventory/items/rock.sprite", 10, 250000, 0}
 };
