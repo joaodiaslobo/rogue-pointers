@@ -150,7 +150,7 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 					new_bomb(&(state->player.inventory));
 				}
 				if (LEVEL % 2 == 1){
-					// De 2 em 2 niveis o jogador recebe um beacon
+					// De 2 em 2 níveis o jogador recebe um beacon
 					Item beacon = globalItems[12];
 					add_item(&(state->player.inventory), &beacon);
 				}
@@ -223,8 +223,15 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 	}
 }
 
+/*
+
+ * a104179 - Sara Lopes
+
+ * Após ser detetado que o jogador quer mudar de nível, gera um novo mapa do mundo mais profundo ou navega para um já existente. 
+
+*/
 void check_for_portal(GameState *state, World *w, int r, int c, int dir){
-	if (w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2) { //encontrou um porta, muda de nível e gera novo mapa
+	if (w[LEVEL].map[state->player.position.y][state->player.position.x].object == 2) { // encontrou um porta, muda de nível e gera um novo mapa
 		if (dir == -1 && LEVEL > 0) {
 			LEVEL--;
 		}
@@ -375,7 +382,7 @@ int game(Terminal *terminal, char *playerName) {
     // Gera e imprime o primeiro mapa/nível do mundo
 	gen_map(worlds[LEVEL].map,nrows,ncols);
 	worlds[LEVEL].created = 1;
-	gen_grass(worlds[LEVEL].map,nrows,ncols); // no nível 0 é possível existir relva
+	gen_grass(worlds[LEVEL].map,nrows,ncols); // No nível 0 é possível existir relva
 	worlds[LEVEL].mobQuantity = 0;
 	worlds[LEVEL].bulletQuantity = 0;
 	print_map(worlds[LEVEL].map, nrows, ncols, gameState, terminal);

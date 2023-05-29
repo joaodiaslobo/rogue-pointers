@@ -2,6 +2,14 @@
 #include <pthread.h>
 #include "sound.h"
 
+
+/*
+
+ * a104179 - Sara Lopes
+
+ * Função intermédia que adapta a play_sound de forma a ser utilizada na pthread_create.
+
+*/
 void *play_sound_thread(void *arg) {
     Sound *param = (Sound*) arg;
     play_sound(param->filename, param->time_ms, param->loop);
@@ -9,10 +17,17 @@ void *play_sound_thread(void *arg) {
     return NULL;
 }
 
+/*
+
+ * a104179 - Sara Lopes
+
+ * Abre um dispositivo de áudio e reproduz um som. 
+
+*/
 void play_sound(const char *filename, int time_ms, int loop){
-    SDL_AudioSpec spec; // uma estrutura com informação do áudio
+    SDL_AudioSpec spec; // estrutura com informação do áudio
     Uint8 *audio_buf; // apontador para o buffer de áudio
-    Uint32 audio_len; // o tamanho do buffer de áudio carregado na memória
+    Uint32 audio_len; // tamanho do buffer de áudio carregado na memória
 
     if (SDL_LoadWAV(filename, &spec, &audio_buf, &audio_len) == NULL) { // carrega um ficherio de som .WAV
         printf("Erro ao carregar o ficheiro de som: %s\n", SDL_GetError());
@@ -24,7 +39,7 @@ void play_sound(const char *filename, int time_ms, int loop){
     SDL_PauseAudioDevice(audio_dev, 0); // reprodução do áudio
 
     if (loop) {
-        while (1) {
+        while (1) { // permite que o som de fundo fique em ciclo infinito, até sair do jogo
             SDL_Delay(time_ms);
             SDL_ClearQueuedAudio(audio_dev);
             SDL_QueueAudio(audio_dev, audio_buf, audio_len);
@@ -35,5 +50,4 @@ void play_sound(const char *filename, int time_ms, int loop){
     
     SDL_CloseAudioDevice(audio_dev); // fecha o dispositivo de áudio
     SDL_FreeWAV(audio_buf); // liberta buffer de áudio
-    //SDL_Quit(); // finaliza SDL 
 }

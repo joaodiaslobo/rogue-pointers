@@ -13,21 +13,29 @@
 
 // Necessário para as funções que geram o mapa
 
+
+/*
+
+ * a104179 - Sara Lopes
+
+ * Escolhe uma das salas do mapa, coloca nela um baú e cria uma porta.
+
+*/
 void chest_room(Map** a, int r, int c) {
 	for(int i = 1; i < r-1; i++) {  
 		for(int j = 1; j < c-1; j++) {
 			Vector2D v1 = {0, 0}, d1 = {0, 0}, d2 = {0, 0};
 			int l1 = 1, l2 = 1, l3 = 1, l4 = 1, num_doors = 0, aux1 = 0, aux2 = 0;
-			if(a[i][j].object == 1 && a[i][j+1].object == 1 && a[i+1][j].object == 1){ //encontra o canto superior esquerdo da sala
+			if(a[i][j].object == 1 && a[i][j+1].object == 1 && a[i+1][j].object == 1){ // encontra o canto superior esquerdo da sala
 				v1.x = j;
 				v1.y = i;
             	
 				aux1 = i+1;
-				while(a[aux1][j+1].object != 1 && aux1 < r-1){ //percorre parede esquerda da sala (lado 1)
+				while(a[aux1][j+1].object != 1 && aux1 < r-1){ // percorre a parede esquerda da sala (lado 1)
 					l1 = l1+1;
 					if(a[aux1][j].object == 0){ 
-						num_doors++; //encontrou uma porta
-						if(num_doors == 2){ //guarda posição da porta
+						num_doors++; // encontrou uma porta
+						if(num_doors == 2){ // guarda a posição da porta
 							d1.x = j;
 							d1.y = aux1-1;
 							d2.x = j;
@@ -37,11 +45,11 @@ void chest_room(Map** a, int r, int c) {
 					aux1++;	
 				}
 				aux2 = j+1;
-				while(a[i+1][aux2].object != 1 && aux2 < c-1){ //percorre parede superior da sala (lado 2)
+				while(a[i+1][aux2].object != 1 && aux2 < c-1){ // percorre a parede superior da sala (lado 2)
 					l2 = l2+1;
 					if(a[i][aux2].object == 0){ 
-						num_doors++; //encontrou uma porta
-						if(num_doors == 2){ //guarda posição da porta
+						num_doors++; // encontrou uma porta
+						if(num_doors == 2){ // guarda a posição da porta
 							d1.x = aux2-1;
 							d1.y = i;
 							d2.x = aux2;
@@ -51,11 +59,11 @@ void chest_room(Map** a, int r, int c) {
 					aux2++;	
 				}
 				j++;
-				while(a[aux1-1][j].object != 1 && j < c-1){ //percorre parede inferior da sala (lado 3)
+				while(a[aux1-1][j].object != 1 && j < c-1){ // percorre a parede inferior da sala (lado 3)
 					l3 = l3+1;
 					if(a[aux1][j].object == 0){ 
-						num_doors++; //encontrou uma porta
-						if(num_doors == 2){ //guarda posição da porta
+						num_doors++; // encontrou uma porta
+						if(num_doors == 2){ // guarda a posição da porta
 							d1.x = j-1;
 							d1.y = aux1;
 							d2.x = j;
@@ -65,11 +73,11 @@ void chest_room(Map** a, int r, int c) {
 					j++;	
 				}
 				aux1 = i+1;
-				while(a[aux1][j-1].object != 1 && aux1 < r-1){ //percorre parede direita da sala (lado 4)
+				while(a[aux1][j-1].object != 1 && aux1 < r-1){ // percorre parede direita da sala (lado 4)
 					l4 = l4+1;
 					if(a[aux1][j].object == 0){ 
-						num_doors++; //encontrou uma porta
-						if(num_doors == 2){ //guarda posição da porta
+						num_doors++; // encontrou uma porta
+						if(num_doors == 2){ // guarda a posição da porta
 							d1.x = j;
 							d1.y = aux1-1;
 							d2.x = j;
@@ -79,7 +87,7 @@ void chest_room(Map** a, int r, int c) {
 					aux1++;
 				}
 				if(num_doors == 2 && l1 == l4 && l2 == l3){
-					for(int k = v1.y + 1; k < v1.y + l1; k++) { //muda a cor do chão da sala fechada  
+					for(int k = v1.y + 1; k < v1.y + l1; k++) { // muda a cor do chão da sala fechada  
 						for(int l = v1.x + 1 ; l < v1.x + l2; l++) {
 							if (a[k][l].object != 2) a[k][l].object = 12; // garante que se a passagem de nível estiver dentro da sala não é removida
 						}
@@ -103,6 +111,13 @@ void chest_room(Map** a, int r, int c) {
 	}
 }
 
+/*
+
+ * a104179 - Sara Lopes
+
+ * Verifica se um elemento existe num array.
+
+*/
 int elem(Vector2D e, Vector2D *v, int N) {
     int i, ans = 0;
     for(i = 0; i < N && !ans; i++)
@@ -110,18 +125,33 @@ int elem(Vector2D e, Vector2D *v, int N) {
     return ans;
 }
 
+/*
+
+ * a104179 - Sara Lopes
+
+ * Remove o primeiro elemento de um array.
+
+*/
 Vector2D* remove_elem(Vector2D* old, int old_size) {
-    if (old == 0 || old_size <= 1) { // verifica se o array_antigo tem pelo menos um elemento
+    if (old == 0 || old_size <= 1) { // verifica se o array antigo tem pelo menos um elemento
 	    return old;
     }
     Vector2D* new = (Vector2D*) malloc((old_size-1)*sizeof(Vector2D));
-    for (int i = 1; i < old_size; i++) { // copia os elementos do vetor_antigo a partir do segundo elemento para o vetor_novo
+    for (int i = 1; i < old_size; i++) { // copia os elementos do array antigo a partir do segundo elemento para o array novo
         new[i - 1] = old[i];
     }
 	if (new != NULL) free(new);    
-    return &old[1]; // Retorna o ponteiro para o vetor_antigo sem o primeiro elemento
+    return &old[1]; // retorna o ponteiro para o array antigo sem o primeiro elemento
 }
 
+/*
+
+ * a104179 - Sara Lopes
+
+ * Verifica se um mapa é válido.
+ Um mapa válido permite que o jogador acesse a todas as salas do mapa.
+
+*/
 int valid_map(Map** a, int r, int c) {
 	Vector2D fst, tmp;
 	int i, count = 0, k = 0;
@@ -198,13 +228,19 @@ int valid_map(Map** a, int r, int c) {
 		visit = remove_elem (visit, i+1);
 		i--;
 	} 
-	if (k >= count) return 0; // 0 - mapa valido | 1 - Mapa inválido
+	if (k >= count) return 0; // 0 - Mapa válido | 1 - Mapa inválido
 	else return 1;
 }
 
+/*
 
+ * a104179 - Sara Lopes
+
+ * Permite a geração de água no mapa.
+ Existir água depende da profundidade e da aleatoriedade. A quantidade desta depende apenas da aleatoriedade. 
+
+*/
 void gen_water(Map** a, int r, int c) {
-	//srand(time(NULL)); // define a semente baseada no tempo atual
 	int x = 0, y = 0, water, ind, n = 3, prob_water = 0;
 	if (LEVEL != 0) prob_water = (1/LEVEL)*100;
     while (n > 0) {
@@ -260,7 +296,7 @@ void gen_water(Map** a, int r, int c) {
 		}
 		n--;
 	}
-	// coloca margens com tipo diferente para poder associar também uma cor diferente
+	// coloca margens com um tipo diferente para se poder associar também uma cor diferente
 	for (int i = 1; i < r-1; i++) {    
 	    for (int j = 1; j < c-1; j++) {
 			if (a[i][j].object == 7 && (a[i+1][j].object == 0 || a[i-1][j].object == 0 || a[i][j+1].object == 0 || a[i][j-1].object == 0 || a[i+1][j].object == 5 || a[i-1][j].object == 5 || a[i][j+1].object == 5 || a[i][j-1].object == 5 || a[i+1][j].object == 6 || a[i-1][j].object == 6 || a[i][j+1].object == 6 || a[i][j-1].object == 6)){
@@ -270,17 +306,23 @@ void gen_water(Map** a, int r, int c) {
 	}
 }
 
+/*
+
+ * a104179 - Sara Lopes
+
+ * Permite a geração de relva no mapa.
+ Existir relva depende da profundidade e da aleatoriedade. A quantidade desta depende apenas da aleatoriedade. 
+
+*/
 void gen_grass(Map** a, int r, int c) {
-	// decidir se aparece relva em um nível
 	int x = 0, y = 0, grass = 0, ind, n = 3;
 	int prob_grass = 90 - 10*LEVEL;
     while (n > 0) {
 		grass = 0;
 		int random_num = rand() % 100;
-   		if (random_num <= prob_grass) {
+   		if (random_num <= prob_grass) { // decidir se aparece relva num nível
 			grass = 1;
 		}
-		// gerar a relva
 		if (grass == 1) {
 			while(a[y][x].object != 0) {
 				x = (random() % c);
@@ -328,7 +370,7 @@ void gen_grass(Map** a, int r, int c) {
 		}
 		n--;
 	}
-	// coloca flores do meio da relva
+	// coloca flores no meio da relva
 	for (int i = 1; i < r-1; i++) {    
 	    for (int j = 1; j < c-1; j++) {
 			if (a[i][j].object == 5){
@@ -339,9 +381,15 @@ void gen_grass(Map** a, int r, int c) {
 	}
 }
 
+/*
 
+ * a104179 - Sara Lopes
+
+ * Permite a geração de lava no mapa.
+ Existir lava depende da profundidade e da aleatoriedade. A quantidade desta depende apenas da aleatoriedade. 
+
+*/
 void gen_lava(Map** a, int r, int c) {
-	//srand(time(NULL)); // define a semente baseada no tempo atual
 	int x = 0, y = 0, lava = 0, ind, n = 2;
 	int prob_lava = 10 * LEVEL;
     int random_num = rand() % 100;
@@ -349,7 +397,7 @@ void gen_lava(Map** a, int r, int c) {
     	if (random_num <= prob_lava && LEVEL >= 2) { // decidir se aparece lava em um nível
 			lava = 1;
 		}
-		if (lava == 1) { // gerar a lava
+		if (lava == 1) { 
 			while(a[y][x].object != 0) {
 				x = (random() % c);
         		y = (random() % r);
@@ -398,9 +446,18 @@ void gen_lava(Map** a, int r, int c) {
 	}
 }
 
+/*
+
+ * a104179 - Sara Lopes
+
+ * Gera um número aleatório de salas, compreendido entre 15 a 25, num mapa.
+ O tamanho das salas é variável.
+ Garante que a cada nova sala é aberta uma porta para as salas adjacentes já existentes.
+
+*/
 void new_room_map (Map** a, int r, int c){
 	srand(time(NULL)); // define a semente baseada no tempo atual
-	int random_rooms = (random() % 11) + 15; // podemos ter entre 15 a 25 salas
+	int random_rooms = (random() % 11) + 15; // 15 a 25 salas
     int k = 0;
 
     while (k < random_rooms) {
@@ -412,18 +469,18 @@ void new_room_map (Map** a, int r, int c){
 			roomX = (random() % c) + 1; // posição da sala no mapa
         	roomY = (random() % r) + 1; 
 		}
-		// verifica se a sala fica situada dentro do mapa, senão gera nova sala
+		// verifica se a sala fica situada dentro do mapa, senão gera uma nova sala
 		if((roomX + width_room) < c-1 && (roomY + height_room < r-1)){  
             // coloca paredes na sala
-            for(int j = roomX; j < roomX + width_room+1; j++){ // constroi a border horizontal da sala
+            for(int j = roomX; j < roomX + width_room+1; j++){ // constroi a parede horizontal da sala
 		      a[roomY][j].object = 1; 
 		      a[roomY+height_room][j].object = 1;
 	        } 
-            for(int i = roomY; i < roomY + height_room; i++) { // constroi a border vertical da sala
+            for(int i = roomY; i < roomY + height_room; i++) { // constroi a parede vertical da sala
               a[i][roomX].object = 1; 
 	          a[i][roomX+width_room].object = 1;
 	        }
-            // coloca interior da salas como espaço em que é possível andar
+            // coloca o interior das salas como um tipo de mapa onde é possível andar
 			for (int i = roomY + 1; i < roomY + height_room; i++) {
                for (int j = roomX + 1; j < roomX + width_room; j++) {
                    a[i][j].object = 0;
@@ -432,12 +489,12 @@ void new_room_map (Map** a, int r, int c){
 		    // abre portas entre salas adjacentes
 			int init = roomY + height_room, end = 0;
             for (int j = roomY; j < roomY + height_room && j != 1; j++){ // esquerda
-		      while (a[j][roomX].object == 1 && a[j][roomX-1].object != 3 && a[j][roomX+1].object != 3 && a[j][roomX-1].object != 1){ //tem de abrir porta
+		      while (a[j][roomX].object == 1 && a[j][roomX-1].object != 3 && a[j][roomX+1].object != 3 && a[j][roomX-1].object != 1){ // tem de abrir porta
 			 	  if (init > j) init = j;
 				  if (end < j) end = j;
 				  j++;
 			   }
-			   if (end - init == 1 && a[init][roomX+1].object != 1 && a[end][roomX+1].object != 1){ // para abrir uma porta necessita de ter pelo menos duas posições disponíveis e no ultimo nao podemos ter uma parede
+			   if (end - init == 1 && a[init][roomX+1].object != 1 && a[end][roomX+1].object != 1){ // para abrir uma porta é necessário de ter pelo menos duas posições disponíveis e no última não podemos ter uma parede
 			      a[init][roomX].object = 0;
 				  a[end][roomX].object = 0;
 			   }
@@ -591,6 +648,13 @@ int gen_mobs(Mob **mobs, Map **map, int r, int c, int level){
 	return 0;
 }
 
+/*
+
+ * a104179 - Sara Lopes
+
+ * Abre, entre 1 a 3, portais no mapa, para ser possível nagevar entre níveis. 
+
+*/
 void new_level_map (Map** a, int r, int c){
 	int random_num, count = 0, rc, rr;
 
@@ -620,15 +684,22 @@ Vector2D get_random_floor_position(Map** map, int r, int c){
 	return pos;
 }
 
-// Gera o mapa
+/*
+
+ * a104179 - Sara Lopes
+
+ * Gera um mapa. Caso este não seja válido, é gerado um novo.
+ Um mundo é constituído por 20 mapas.
+
+*/
 void gen_map(Map** a, int r, int c) {
     int count = 0;
 	new_room_map(a,r,c);
 	while (valid_map(a,r,c) == 1) {
-		if (count > 8) { // faz refresh do mapa para evitar situações em que é impossível gerar um mapa valido
+		if (count > 8) { // faz refresh do mapa para evitar situações em que é impossível gerar um mapa válido
 			for (int j = 0; j < r; j++) {
 				for (int k = 0; k < c; k++) {
-					a[j][k].object = 3; // Inicializando o valor do campo object como 3 (vazio)
+					a[j][k].object = 3; // inicializa o mapa como vazio
 			   	}
 	   		}
 		count = 0;
@@ -665,7 +736,14 @@ void draw_mobs(Mob *mobs, int mobQuantity, Terminal *terminal){
 	}
 }
 
-// Imprime o mapa
+/*
+
+ * a104179, a104439, a104356 - Sara Lopes, Rita Camacho, João Lobo
+
+ * O mapa é uma matriz de tipos. Em função de cada tipo é feita a impressão de elementos específicos.
+ Exemplo: 1 é parede e imprime "##" na cor escolhida.
+
+*/
 void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) {
 	//Image lava = load_image_from_file("assets/sprites/lava.sprite");
 	//int k = 0, r_num = 0;
@@ -676,16 +754,16 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
 				continue;
 			}
 			switch (a[i][j].object){
-			case 0: // imprime lugar onde o jogador pode andar
+			case 0: // imprime um lugar onde o jogador pode andar
 				draw_custom_pixel(pos, ". ", 79, 74, terminal);
 				break;
-			case 1: // imprimir a parede
+			case 1: // imprime a parede
 				draw_custom_pixel(pos, "##", 77, choose_color(66, 3, pos), terminal);
 				break;
-			case 2: // imprimir porta para outro nível
+			case 2: // imprime uma porta para outro nível
 				draw_custom_pixel(pos, "[]", 84, 83, terminal);
 				break;
-			case 4: // imprimir lava
+			case 4: // imprime lava
 				draw_empty_pixel(pos, choose_color(44, 5, pos));
 				/*r_num = rand() % 6;
 				k = choose_color(44, 5, pos);
@@ -694,7 +772,7 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
 				mvprintw(i, j*2, "  ");
             	attroff(COLOR_PAIR(k));*/
 				break;
-			case 5: // imprimir relva
+			case 5: // imprime relva
 				if(((choose_color(59, 3, pos) + 5)) % 3 != 2){
 					draw_custom_pixel(pos, "''", 78, choose_color(59, 3, pos), terminal);
 				}
@@ -702,7 +780,7 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
 					draw_empty_pixel(pos, choose_color(59, 3, pos));
 				}
 				break;
-			case 6: // imprimir flor
+			case 6: // imprime flores
 				if(((choose_color(59, 3, pos) + 5)) % 3 != 0){
 					draw_custom_pixel(pos, "**", 13, choose_color(59, 3, pos), terminal);
 				}
@@ -710,22 +788,22 @@ void print_map(Map** a, int r, int c, GameState *gameState, Terminal *terminal) 
 					draw_empty_pixel(pos, choose_color(59, 3, pos));
 				}
 				break;
-			case 7: // imprimir água profunda
+			case 7: // imprime água profunda
 				draw_custom_pixel(pos, "~ ", choose_color(51, 2, pos)-1, choose_color(50, 3, pos), terminal);
 				break;
-			case 8: // imprimir água margem
+			case 8: // imprime a margem da água
 				draw_custom_pixel(pos, " .", 35, choose_color(54, 4, pos), terminal);
 				break;
-			case 9: // imprimir baú
+			case 9: // imprime baú
 				draw_custom_pixel(pos, "??", 82, 80, terminal);
 				break;
-			case 10: // imprimir porta 
+			case 10: // imprime porta 
 				draw_empty_pixel(pos, 81);
 				break;
-			case 11: // imprimir chave 
+			case 11: // imprime chave 
 				draw_custom_pixel(pos, "-o", 82, 70, terminal);
 				break;
-			case 12: // imprimir chão da sala enquanto fechada com um cor própria 
+			case 12: // imprime chão da sala, enquanto fechada, com um cor própria 
 				draw_empty_pixel(pos, create_color_pattern(63, 2, pos));
 				break;
 			default:
