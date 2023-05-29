@@ -1,5 +1,9 @@
 
-# Projeto de LI2
+# Rogue Pointers
+
+Este jogo foi desenvolvido por João Lobo (A104356), Rita Camacho (A104439) , Sara Lopes (A104179) e Tomás Melo (A104529), alunos da licenciatura de Engenharia Informática, na Universidade do Minho, no âmbito do projeto final da unidade curricular Laboratórios de Informática II do 1º ano (2º semestre, ano letivo 2022/2023).
+
+O objetivo do projeto final é recriar o jogo “Roguelike” utilizando a livraria “ncurses” juntamente com a linguagem de programação C.
 
 ## Setup  ⚙️
 
@@ -12,17 +16,9 @@ Para apenas fazer uma build do projeto:
 make
 ```
 
-É necessário ter a biblioteca ncurses instalada (exemplo de instalação em debian):
+É necessário ter a biblioteca ncurses e SDL2 instaladas (exemplo de instalação em debian):
 
 ```bash
 sudo apt-get install libncurses-dev
-```
-
-## Guias 🖋️
-
-Nomes de funções e variáveis em inglês e comentários em portugês. Exemplo:
-
-```c
-// Nome do jogador
-char playerName[10] = "Dan";
+sudo apt-get install libsdl2-dev
 ```
