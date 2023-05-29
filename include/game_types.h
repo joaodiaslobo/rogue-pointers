@@ -89,11 +89,6 @@ typedef struct itemTable {
     Item items[10];
 } ItemsTable;
 
-/*typedef struct {
-    Item items[5];
-    Vector2D position;
-} Chest;*/
-
 typedef struct inventory {
     Item items[INVENTORY_SLOTS];
 } Inventory;
@@ -110,6 +105,7 @@ typedef struct player {
     int speedMultiplier;
     unsigned long timeSinceDrownStart;
     unsigned long timeSinceLastAction;
+    int fullBright;
 } Player;
 
 typedef struct pathBehaviour {

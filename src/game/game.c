@@ -24,6 +24,7 @@
 #include "pop_up_ui.h"
 #include "bomb.h"
 #include "beacon.h"
+#include "cheat_console.h"
 
 int LEVEL, num_levels = 20;
 
@@ -117,6 +118,17 @@ void execute_input(GameState *state, World *w, int r, int c, Terminal *terminal)
 			break;
 		case 'd':
 			check_for_portal(state, w, r, c, 1);
+			break;
+		case '+':
+			{
+				char *input = malloc(sizeof(char) * 40);
+				Vector2D inputPos = {terminal->xMax / 2 - 15, terminal->yMax / 2};
+				text_input_box(inputPos, 45, 39, "Run command:", input);
+				clear();
+				refresh();
+				execute_command(input, state);
+				free(input);
+			}
 			break;
 		case 'o':
 			if(w[LEVEL].map[state->player.position.y][state->player.position.x].object == 9 && w[LEVEL].collectedChestItems == 0){
@@ -372,7 +384,9 @@ int game(Terminal *terminal, char *playerName) {
 				draw_beacon(worlds[LEVEL].beaconLocations[i], terminal);
 			}
 
-			draw_light(gameState, nrows, ncols, worlds[LEVEL].map, &worlds[LEVEL], terminal);
+			if(!gameState->player.fullBright){
+				draw_light(gameState, nrows, ncols, worlds[LEVEL].map, &worlds[LEVEL], terminal);
+			}
 
 			// Botões
 			int buttonToolbarX = (terminal->xMax / 2) - (73 / 2);

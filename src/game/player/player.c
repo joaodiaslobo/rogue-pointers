@@ -34,6 +34,7 @@ Player *init_player(char name[15], Vector2D pos){
     player->speedMultiplier = 1;
     player->timeSinceDrownStart = 0;
     player->timeSinceLastAction = 10000000;
+    player->fullBright = 0;
 
     Item firstItem = globalItems[pick_random_item(&player->inventory)]; // Para mesmo que não recolha itens consiga lutar no nível seguinte
     add_item(&player->inventory, &firstItem);
