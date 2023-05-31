@@ -1,5 +1,5 @@
 CFLAGS=-Wall -Wextra -pedantic -O2 -Iinclude
-LIBS=-lm -lcurses -lSDL2
+LIBS=-lm -lcurses -lSDL2 -pthread
 
 TARGET=jogo
 

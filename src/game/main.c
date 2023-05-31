@@ -63,6 +63,8 @@ int main(){
         printw("Falha no carregamento da palette.");
     }
 
+    init_color(0, 0, 0, 0);
+
     int selection = main_menu(&terminal);
     while(selection == 0 || selection == 1 || selection == 3){ // permite que o jogador volte ao menu principal, caso perca
         switch (selection){
