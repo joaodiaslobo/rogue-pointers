@@ -209,7 +209,7 @@ void apply_movement(GameState *gameState, Direction facing, Map** map, int r, in
     if(map[newPos.y][newPos.x].object == 10){
         int key_qty = 0;
         key_qty = get_key_quantity(&gameState->player.inventory);
-        if(key_qty == 1){
+        if(key_qty >= 1){
             for(int i = 1; i < r; i++) {  
 		        for(int j = 1; j < c; j++) {
                     if(map[i][j].object == 10) map[i][j].object = 0;

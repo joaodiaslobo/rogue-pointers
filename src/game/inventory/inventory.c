@@ -68,6 +68,7 @@ void delete_key(Inventory *inventory){
     for(int i = 0; i < INVENTORY_SLOTS; i++){
         if(inventory->items[i].type == KEY){
             inventory->items[i] = init_empty_item();
+            return;
         }
     }
 }
