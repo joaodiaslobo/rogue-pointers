@@ -1,26 +1,30 @@
 ![logo](.github/assets/rogue_pointers.png)
 
+Roguelike game in C using ncurses! Developed as a project for the IT Laboratories II (Laboratórios de Informática II) class, part of the first year's curriculum of the Software Engineering bachelor's degree at University of Minho.
 
-Este jogo foi desenvolvido por João Lobo (A104356), Rita Camacho (A104439) , Sara Lopes (A104179) e Tomás Melo (A104529), alunos da licenciatura de Engenharia Informática, na Universidade do Minho, no âmbito do projeto final da unidade curricular Laboratórios de Informática II do 1º ano (2º semestre, ano letivo 2022/2023).
-
-O objetivo do projeto final é recriar o jogo “Roguelike” utilizando a biblioteca “ncurses” juntamente com a linguagem de programação C.
+This project obtained a final grade of 19/20 💎
 
 ![screenshot](.github/assets/screenshot.png)
 
 ## Setup  ⚙️
 
-Para fazer uma build e iniciar o jogo:
+To build the project and start the application:
 ```bash
 make run
 ```
-Para apenas fazer uma build do projeto:
+To build the project:
 ```bash
 make
 ```
 
-É necessário ter a biblioteca ncurses e SDL2 instaladas (exemplo de instalação em debian):
+This project requires ncurses for terminal graphics and SDL2 for audio (installation example for a debian based system):
 
 ```bash
-sudo apt-get install libncurses-dev
-sudo apt-get install libsdl2-dev
+sudo apt-get install libncurses-dev libsdl2-dev
 ```
+
+## Group 👥
+
+- **A104356** [João d'Araújo Dias Lobo](https://github.com/joaodiaslobo)
+- **A104179** [Sara Azevedo Lopes](https://github.com/Zaninhazevedo)
+- **A104439** [Rita da Cunha Camacho](https://github.com/ritacamacho)
